@@ -1,0 +1,17 @@
+# LLM 模型配置
+
+models:
+  - name: amazon.nova-pro-v1:0
+    provider: bedrock
+    api_key_env: AWS_ACCESS_KEY_ID
+    description: AWS Bedrock Amazon Nova Pro
+
+  - name: deepseek.v3.2
+    provider: bedrock
+    api_key_env: AWS_ACCESS_KEY_ID
+    description: AWS Bedrock DeepSeek V3.2
+
+  - name: qwen.qwen3-coder-next
+    provider: bedrock
+    api_key_env: AWS_ACCESS_KEY_ID
+    description: AWS Bedrock Qwen3 Coder Next

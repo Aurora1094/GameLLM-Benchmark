@@ -1,0 +1,337 @@
+﻿game,difficulty,model,model_short,timestamp,dimension,indicator,score,max_score,normalized
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,rule_completeness,2.0,2.0,1.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,state_evolution,0.0,2.0,0.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,interaction_validity,2.0,2.0,1.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,goal_feedback_alignment,2.0,2.0,1.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,modularity,9.0,20.0,0.45
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,reuse,17.0,20.0,0.85
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,comments,0.0,15.0,0.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,constants,5.0,15.0,0.3333333333333333
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,complexity,15.0,15.0,1.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,visual,25.0,25.0,1.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,smoothness,35.0,35.0,1.0
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,balance,12.0,20.0,0.6
+snake,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,audio_animation,8.0,20.0,0.4
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,rule_completeness,0.0,2.0,0.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,state_evolution,0.0,2.0,0.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,interaction_validity,2.0,2.0,1.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,goal_feedback_alignment,2.0,2.0,1.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,modularity,3.0,20.0,0.15
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,reuse,20.0,20.0,1.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,comments,15.0,15.0,1.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,constants,5.0,15.0,0.3333333333333333
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,complexity,0.0,15.0,0.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,visual,25.0,25.0,1.0
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,smoothness,25.0,35.0,0.7142857142857143
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,balance,12.0,20.0,0.6
+snake,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,audio_animation,8.0,20.0,0.4
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,rule_completeness,2.0,2.0,1.0
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,state_evolution,1.0,2.0,0.5
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,interaction_validity,2.0,2.0,1.0
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,goal_feedback_alignment,2.0,2.0,1.0
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,modularity,9.0,20.0,0.45
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,reuse,20.0,20.0,1.0
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,comments,15.0,15.0,1.0
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,constants,5.0,15.0,0.3333333333333333
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,complexity,0.0,15.0,0.0
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,visual,25.0,25.0,1.0
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,smoothness,25.0,35.0,0.7142857142857143
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,balance,12.0,20.0,0.6
+snake,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,audio_animation,8.0,20.0,0.4
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,rule_completeness,2.0,2.0,1.0
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,state_evolution,1.0,2.0,0.5
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,interaction_validity,2.0,2.0,1.0
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,goal_feedback_alignment,2.0,2.0,1.0
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,modularity,15.0,20.0,0.75
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,reuse,17.0,20.0,0.85
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,comments,0.0,15.0,0.0
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,constants,5.0,15.0,0.3333333333333333
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,complexity,10.0,15.0,0.6666666666666666
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,visual,25.0,25.0,1.0
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,smoothness,25.0,35.0,0.7142857142857143
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,balance,12.0,20.0,0.6
+flappy_bird,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,audio_animation,14.0,20.0,0.7
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,rule_completeness,2.0,2.0,1.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,state_evolution,1.0,2.0,0.5
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,interaction_validity,2.0,2.0,1.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,goal_feedback_alignment,2.0,2.0,1.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,modularity,19.0,20.0,0.95
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,reuse,20.0,20.0,1.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,comments,0.0,15.0,0.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,constants,5.0,15.0,0.3333333333333333
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,complexity,15.0,15.0,1.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,visual,25.0,25.0,1.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,smoothness,35.0,35.0,1.0
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,balance,12.0,20.0,0.6
+flappy_bird,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,audio_animation,14.0,20.0,0.7
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,rule_completeness,2.0,2.0,1.0
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,state_evolution,1.0,2.0,0.5
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,interaction_validity,2.0,2.0,1.0
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,goal_feedback_alignment,2.0,2.0,1.0
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,modularity,3.0,20.0,0.15
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,reuse,10.0,20.0,0.5
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,comments,15.0,15.0,1.0
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,constants,5.0,15.0,0.3333333333333333
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,complexity,0.0,15.0,0.0
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,visual,25.0,25.0,1.0
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,smoothness,35.0,35.0,1.0
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,balance,12.0,20.0,0.6
+flappy_bird,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,audio_animation,14.0,20.0,0.7
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,short_runtime_stable,0.0,1.0,0.0
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,process_controllability,0.0,1.0,0.0
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,rule_completeness,2.0,2.0,1.0
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,state_evolution,1.0,2.0,0.5
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,interaction_validity,2.0,2.0,1.0
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,goal_feedback_alignment,2.0,2.0,1.0
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,modularity,12.0,20.0,0.6
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,reuse,17.0,20.0,0.85
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,comments,0.0,15.0,0.0
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,constants,5.0,15.0,0.3333333333333333
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,complexity,10.0,15.0,0.6666666666666666
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,visual,20.0,25.0,0.8
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,smoothness,15.0,35.0,0.42857142857142855
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,balance,12.0,20.0,0.6
+dodge_blocks,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,audio_animation,6.0,20.0,0.3
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,rule_completeness,2.0,2.0,1.0
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,state_evolution,1.0,2.0,0.5
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,interaction_validity,2.0,2.0,1.0
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,goal_feedback_alignment,2.0,2.0,1.0
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,modularity,17.0,20.0,0.85
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,reuse,20.0,20.0,1.0
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,comments,10.0,15.0,0.6666666666666666
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,constants,5.0,15.0,0.3333333333333333
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,complexity,10.0,15.0,0.6666666666666666
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,visual,25.0,25.0,1.0
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,smoothness,35.0,35.0,1.0
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,balance,12.0,20.0,0.6
+dodge_blocks,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,audio_animation,14.0,20.0,0.7
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,rule_completeness,2.0,2.0,1.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,state_evolution,0.0,2.0,0.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,interaction_validity,1.0,2.0,0.5
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,goal_feedback_alignment,2.0,2.0,1.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,modularity,3.0,20.0,0.15
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,reuse,20.0,20.0,1.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,comments,15.0,15.0,1.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,constants,5.0,15.0,0.3333333333333333
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,complexity,0.0,15.0,0.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,visual,25.0,25.0,1.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,smoothness,35.0,35.0,1.0
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,balance,12.0,20.0,0.6
+dodge_blocks,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,audio_animation,14.0,20.0,0.7
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,rule_completeness,2.0,2.0,1.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,state_evolution,0.0,2.0,0.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,interaction_validity,1.0,2.0,0.5
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,goal_feedback_alignment,2.0,2.0,1.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,modularity,7.0,20.0,0.35
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,reuse,20.0,20.0,1.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,comments,0.0,15.0,0.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,constants,0.0,15.0,0.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,complexity,15.0,15.0,1.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,visual,25.0,25.0,1.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,smoothness,35.0,35.0,1.0
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,balance,6.0,20.0,0.3
+maze_runner,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,audio_animation,8.0,20.0,0.4
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,rule_completeness,0.0,2.0,0.0
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,state_evolution,1.0,2.0,0.5
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,interaction_validity,2.0,2.0,1.0
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,goal_feedback_alignment,2.0,2.0,1.0
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,modularity,7.0,20.0,0.35
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,reuse,20.0,20.0,1.0
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,comments,10.0,15.0,0.6666666666666666
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,constants,0.0,15.0,0.0
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,complexity,5.0,15.0,0.3333333333333333
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,visual,25.0,25.0,1.0
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,smoothness,35.0,35.0,1.0
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,balance,6.0,20.0,0.3
+maze_runner,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,audio_animation,8.0,20.0,0.4
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,rule_completeness,0.0,2.0,0.0
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,state_evolution,1.0,2.0,0.5
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,interaction_validity,2.0,2.0,1.0
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,goal_feedback_alignment,2.0,2.0,1.0
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,modularity,14.0,20.0,0.7
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,reuse,20.0,20.0,1.0
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,comments,10.0,15.0,0.6666666666666666
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,constants,0.0,15.0,0.0
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,complexity,5.0,15.0,0.3333333333333333
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,visual,25.0,25.0,1.0
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,smoothness,35.0,35.0,1.0
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,balance,6.0,20.0,0.3
+maze_runner,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,audio_animation,8.0,20.0,0.4
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,rule_completeness,2.0,2.0,1.0
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,state_evolution,1.0,2.0,0.5
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,interaction_validity,2.0,2.0,1.0
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,goal_feedback_alignment,1.0,2.0,0.5
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,modularity,9.0,20.0,0.45
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,reuse,17.0,20.0,0.85
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,comments,0.0,15.0,0.0
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,constants,0.0,15.0,0.0
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,complexity,5.0,15.0,0.3333333333333333
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,visual,20.0,25.0,0.8
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,smoothness,35.0,35.0,1.0
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,balance,20.0,20.0,1.0
+pong,easy,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,audio_animation,14.0,20.0,0.7
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,rule_completeness,0.0,2.0,0.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,state_evolution,0.0,2.0,0.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,interaction_validity,1.0,2.0,0.5
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,goal_feedback_alignment,1.0,2.0,0.5
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,modularity,3.0,20.0,0.15
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,reuse,15.0,20.0,0.75
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,comments,15.0,15.0,1.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,constants,0.0,15.0,0.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,Code Quality,complexity,0.0,15.0,0.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,visual,25.0,25.0,1.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,smoothness,35.0,35.0,1.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,balance,20.0,20.0,1.0
+pong,easy,deepseek.v3.2,DeepSeek V3.2,20260416_233830,UX,audio_animation,14.0,20.0,0.7
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,rule_completeness,2.0,2.0,1.0
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,state_evolution,0.0,2.0,0.0
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,interaction_validity,1.0,2.0,0.5
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,goal_feedback_alignment,1.0,2.0,0.5
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,modularity,3.0,20.0,0.15
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,reuse,17.0,20.0,0.85
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,comments,15.0,15.0,1.0
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,constants,0.0,15.0,0.0
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,Code Quality,complexity,0.0,15.0,0.0
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,visual,25.0,25.0,1.0
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,smoothness,35.0,35.0,1.0
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,balance,12.0,20.0,0.6
+pong,easy,qwen.qwen3-coder-next,Qwen Coder,20260416_233830,UX,audio_animation,8.0,20.0,0.4
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,python_syntax_correct,1.0,1.0,1.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,short_runtime_stable,1.0,1.0,1.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,dependency_initialization_complete,1.0,1.0,1.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,window_creation,1.0,1.0,1.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,event_handling_mechanism,1.0,1.0,1.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Executability,process_controllability,1.0,1.0,1.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,rule_completeness,2.0,2.0,1.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,state_evolution,0.0,2.0,0.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,interaction_validity,1.0,2.0,0.5
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,goal_feedback_alignment,2.0,2.0,1.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Functionality,constraint_termination,1.0,2.0,0.5
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,modularity,5.0,20.0,0.25
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,reuse,20.0,20.0,1.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,naming,15.0,15.0,1.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,comments,0.0,15.0,0.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,constants,15.0,15.0,1.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,Code Quality,complexity,15.0,15.0,1.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,visual,25.0,25.0,1.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,smoothness,35.0,35.0,1.0
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,balance,12.0,20.0,0.6
+breakout,medium,amazon.nova-pro-v1:0,Nova Pro,20260416_233830,UX,audio_animation,8.0,20.0,0.4

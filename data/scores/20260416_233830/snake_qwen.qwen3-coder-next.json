@@ -1,0 +1,488 @@
+{
+  "game": "snake",
+  "difficulty": "easy",
+  "model": "qwen.qwen3-coder-next",
+  "provider": "bedrock",
+  "timestamp": "20260416_233830",
+  "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark-main\\data\\raw\\20260416_233830\\snake_qwen.qwen3-coder-next.py",
+  "scores": {
+    "d1_executability": {
+      "score": 1.0,
+      "raw_score": 6.0,
+      "max_score": 6.0,
+      "weighted_contribution": 0.2,
+      "indicators": [
+        {
+          "name": "python_syntax_correct",
+          "score": 1.0,
+          "max_score": 1.0
+        },
+        {
+          "name": "short_runtime_stable",
+          "score": 1.0,
+          "max_score": 1.0
+        },
+        {
+          "name": "dependency_initialization_complete",
+          "score": 1.0,
+          "max_score": 1.0
+        },
+        {
+          "name": "window_creation",
+          "score": 1.0,
+          "max_score": 1.0
+        },
+        {
+          "name": "event_handling_mechanism",
+          "score": 1.0,
+          "max_score": 1.0
+        },
+        {
+          "name": "process_controllability",
+          "score": 1.0,
+          "max_score": 1.0
+        }
+      ],
+      "details": {
+        "score": 1,
+        "indicators": {
+          "python_syntax_correct": 1,
+          "short_runtime_stable": 1,
+          "dependency_initialization_complete": 1,
+          "window_creation": 1,
+          "event_handling_mechanism": 1,
+          "process_controllability": 1
+        },
+        "runtime": {
+          "file_found": true,
+          "timed_out": true,
+          "returncode": 1,
+          "pygame_available": true,
+          "diagnosis": "window_created",
+          "window_created_marker": true,
+          "stderr_tail": "",
+          "env_notice": ""
+        },
+        "reason": "全部通过：1~6 指标均满足。"
+      }
+    },
+    "d2_functionality": {
+      "score": 0.8,
+      "raw_score": 8.0,
+      "max_score": 10.0,
+      "weighted_contribution": 0.4,
+      "indicators": [
+        {
+          "name": "rule_completeness",
+          "score": 2.0,
+          "max_score": 2.0
+        },
+        {
+          "name": "state_evolution",
+          "score": 1.0,
+          "max_score": 2.0
+        },
+        {
+          "name": "interaction_validity",
+          "score": 2.0,
+          "max_score": 2.0
+        },
+        {
+          "name": "goal_feedback_alignment",
+          "score": 2.0,
+          "max_score": 2.0
+        },
+        {
+          "name": "constraint_termination",
+          "score": 1.0,
+          "max_score": 2.0
+        }
+      ],
+      "details": {
+        "passed": 8,
+        "total": 10,
+        "score": 0.8,
+        "criteria_scores": {
+          "rule_completeness": 2,
+          "state_evolution": 1,
+          "interaction_validity": 2,
+          "goal_feedback_alignment": 2,
+          "constraint_termination": 1
+        },
+        "reasons": {
+          "rule_completeness": "Detected complete behavior-result-feedback loop.",
+          "state_evolution": "Detected loop with partial evolution signals.",
+          "interaction_validity": "Detected input capture with observable state effect.",
+          "goal_feedback_alignment": "Detected aligned goal and feedback signals.",
+          "constraint_termination": "Detected partial constraint/termination signals."
+        },
+        "evidence": {
+          "runtime_signals": {
+            "input_effective": true,
+            "state_changed": false,
+            "feedback_visible": true,
+            "terminated": false,
+            "__provided__": true
+          },
+          "evidence_strength": {
+            "rule_completeness": "strong",
+            "state_evolution": "strong",
+            "interaction_validity": "strong",
+            "goal_feedback_alignment": "strong",
+            "constraint_termination": "strong"
+          },
+          "rule_completeness": {
+            "indicator": 1,
+            "has_rule_condition": true,
+            "has_rule_trigger": true,
+            "has_state_change": true,
+            "has_feedback": true,
+            "runtime_state_changed": false,
+            "runtime_feedback_visible": true,
+            "runtime_conflict": true
+          },
+          "state_evolution": {
+            "indicator": 2,
+            "has_main_loop": true,
+            "has_frame_loop": true,
+            "has_update_cycle": true,
+            "has_loop": true,
+            "has_tick": true,
+            "has_motion_update": true,
+            "runtime_state_changed": false,
+            "runtime_conflict": true
+          },
+          "interaction_validity": {
+            "indicator": 3,
+            "has_input_capture": true,
+            "has_input_branch": true,
+            "has_input_effect": true,
+            "has_key_symbols": true,
+            "runtime_input_effective": true,
+            "runtime_conflict": false
+          },
+          "goal_feedback_alignment": {
+            "indicator": 4,
+            "has_goal": true,
+            "has_score_logic": true,
+            "has_feedback_output": true,
+            "has_feedback_update": true,
+            "runtime_feedback_visible": true,
+            "runtime_conflict": false
+          },
+          "constraint_termination": {
+            "indicator": 5,
+            "has_constraint": true,
+            "has_end_condition": true,
+            "has_termination_action": true,
+            "runtime_terminated": false,
+            "runtime_provided": true,
+            "runtime_state_changed": false,
+            "runtime_conflict": true
+          },
+          "review_required": [
+            "rule_completeness",
+            "state_evolution",
+            "constraint_termination"
+          ],
+          "route": {
+            "module": null,
+            "used_game_specific": false,
+            "status": "fallback",
+            "reason": "module_not_mapped"
+          }
+        }
+      }
+    },
+    "d3_code_quality": {
+      "score": 0.64,
+      "raw_score": 64.0,
+      "max_score": 100.0,
+      "weighted_contribution": 0.096,
+      "indicators": [
+        {
+          "name": "modularity",
+          "score": 9.0,
+          "max_score": 20.0
+        },
+        {
+          "name": "reuse",
+          "score": 20.0,
+          "max_score": 20.0
+        },
+        {
+          "name": "naming",
+          "score": 15.0,
+          "max_score": 15.0
+        },
+        {
+          "name": "comments",
+          "score": 15.0,
+          "max_score": 15.0
+        },
+        {
+          "name": "constants",
+          "score": 5.0,
+          "max_score": 15.0
+        },
+        {
+          "name": "complexity",
+          "score": 0.0,
+          "max_score": 15.0
+        }
+      ],
+      "details": {
+        "score": 64,
+        "score_normalized": 0.64,
+        "reason": "评估完成。",
+        "indicator_scores": {
+          "modularity": 9,
+          "reuse": 20,
+          "naming": 15,
+          "comments": 15,
+          "constants": 5,
+          "complexity": 0
+        },
+        "category_scores": {
+          "structure": 29,
+          "readability": 30,
+          "maintainability": 5
+        },
+        "details": {
+          "indicator_1_modularity": {
+            "score": 9,
+            "num_functions": 8,
+            "num_classes": 0,
+            "responsibility_hits": 2,
+            "function_scale_score": 7,
+            "class_structure_score": 0,
+            "responsibility_score": 2
+          },
+          "indicator_2_reuse": {
+            "score": 20,
+            "duplicate_ratio": 0.09375,
+            "duplicated_lines": 15,
+            "effective_lines": 160,
+            "reused_func_count": 2,
+            "base_score": 20,
+            "bonus": 2
+          },
+          "indicator_3_naming": {
+            "score": 15,
+            "total_names": 64,
+            "good_names": 60,
+            "ratio": 0.9375
+          },
+          "indicator_4_comments": {
+            "score": 15,
+            "comment_lines": 23,
+            "hash_comment_lines": 17,
+            "docstring_lines": 6,
+            "total_lines": 214,
+            "ratio": 0.10747663551401869
+          },
+          "indicator_5_constants": {
+            "score": 5,
+            "constants_count": 8,
+            "magic_numbers": 34,
+            "ratio": 0.22857142857142856
+          },
+          "indicator_6_complexity": {
+            "score": 0,
+            "max_func_length": 100,
+            "max_depth": 12
+          }
+        }
+      }
+    },
+    "d4_ux": {
+      "score": 0.7,
+      "raw_score": 70.0,
+      "max_score": 100.0,
+      "weighted_contribution": 0.105,
+      "indicators": [
+        {
+          "name": "visual",
+          "score": 25.0,
+          "max_score": 25.0,
+          "sub_indicators": [
+            {
+              "name": "has_color_rendering",
+              "score": 1.0,
+              "max_score": 1.0
+            },
+            {
+              "name": "multi_color_rgb_ge_3",
+              "score": 1.0,
+              "max_score": 1.0
+            },
+            {
+              "name": "has_text_rendering",
+              "score": 1.0,
+              "max_score": 1.0
+            },
+            {
+              "name": "has_layout_structure",
+              "score": 1.0,
+              "max_score": 1.0
+            }
+          ]
+        },
+        {
+          "name": "smoothness",
+          "score": 25.0,
+          "max_score": 35.0,
+          "sub_indicators": [
+            {
+              "name": "has_main_loop",
+              "score": 1.0,
+              "max_score": 1.0
+            },
+            {
+              "name": "has_event_handling",
+              "score": 1.0,
+              "max_score": 1.0
+            },
+            {
+              "name": "has_clock_control",
+              "score": 1.0,
+              "max_score": 1.0
+            },
+            {
+              "name": "has_tick_fps_limit",
+              "score": 1.0,
+              "max_score": 1.0
+            },
+            {
+              "name": "runtime_crash",
+              "score": 0.0,
+              "max_score": 1.0
+            },
+            {
+              "name": "busy_loop_risk",
+              "score": 1.0,
+              "max_score": 1.0
+            }
+          ]
+        },
+        {
+          "name": "balance",
+          "score": 12.0,
+          "max_score": 20.0,
+          "sub_indicators": [
+            {
+              "name": "has_parametric_difficulty",
+              "score": 1.0,
+              "max_score": 1.0
+            },
+            {
+              "name": "has_progressive_difficulty",
+              "score": 0.0,
+              "max_score": 1.0
+            },
+            {
+              "name": "has_protection_or_recovery",
+              "score": 1.0,
+              "max_score": 1.0
+            }
+          ]
+        },
+        {
+          "name": "audio_animation",
+          "score": 8.0,
+          "max_score": 20.0,
+          "sub_indicators": [
+            {
+              "name": "has_multiple_visual_objects",
+              "score": 1.0,
+              "max_score": 1.0
+            },
+            {
+              "name": "has_animation_update",
+              "score": 0.0,
+              "max_score": 1.0
+            },
+            {
+              "name": "has_sound_system",
+              "score": 0.0,
+              "max_score": 1.0
+            }
+          ]
+        }
+      ],
+      "details": {
+        "score": 70,
+        "score_normalized": 0.7,
+        "visual": {
+          "score": 25,
+          "max_score": 25,
+          "indicators": {
+            "has_color_rendering": 1,
+            "multi_color_rgb_ge_3": 1,
+            "has_text_rendering": 1,
+            "has_layout_structure": 1
+          },
+          "details": {
+            "rgb_tuple_count": 9,
+            "layout_draw_calls": 9
+          }
+        },
+        "smoothness": {
+          "score": 25,
+          "max_score": 35,
+          "indicators": {
+            "has_main_loop": 1,
+            "has_event_handling": 1,
+            "has_clock_control": 1,
+            "has_tick_fps_limit": 1,
+            "runtime_crash": 0,
+            "busy_loop_risk": 1
+          },
+          "details": {
+            "timed_out": true,
+            "returncode": 1,
+            "sampled_fps": null
+          }
+        },
+        "balance": {
+          "score": 12,
+          "max_score": 20,
+          "indicators": {
+            "has_parametric_difficulty": 1,
+            "has_progressive_difficulty": 0,
+            "has_protection_or_recovery": 1
+          },
+          "details": {}
+        },
+        "audio_animation": {
+          "score": 8,
+          "max_score": 20,
+          "indicators": {
+            "has_multiple_visual_objects": 1,
+            "has_animation_update": 0,
+            "has_sound_system": 0
+          },
+          "details": {
+            "draw_calls": 9
+          }
+        },
+        "runtime": {
+          "file_found": true,
+          "timed_out": true,
+          "returncode": 1,
+          "window_created_marker": true,
+          "stderr_tail": ""
+        },
+        "reason": "visual:25/25 | smoothness:25/35 | balance:12/20 | audio_animation:8/20"
+      }
+    },
+    "total_score": 0.801,
+    "weights": {
+      "executability": 0.2,
+      "functionality": 0.5,
+      "code_quality": 0.15,
+      "ux": 0.15
+    },
+    "final_score_formula": "Final Score = 0.2 * Dimension1 + 0.5 * Dimension2 + 0.15 * Dimension3 + 0.15 * Dimension4"
+  }
+}

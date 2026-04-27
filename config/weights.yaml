@@ -1,0 +1,7 @@
+# 评分维度权重配置
+
+dimension_weights:
+  executability: 0.20
+  functionality: 0.50
+  code_quality: 0.15
+  ux: 0.15

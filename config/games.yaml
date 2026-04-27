@@ -1,0 +1,19 @@
+# 游戏列表配置
+# 根据实际存在的 prompt 文件组织
+
+games:
+  easy:
+    - snake              # 贪吃蛇：基础移动、路径规划、避障
+    - flappy_bird        # Flappy Bird：时机控制、单按键节奏、容错低
+    - dodge_blocks       # 躲避方块：实时反应、移动控制、碰撞避免
+    - maze_runner        # 迷宫跑者：路径规划、空间导航、目标寻找
+    - pong               # 乒乓球：反应速度、预判、连续跟踪
+  
+  medium:
+    - breakout           # 打砖块：弹道判断、反弹物理、连续操作
+    - tetris             # 俄罗斯方块：空间摆放、短期规划、局面判断
+    - space_invaders     # 太空入侵者：射击、闪避、多目标管理
+  
+  hard:
+    - platformer         # 平台跳跃：精确控制、时机把握、复杂关卡
+    - roguelike_dungeon  # Roguelike地牢：探索、战斗、资源管理

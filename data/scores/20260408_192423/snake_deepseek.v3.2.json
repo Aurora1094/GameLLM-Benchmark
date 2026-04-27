@@ -1,0 +1,180 @@
+{
+  "game": "snake",
+  "difficulty": "easy",
+  "model": "deepseek.v3.2",
+  "provider": "bedrock",
+  "timestamp": "20260408_192423",
+  "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_192423\\snake_deepseek.v3.2.py",
+  "scores": {
+    "d1_executability": {
+      "score": 0,
+      "details": {
+        "score": 0,
+        "indicators": {
+          "python_syntax_correct": 1,
+          "short_runtime_stable": 0,
+          "dependency_initialization_complete": 1,
+          "window_creation": 1,
+          "event_handling_mechanism": 1,
+          "process_controllability": 0
+        },
+        "runtime": {
+          "file_found": true,
+          "timed_out": false,
+          "returncode": 1,
+          "pygame_available": false,
+          "diagnosis": "env_missing_pygame",
+          "window_created_marker": false,
+          "stderr_tail": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<frozen runpy>\", line 286, in run_path\n  File \"<frozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_192423\\snake_deepseek.v3.2.py\", line 1, in <module>\n    import pygame\nModuleNotFoundError: No module named 'pygame'\n",
+          "env_notice": "若评测环境未安装 pygame，动态指标可能受影响。"
+        },
+        "reason": "2. 短时间运行不稳定，程序在 3~5 秒内异常退出或崩溃。 | 6. 进程可控性不足，存在不可控循环或资源占用风险。"
+      }
+    },
+    "d2_functionality": {
+      "score": 0.7,
+      "details": "TODO: 实现具体游戏测试"
+    },
+    "d3_code_quality": {
+      "score": 0.67,
+      "details": {
+        "score": 67,
+        "score_normalized": 0.67,
+        "reason": "评估完成。",
+        "indicator_scores": {
+          "modularity": 15,
+          "reuse": 17,
+          "naming": 15,
+          "comments": 15,
+          "constants": 0,
+          "complexity": 5
+        },
+        "category_scores": {
+          "structure": 32,
+          "readability": 30,
+          "maintainability": 5
+        },
+        "details": {
+          "indicator_1_modularity": {
+            "score": 15,
+            "num_functions": 13,
+            "num_classes": 2,
+            "responsibility_hits": 3,
+            "function_scale_score": 10,
+            "class_structure_score": 3,
+            "responsibility_score": 2
+          },
+          "indicator_2_reuse": {
+            "score": 17,
+            "duplicate_ratio": 0.1118421052631579,
+            "duplicated_lines": 17,
+            "effective_lines": 152,
+            "reused_func_count": 1,
+            "base_score": 15,
+            "bonus": 2
+          },
+          "indicator_3_naming": {
+            "score": 15,
+            "total_names": 53,
+            "good_names": 50,
+            "ratio": 0.9433962264150944
+          },
+          "indicator_4_comments": {
+            "score": 15,
+            "comment_lines": 26,
+            "hash_comment_lines": 26,
+            "docstring_lines": 0,
+            "total_lines": 210,
+            "ratio": 0.12380952380952381
+          },
+          "indicator_5_constants": {
+            "score": 0,
+            "constants_count": 4,
+            "magic_numbers": 45,
+            "ratio": 0.08695652173913043
+          },
+          "indicator_6_complexity": {
+            "score": 5,
+            "max_func_length": 70,
+            "max_depth": 7
+          }
+        }
+      }
+    },
+    "d4_ux": {
+      "score": 0.5,
+      "details": {
+        "score": 50,
+        "score_normalized": 0.5,
+        "visual": {
+          "score": 25,
+          "max_score": 25,
+          "indicators": {
+            "has_color_rendering": 1,
+            "multi_color_rgb_ge_3": 1,
+            "has_text_rendering": 1,
+            "has_layout_structure": 1
+          },
+          "details": {
+            "rgb_tuple_count": 11,
+            "layout_draw_calls": 9
+          }
+        },
+        "smoothness": {
+          "score": 5,
+          "max_score": 35,
+          "indicators": {
+            "has_main_loop": 1,
+            "has_event_handling": 1,
+            "has_clock_control": 1,
+            "has_tick_fps_limit": 1,
+            "runtime_crash": 1,
+            "busy_loop_risk": 1
+          },
+          "details": {
+            "timed_out": false,
+            "returncode": 1,
+            "sampled_fps": 0.0
+          }
+        },
+        "balance": {
+          "score": 12,
+          "max_score": 20,
+          "indicators": {
+            "has_parametric_difficulty": 1,
+            "has_progressive_difficulty": 0,
+            "has_protection_or_recovery": 1
+          },
+          "details": {}
+        },
+        "audio_animation": {
+          "score": 8,
+          "max_score": 20,
+          "indicators": {
+            "has_multiple_visual_objects": 1,
+            "has_animation_update": 0,
+            "has_sound_system": 0
+          },
+          "details": {
+            "draw_calls": 9
+          }
+        },
+        "runtime": {
+          "file_found": true,
+          "timed_out": false,
+          "returncode": 1,
+          "window_created_marker": false,
+          "stderr_tail": "Traceback (most recent call last):\n  File \"<string>\", line 56, in <module>\n  File \"<frozen runpy>\", line 286, in run_path\n  File \"<frozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_192423\\snake_deepseek.v3.2.py\", line 1, in <module>\n    import pygame\nModuleNotFoundError: No module named 'pygame'\n"
+        },
+        "reason": "visual:25/25 | smoothness:5/35 | balance:12/20 | audio_animation:8/20"
+      }
+    },
+    "total_score": 0.454,
+    "weights": {
+      "executability": 0.3,
+      "functionality": 0.35,
+      "code_quality": 0.2,
+      "ux": 0.15
+    }
+  }
+}

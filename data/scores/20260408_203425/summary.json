@@ -1,0 +1,4979 @@
+[
+  {
+    "game": "snake",
+    "difficulty": "easy",
+    "model": "amazon.nova-pro-v1:0",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\snake_amazon.nova-pro-v1_0.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.4,
+        "details": {
+          "score": 40,
+          "score_normalized": 0.4,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 3,
+            "reuse": 17,
+            "naming": 15,
+            "comments": 0,
+            "constants": 0,
+            "complexity": 5
+          },
+          "category_scores": {
+            "structure": 20,
+            "readability": 15,
+            "maintainability": 5
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 3,
+              "num_functions": 3,
+              "num_classes": 0,
+              "responsibility_hits": 0,
+              "function_scale_score": 3,
+              "class_structure_score": 0,
+              "responsibility_score": 0
+            },
+            "indicator_2_reuse": {
+              "score": 17,
+              "duplicate_ratio": 0.1590909090909091,
+              "duplicated_lines": 14,
+              "effective_lines": 88,
+              "reused_func_count": 1,
+              "base_score": 15,
+              "bonus": 2
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 33,
+              "good_names": 32,
+              "ratio": 0.9696969696969697
+            },
+            "indicator_4_comments": {
+              "score": 0,
+              "comment_lines": 0,
+              "hash_comment_lines": 0,
+              "docstring_lines": 0,
+              "total_lines": 112,
+              "ratio": 0.0
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 0,
+              "magic_numbers": 30,
+              "ratio": 0.0
+            },
+            "indicator_6_complexity": {
+              "score": 5,
+              "max_func_length": 78,
+              "max_depth": 7
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.8,
+        "details": {
+          "score": 80,
+          "score_normalized": 0.8,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 6,
+              "layout_draw_calls": 3
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 1,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 0
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 3
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:25/25 | smoothness:35/35 | balance:6/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.745,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "snake",
+    "difficulty": "easy",
+    "model": "deepseek.v3.2",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\snake_deepseek.v3.2.py",
+    "scores": {
+      "d1_executability": {
+        "score": 0,
+        "details": {
+          "score": 0,
+          "indicators": {
+            "python_syntax_correct": 0,
+            "short_runtime_stable": 0,
+            "dependency_initialization_complete": 0,
+            "window_creation": 0,
+            "event_handling_mechanism": 0,
+            "process_controllability": 0
+          },
+          "reason": "1. Python 语法不正确，代码无法被解释器解析；2~6 指标未执行。",
+          "runtime": {
+            "file_found": true,
+            "pygame_available": true,
+            "env_notice": ""
+          }
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.0,
+        "details": {
+          "score": 0,
+          "score_normalized": 0.0,
+          "reason": "Python 语法错误，无法进行代码质量评估。",
+          "indicator_scores": {
+            "modularity": 0,
+            "reuse": 0,
+            "naming": 0,
+            "comments": 0,
+            "constants": 0,
+            "complexity": 0
+          },
+          "category_scores": {
+            "structure": 0,
+            "readability": 0,
+            "maintainability": 0
+          },
+          "details": {}
+        }
+      },
+      "d4_ux": {
+        "score": 0.0,
+        "details": {
+          "score": 0,
+          "score_normalized": 0.0,
+          "reason": "Python 语法错误，无法进行维度4评估。",
+          "visual": {
+            "score": 0,
+            "max_score": 25,
+            "indicators": {},
+            "details": {}
+          },
+          "smoothness": {
+            "score": 0,
+            "max_score": 35,
+            "indicators": {},
+            "details": {}
+          },
+          "balance": {
+            "score": 0,
+            "max_score": 20,
+            "indicators": {},
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 0,
+            "max_score": 20,
+            "indicators": {},
+            "details": {}
+          },
+          "runtime": {
+            "file_found": true,
+            "syntax_ok": false
+          }
+        }
+      },
+      "total_score": 0.24499999999999997,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "snake",
+    "difficulty": "easy",
+    "model": "qwen.qwen3-coder-next",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\snake_qwen.qwen3-coder-next.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.64,
+        "details": {
+          "score": 64,
+          "score_normalized": 0.64,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 7,
+            "reuse": 17,
+            "naming": 15,
+            "comments": 15,
+            "constants": 5,
+            "complexity": 5
+          },
+          "category_scores": {
+            "structure": 24,
+            "readability": 30,
+            "maintainability": 10
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 7,
+              "num_functions": 5,
+              "num_classes": 0,
+              "responsibility_hits": 1,
+              "function_scale_score": 7,
+              "class_structure_score": 0,
+              "responsibility_score": 0
+            },
+            "indicator_2_reuse": {
+              "score": 17,
+              "duplicate_ratio": 0.11764705882352941,
+              "duplicated_lines": 12,
+              "effective_lines": 102,
+              "reused_func_count": 3,
+              "base_score": 15,
+              "bonus": 2
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 40,
+              "good_names": 37,
+              "ratio": 0.925
+            },
+            "indicator_4_comments": {
+              "score": 15,
+              "comment_lines": 22,
+              "hash_comment_lines": 18,
+              "docstring_lines": 4,
+              "total_lines": 149,
+              "ratio": 0.1476510067114094
+            },
+            "indicator_5_constants": {
+              "score": 5,
+              "constants_count": 4,
+              "magic_numbers": 18,
+              "ratio": 0.21052631578947367
+            },
+            "indicator_6_complexity": {
+              "score": 5,
+              "max_func_length": 76,
+              "max_depth": 10
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.64,
+        "details": {
+          "score": 64,
+          "score_normalized": 0.64,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 6,
+              "layout_draw_calls": 5
+            }
+          },
+          "smoothness": {
+            "score": 25,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 1
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 0,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 8,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 0,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 5
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:25/25 | smoothness:25/35 | balance:6/20 | audio_animation:8/20"
+        }
+      },
+      "total_score": 0.7689999999999999,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "flappy_bird",
+    "difficulty": "easy",
+    "model": "amazon.nova-pro-v1:0",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\flappy_bird_amazon.nova-pro-v1_0.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.47,
+        "details": {
+          "score": 47,
+          "score_normalized": 0.47,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 7,
+            "reuse": 10,
+            "naming": 15,
+            "comments": 5,
+            "constants": 0,
+            "complexity": 10
+          },
+          "category_scores": {
+            "structure": 17,
+            "readability": 20,
+            "maintainability": 10
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 7,
+              "num_functions": 5,
+              "num_classes": 0,
+              "responsibility_hits": 1,
+              "function_scale_score": 7,
+              "class_structure_score": 0,
+              "responsibility_score": 0
+            },
+            "indicator_2_reuse": {
+              "score": 10,
+              "duplicate_ratio": 0.20224719101123595,
+              "duplicated_lines": 18,
+              "effective_lines": 89,
+              "reused_func_count": 2,
+              "base_score": 8,
+              "bonus": 2
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 33,
+              "good_names": 31,
+              "ratio": 0.9393939393939394
+            },
+            "indicator_4_comments": {
+              "score": 5,
+              "comment_lines": 5,
+              "hash_comment_lines": 5,
+              "docstring_lines": 0,
+              "total_lines": 114,
+              "ratio": 0.043859649122807015
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 4,
+              "magic_numbers": 28,
+              "ratio": 0.13793103448275862
+            },
+            "indicator_6_complexity": {
+              "score": 10,
+              "max_func_length": 51,
+              "max_depth": 4
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.75,
+        "details": {
+          "score": 75,
+          "score_normalized": 0.75,
+          "visual": {
+            "score": 20,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 0,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 2,
+              "layout_draw_calls": 4
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 0,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 4
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:20/25 | smoothness:35/35 | balance:6/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.7514999999999998,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "flappy_bird",
+    "difficulty": "easy",
+    "model": "deepseek.v3.2",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\flappy_bird_deepseek.v3.2.py",
+    "scores": {
+      "d1_executability": {
+        "score": 0,
+        "details": {
+          "score": 0,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 0,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 0
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "ast):\n  File \"<string>\", line 22, in <module>\n    runpy.run_path(sys.argv[1], run_name=\"__main__\")\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen runpy>\", line 287, in run_path\n  File \"<frozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\flappy_bird_deepseek.v3.2.py\", line 314, in <module>\n    main_loop()\n    ^^^^^^^^^\nNameError: name 'main_loop' is not defined\n",
+            "env_notice": ""
+          },
+          "reason": "2. 短时间运行不稳定，程序在 3~5 秒内异常退出或崩溃。 | 6. 进程可控性不足，存在不可控循环或资源占用风险。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.64,
+        "details": {
+          "score": 64,
+          "score_normalized": 0.64,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 19,
+            "reuse": 15,
+            "naming": 15,
+            "comments": 15,
+            "constants": 0,
+            "complexity": 0
+          },
+          "category_scores": {
+            "structure": 34,
+            "readability": 30,
+            "maintainability": 0
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 19,
+              "num_functions": 17,
+              "num_classes": 3,
+              "responsibility_hits": 4,
+              "function_scale_score": 10,
+              "class_structure_score": 5,
+              "responsibility_score": 4
+            },
+            "indicator_2_reuse": {
+              "score": 15,
+              "duplicate_ratio": 0.13302752293577982,
+              "duplicated_lines": 29,
+              "effective_lines": 218,
+              "reused_func_count": 0,
+              "base_score": 15,
+              "bonus": 0
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 51,
+              "good_names": 49,
+              "ratio": 0.9607843137254902
+            },
+            "indicator_4_comments": {
+              "score": 15,
+              "comment_lines": 38,
+              "hash_comment_lines": 38,
+              "docstring_lines": 0,
+              "total_lines": 314,
+              "ratio": 0.12101910828025478
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 3,
+              "magic_numbers": 111,
+              "ratio": 0.026785714285714284
+            },
+            "indicator_6_complexity": {
+              "score": 0,
+              "max_func_length": 106,
+              "max_depth": 6
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.6,
+        "details": {
+          "score": 60,
+          "score_normalized": 0.6,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 10,
+              "layout_draw_calls": 15
+            }
+          },
+          "smoothness": {
+            "score": 15,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 1,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": false,
+              "returncode": 1,
+              "sampled_fps": 0.0
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 0,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 15
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": "ast):\n  File \"<string>\", line 56, in <module>\n    runpy.run_path(sys.argv[1], run_name=\"__main__\")\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen runpy>\", line 287, in run_path\n  File \"<frozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\flappy_bird_deepseek.v3.2.py\", line 314, in <module>\n    main_loop()\n    ^^^^^^^^^\nNameError: name 'main_loop' is not defined\n"
+          },
+          "reason": "visual:25/25 | smoothness:15/35 | balance:6/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.46299999999999997,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "flappy_bird",
+    "difficulty": "easy",
+    "model": "qwen.qwen3-coder-next",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\flappy_bird_qwen.qwen3-coder-next.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.62,
+        "details": {
+          "score": 62,
+          "score_normalized": 0.62,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 15,
+            "reuse": 17,
+            "naming": 15,
+            "comments": 15,
+            "constants": 0,
+            "complexity": 0
+          },
+          "category_scores": {
+            "structure": 32,
+            "readability": 30,
+            "maintainability": 0
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 15,
+              "num_functions": 10,
+              "num_classes": 2,
+              "responsibility_hits": 3,
+              "function_scale_score": 10,
+              "class_structure_score": 3,
+              "responsibility_score": 2
+            },
+            "indicator_2_reuse": {
+              "score": 17,
+              "duplicate_ratio": 0.13333333333333333,
+              "duplicated_lines": 18,
+              "effective_lines": 135,
+              "reused_func_count": 1,
+              "base_score": 15,
+              "bonus": 2
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 44,
+              "good_names": 42,
+              "ratio": 0.9545454545454546
+            },
+            "indicator_4_comments": {
+              "score": 15,
+              "comment_lines": 25,
+              "hash_comment_lines": 25,
+              "docstring_lines": 0,
+              "total_lines": 198,
+              "ratio": 0.12626262626262627
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 7,
+              "magic_numbers": 50,
+              "ratio": 0.13725490196078433
+            },
+            "indicator_6_complexity": {
+              "score": 0,
+              "max_func_length": 89,
+              "max_depth": 8
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.86,
+        "details": {
+          "score": 86,
+          "score_normalized": 0.86,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 6,
+              "layout_draw_calls": 7
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 12,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 1,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 7
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:25/25 | smoothness:35/35 | balance:12/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.7979999999999999,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "dodge_blocks",
+    "difficulty": "easy",
+    "model": "amazon.nova-pro-v1:0",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\dodge_blocks_amazon.nova-pro-v1_0.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.45,
+        "details": {
+          "score": 45,
+          "score_normalized": 0.45,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 3,
+            "reuse": 17,
+            "naming": 15,
+            "comments": 5,
+            "constants": 0,
+            "complexity": 5
+          },
+          "category_scores": {
+            "structure": 20,
+            "readability": 20,
+            "maintainability": 5
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 3,
+              "num_functions": 2,
+              "num_classes": 0,
+              "responsibility_hits": 1,
+              "function_scale_score": 3,
+              "class_structure_score": 0,
+              "responsibility_score": 0
+            },
+            "indicator_2_reuse": {
+              "score": 17,
+              "duplicate_ratio": 0.125,
+              "duplicated_lines": 9,
+              "effective_lines": 72,
+              "reused_func_count": 2,
+              "base_score": 15,
+              "bonus": 2
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 31,
+              "good_names": 29,
+              "ratio": 0.9354838709677419
+            },
+            "indicator_4_comments": {
+              "score": 5,
+              "comment_lines": 2,
+              "hash_comment_lines": 2,
+              "docstring_lines": 0,
+              "total_lines": 90,
+              "ratio": 0.022222222222222223
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 2,
+              "magic_numbers": 23,
+              "ratio": 0.08333333333333333
+            },
+            "indicator_6_complexity": {
+              "score": 5,
+              "max_func_length": 61,
+              "max_depth": 5
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.8,
+        "details": {
+          "score": 80,
+          "score_normalized": 0.8,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 3,
+              "layout_draw_calls": 3
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 0,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 3
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:25/25 | smoothness:35/35 | balance:6/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.7549999999999999,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "dodge_blocks",
+    "difficulty": "easy",
+    "model": "deepseek.v3.2",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\dodge_blocks_deepseek.v3.2.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.65,
+        "details": {
+          "score": 65,
+          "score_normalized": 0.65,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 15,
+            "reuse": 20,
+            "naming": 15,
+            "comments": 10,
+            "constants": 0,
+            "complexity": 5
+          },
+          "category_scores": {
+            "structure": 35,
+            "readability": 25,
+            "maintainability": 5
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 15,
+              "num_functions": 11,
+              "num_classes": 2,
+              "responsibility_hits": 2,
+              "function_scale_score": 10,
+              "class_structure_score": 3,
+              "responsibility_score": 2
+            },
+            "indicator_2_reuse": {
+              "score": 20,
+              "duplicate_ratio": 0.06611570247933884,
+              "duplicated_lines": 8,
+              "effective_lines": 121,
+              "reused_func_count": 0,
+              "base_score": 20,
+              "bonus": 0
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 41,
+              "good_names": 39,
+              "ratio": 0.9512195121951219
+            },
+            "indicator_4_comments": {
+              "score": 10,
+              "comment_lines": 16,
+              "hash_comment_lines": 16,
+              "docstring_lines": 0,
+              "total_lines": 167,
+              "ratio": 0.09580838323353294
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 2,
+              "magic_numbers": 72,
+              "ratio": 0.0273972602739726
+            },
+            "indicator_6_complexity": {
+              "score": 5,
+              "max_func_length": 92,
+              "max_depth": 4
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.86,
+        "details": {
+          "score": 86,
+          "score_normalized": 0.86,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 7,
+              "layout_draw_calls": 12
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 12,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 1,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 12
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:25/25 | smoothness:35/35 | balance:12/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.8039999999999999,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "dodge_blocks",
+    "difficulty": "easy",
+    "model": "qwen.qwen3-coder-next",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\dodge_blocks_qwen.qwen3-coder-next.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.53,
+        "details": {
+          "score": 53,
+          "score_normalized": 0.53,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 3,
+            "reuse": 20,
+            "naming": 15,
+            "comments": 15,
+            "constants": 0,
+            "complexity": 0
+          },
+          "category_scores": {
+            "structure": 23,
+            "readability": 30,
+            "maintainability": 0
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 3,
+              "num_functions": 3,
+              "num_classes": 0,
+              "responsibility_hits": 1,
+              "function_scale_score": 3,
+              "class_structure_score": 0,
+              "responsibility_score": 0
+            },
+            "indicator_2_reuse": {
+              "score": 20,
+              "duplicate_ratio": 0.05154639175257732,
+              "duplicated_lines": 5,
+              "effective_lines": 97,
+              "reused_func_count": 1,
+              "base_score": 20,
+              "bonus": 2
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 50,
+              "good_names": 50,
+              "ratio": 1.0
+            },
+            "indicator_4_comments": {
+              "score": 15,
+              "comment_lines": 26,
+              "hash_comment_lines": 26,
+              "docstring_lines": 0,
+              "total_lines": 153,
+              "ratio": 0.16993464052287582
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 3,
+              "magic_numbers": 57,
+              "ratio": 0.05172413793103448
+            },
+            "indicator_6_complexity": {
+              "score": 0,
+              "max_func_length": 88,
+              "max_depth": 5
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.94,
+        "details": {
+          "score": 94,
+          "score_normalized": 0.94,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 6,
+              "layout_draw_calls": 8
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 20,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 1,
+              "has_progressive_difficulty": 1,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 8
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:25/25 | smoothness:35/35 | balance:20/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.7919999999999999,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "maze_runner",
+    "difficulty": "easy",
+    "model": "amazon.nova-pro-v1:0",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\maze_runner_amazon.nova-pro-v1_0.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.44,
+        "details": {
+          "score": 44,
+          "score_normalized": 0.44,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 7,
+            "reuse": 17,
+            "naming": 15,
+            "comments": 0,
+            "constants": 0,
+            "complexity": 5
+          },
+          "category_scores": {
+            "structure": 24,
+            "readability": 15,
+            "maintainability": 5
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 7,
+              "num_functions": 5,
+              "num_classes": 0,
+              "responsibility_hits": 1,
+              "function_scale_score": 7,
+              "class_structure_score": 0,
+              "responsibility_score": 0
+            },
+            "indicator_2_reuse": {
+              "score": 17,
+              "duplicate_ratio": 0.14,
+              "duplicated_lines": 14,
+              "effective_lines": 100,
+              "reused_func_count": 1,
+              "base_score": 15,
+              "bonus": 2
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 35,
+              "good_names": 32,
+              "ratio": 0.9142857142857143
+            },
+            "indicator_4_comments": {
+              "score": 0,
+              "comment_lines": 0,
+              "hash_comment_lines": 0,
+              "docstring_lines": 0,
+              "total_lines": 121,
+              "ratio": 0.0
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 0,
+              "magic_numbers": 22,
+              "ratio": 0.0
+            },
+            "indicator_6_complexity": {
+              "score": 5,
+              "max_func_length": 78,
+              "max_depth": 8
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.8,
+        "details": {
+          "score": 80,
+          "score_normalized": 0.8,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 4,
+              "layout_draw_calls": 5
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 0,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 5
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:25/25 | smoothness:35/35 | balance:6/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.7529999999999999,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "maze_runner",
+    "difficulty": "easy",
+    "model": "deepseek.v3.2",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\maze_runner_deepseek.v3.2.py",
+    "scores": {
+      "d1_executability": {
+        "score": 0,
+        "details": {
+          "score": 0,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 0,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 0
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "_path\n  File \"<frozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\maze_runner_deepseek.v3.2.py\", line 249, in <module>\n    game = Game()\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\maze_runner_deepseek.v3.2.py\", line 129, in __init__\n    self.font = pygame.font.Font(None, 36)\n                ~~~~~~~~~~~~~~~~^^^^^^^^^^\npygame.error: font not initialized\n",
+            "env_notice": ""
+          },
+          "reason": "2. 短时间运行不稳定，程序在 3~5 秒内异常退出或崩溃。 | 6. 进程可控性不足，存在不可控循环或资源占用风险。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.82,
+        "details": {
+          "score": 82,
+          "score_normalized": 0.82,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 17,
+            "reuse": 20,
+            "naming": 15,
+            "comments": 15,
+            "constants": 0,
+            "complexity": 15
+          },
+          "category_scores": {
+            "structure": 37,
+            "readability": 30,
+            "maintainability": 15
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 17,
+              "num_functions": 15,
+              "num_classes": 3,
+              "responsibility_hits": 3,
+              "function_scale_score": 10,
+              "class_structure_score": 5,
+              "responsibility_score": 2
+            },
+            "indicator_2_reuse": {
+              "score": 20,
+              "duplicate_ratio": 0.02631578947368421,
+              "duplicated_lines": 5,
+              "effective_lines": 190,
+              "reused_func_count": 0,
+              "base_score": 20,
+              "bonus": 0
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 77,
+              "good_names": 71,
+              "ratio": 0.922077922077922
+            },
+            "indicator_4_comments": {
+              "score": 15,
+              "comment_lines": 27,
+              "hash_comment_lines": 27,
+              "docstring_lines": 0,
+              "total_lines": 251,
+              "ratio": 0.10756972111553785
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 2,
+              "magic_numbers": 77,
+              "ratio": 0.02564102564102564
+            },
+            "indicator_6_complexity": {
+              "score": 15,
+              "max_func_length": 36,
+              "max_depth": 4
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.44,
+        "details": {
+          "score": 44,
+          "score_normalized": 0.44,
+          "visual": {
+            "score": 15,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 0,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 15,
+              "layout_draw_calls": 4
+            }
+          },
+          "smoothness": {
+            "score": 15,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 1,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": false,
+              "returncode": 1,
+              "sampled_fps": 0.0
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 0,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 8,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 0,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 4
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": "_path\n  File \"<frozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\maze_runner_deepseek.v3.2.py\", line 249, in <module>\n    game = Game()\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\maze_runner_deepseek.v3.2.py\", line 129, in __init__\n    self.font = pygame.font.Font(None, 36)\n                ~~~~~~~~~~~~~~~~^^^^^^^^^^\npygame.error: font not initialized\n"
+          },
+          "reason": "visual:15/25 | smoothness:15/35 | balance:6/20 | audio_animation:8/20"
+        }
+      },
+      "total_score": 0.475,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "maze_runner",
+    "difficulty": "easy",
+    "model": "qwen.qwen3-coder-next",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\maze_runner_qwen.qwen3-coder-next.py",
+    "scores": {
+      "d1_executability": {
+        "score": 0,
+        "details": {
+          "score": 0,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 0,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 0
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "chmark\\data\\raw\\20260408_203425\\maze_runner_qwen.qwen3-coder-next.py\", line 176, in run\n    self.check_win()\n    ~~~~~~~~~~~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\maze_runner_qwen.qwen3-coder-next.py\", line 200, in check_win\n    player_grid_x = int((self.player.x + self.player.size // 2) // self.maze.cell_size)\n                                                                   ^^^^^^^^^^^^^^^^^^^\nAttributeError: 'Maze' object has no attribute 'cell_size'\n",
+            "env_notice": ""
+          },
+          "reason": "2. 短时间运行不稳定，程序在 3~5 秒内异常退出或崩溃。 | 6. 进程可控性不足，存在不可控循环或资源占用风险。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.79,
+        "details": {
+          "score": 79,
+          "score_normalized": 0.79,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 19,
+            "reuse": 20,
+            "naming": 15,
+            "comments": 10,
+            "constants": 5,
+            "complexity": 10
+          },
+          "category_scores": {
+            "structure": 39,
+            "readability": 25,
+            "maintainability": 15
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 19,
+              "num_functions": 14,
+              "num_classes": 3,
+              "responsibility_hits": 4,
+              "function_scale_score": 10,
+              "class_structure_score": 5,
+              "responsibility_score": 4
+            },
+            "indicator_2_reuse": {
+              "score": 20,
+              "duplicate_ratio": 0.056818181818181816,
+              "duplicated_lines": 10,
+              "effective_lines": 176,
+              "reused_func_count": 0,
+              "base_score": 20,
+              "bonus": 0
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 68,
+              "good_names": 65,
+              "ratio": 0.9558823529411765
+            },
+            "indicator_4_comments": {
+              "score": 10,
+              "comment_lines": 21,
+              "hash_comment_lines": 21,
+              "docstring_lines": 0,
+              "total_lines": 243,
+              "ratio": 0.08641975308641975
+            },
+            "indicator_5_constants": {
+              "score": 5,
+              "constants_count": 6,
+              "magic_numbers": 20,
+              "ratio": 0.2857142857142857
+            },
+            "indicator_6_complexity": {
+              "score": 10,
+              "max_func_length": 38,
+              "max_depth": 5
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.54,
+        "details": {
+          "score": 54,
+          "score_normalized": 0.54,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 6,
+              "layout_draw_calls": 10
+            }
+          },
+          "smoothness": {
+            "score": 15,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 1,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": false,
+              "returncode": 1,
+              "sampled_fps": 0.0
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 0,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 8,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 0,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 10
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": "chmark\\data\\raw\\20260408_203425\\maze_runner_qwen.qwen3-coder-next.py\", line 176, in run\n    self.check_win()\n    ~~~~~~~~~~~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\maze_runner_qwen.qwen3-coder-next.py\", line 200, in check_win\n    player_grid_x = int((self.player.x + self.player.size // 2) // self.maze.cell_size)\n                                                                   ^^^^^^^^^^^^^^^^^^^\nAttributeError: 'Maze' object has no attribute 'cell_size'\n"
+          },
+          "reason": "visual:25/25 | smoothness:15/35 | balance:6/20 | audio_animation:8/20"
+        }
+      },
+      "total_score": 0.48400000000000004,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "pong",
+    "difficulty": "easy",
+    "model": "amazon.nova-pro-v1:0",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\pong_amazon.nova-pro-v1_0.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.59,
+        "details": {
+          "score": 59,
+          "score_normalized": 0.59,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 9,
+            "reuse": 20,
+            "naming": 15,
+            "comments": 0,
+            "constants": 0,
+            "complexity": 15
+          },
+          "category_scores": {
+            "structure": 29,
+            "readability": 15,
+            "maintainability": 15
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 9,
+              "num_functions": 4,
+              "num_classes": 0,
+              "responsibility_hits": 2,
+              "function_scale_score": 7,
+              "class_structure_score": 0,
+              "responsibility_score": 2
+            },
+            "indicator_2_reuse": {
+              "score": 20,
+              "duplicate_ratio": 0.07894736842105263,
+              "duplicated_lines": 6,
+              "effective_lines": 76,
+              "reused_func_count": 1,
+              "base_score": 20,
+              "bonus": 2
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 28,
+              "good_names": 28,
+              "ratio": 1.0
+            },
+            "indicator_4_comments": {
+              "score": 0,
+              "comment_lines": 0,
+              "hash_comment_lines": 0,
+              "docstring_lines": 0,
+              "total_lines": 88,
+              "ratio": 0.0
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 0,
+              "magic_numbers": 39,
+              "ratio": 0.0
+            },
+            "indicator_6_complexity": {
+              "score": 15,
+              "max_func_length": 14,
+              "max_depth": 1
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.89,
+        "details": {
+          "score": 89,
+          "score_normalized": 0.89,
+          "visual": {
+            "score": 20,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 0,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 2,
+              "layout_draw_calls": 5
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 20,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 1,
+              "has_progressive_difficulty": 1,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 5
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:20/25 | smoothness:35/35 | balance:20/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.7965,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "pong",
+    "difficulty": "easy",
+    "model": "deepseek.v3.2",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\pong_deepseek.v3.2.py",
+    "scores": {
+      "d1_executability": {
+        "score": 0,
+        "details": {
+          "score": 0,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 0,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 0
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "v3.2.py\", line 253, in main\n    game = PongGame()\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\pong_deepseek.v3.2.py\", line 99, in __init__\n    self.reset_game_state()\n    ~~~~~~~~~~~~~~~~~~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\pong_deepseek.v3.2.py\", line 110, in reset_game_state\n    self.reset_positions(who = 0)\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\nTypeError: PongGame.reset_positions() got an unexpected keyword argument 'who'\n",
+            "env_notice": ""
+          },
+          "reason": "2. 短时间运行不稳定，程序在 3~5 秒内异常退出或崩溃。 | 6. 进程可控性不足，存在不可控循环或资源占用风险。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.67,
+        "details": {
+          "score": 67,
+          "score_normalized": 0.67,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 17,
+            "reuse": 20,
+            "naming": 15,
+            "comments": 10,
+            "constants": 0,
+            "complexity": 5
+          },
+          "category_scores": {
+            "structure": 37,
+            "readability": 25,
+            "maintainability": 5
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 17,
+              "num_functions": 22,
+              "num_classes": 3,
+              "responsibility_hits": 4,
+              "function_scale_score": 8,
+              "class_structure_score": 5,
+              "responsibility_score": 4
+            },
+            "indicator_2_reuse": {
+              "score": 20,
+              "duplicate_ratio": 0.06701030927835051,
+              "duplicated_lines": 13,
+              "effective_lines": 194,
+              "reused_func_count": 0,
+              "base_score": 20,
+              "bonus": 0
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 51,
+              "good_names": 48,
+              "ratio": 0.9411764705882353
+            },
+            "indicator_4_comments": {
+              "score": 10,
+              "comment_lines": 20,
+              "hash_comment_lines": 20,
+              "docstring_lines": 0,
+              "total_lines": 258,
+              "ratio": 0.07751937984496124
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 1,
+              "magic_numbers": 82,
+              "ratio": 0.012048192771084338
+            },
+            "indicator_6_complexity": {
+              "score": 5,
+              "max_func_length": 52,
+              "max_depth": 5
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.5,
+        "details": {
+          "score": 50,
+          "score_normalized": 0.5,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 5,
+              "layout_draw_calls": 7
+            }
+          },
+          "smoothness": {
+            "score": 5,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 1,
+              "busy_loop_risk": 1
+            },
+            "details": {
+              "timed_out": false,
+              "returncode": 1,
+              "sampled_fps": 0.0
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 0,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 7
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": "v3.2.py\", line 253, in main\n    game = PongGame()\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\pong_deepseek.v3.2.py\", line 99, in __init__\n    self.reset_game_state()\n    ~~~~~~~~~~~~~~~~~~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\pong_deepseek.v3.2.py\", line 110, in reset_game_state\n    self.reset_positions(who = 0)\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\nTypeError: PongGame.reset_positions() got an unexpected keyword argument 'who'\n"
+          },
+          "reason": "visual:25/25 | smoothness:5/35 | balance:6/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.454,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "pong",
+    "difficulty": "easy",
+    "model": "qwen.qwen3-coder-next",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\pong_qwen.qwen3-coder-next.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.77,
+        "details": {
+          "score": 77,
+          "score_normalized": 0.77,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 12,
+            "reuse": 20,
+            "naming": 15,
+            "comments": 15,
+            "constants": 0,
+            "complexity": 15
+          },
+          "category_scores": {
+            "structure": 32,
+            "readability": 30,
+            "maintainability": 15
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 12,
+              "num_functions": 8,
+              "num_classes": 2,
+              "responsibility_hits": 2,
+              "function_scale_score": 7,
+              "class_structure_score": 3,
+              "responsibility_score": 2
+            },
+            "indicator_2_reuse": {
+              "score": 20,
+              "duplicate_ratio": 0.08130081300813008,
+              "duplicated_lines": 10,
+              "effective_lines": 123,
+              "reused_func_count": 0,
+              "base_score": 20,
+              "bonus": 0
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 42,
+              "good_names": 39,
+              "ratio": 0.9285714285714286
+            },
+            "indicator_4_comments": {
+              "score": 15,
+              "comment_lines": 25,
+              "hash_comment_lines": 25,
+              "docstring_lines": 0,
+              "total_lines": 179,
+              "ratio": 0.13966480446927373
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 3,
+              "magic_numbers": 54,
+              "ratio": 0.05454545454545454
+            },
+            "indicator_6_complexity": {
+              "score": 15,
+              "max_func_length": 7,
+              "max_depth": 1
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.8,
+        "details": {
+          "score": 80,
+          "score_normalized": 0.8,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 4,
+              "layout_draw_calls": 7
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 0,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 7
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:25/25 | smoothness:35/35 | balance:6/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.819,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "breakout",
+    "difficulty": "medium",
+    "model": "amazon.nova-pro-v1:0",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\breakout_amazon.nova-pro-v1_0.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.47,
+        "details": {
+          "score": 47,
+          "score_normalized": 0.47,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 9,
+            "reuse": 8,
+            "naming": 15,
+            "comments": 0,
+            "constants": 0,
+            "complexity": 15
+          },
+          "category_scores": {
+            "structure": 17,
+            "readability": 15,
+            "maintainability": 15
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 9,
+              "num_functions": 5,
+              "num_classes": 0,
+              "responsibility_hits": 2,
+              "function_scale_score": 7,
+              "class_structure_score": 0,
+              "responsibility_score": 2
+            },
+            "indicator_2_reuse": {
+              "score": 8,
+              "duplicate_ratio": 0.28688524590163933,
+              "duplicated_lines": 35,
+              "effective_lines": 122,
+              "reused_func_count": 0,
+              "base_score": 8,
+              "bonus": 0
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 29,
+              "good_names": 28,
+              "ratio": 0.9655172413793104
+            },
+            "indicator_4_comments": {
+              "score": 0,
+              "comment_lines": 2,
+              "hash_comment_lines": 2,
+              "docstring_lines": 0,
+              "total_lines": 144,
+              "ratio": 0.013888888888888888
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 0,
+              "magic_numbers": 67,
+              "ratio": 0.0
+            },
+            "indicator_6_complexity": {
+              "score": 15,
+              "max_func_length": 26,
+              "max_depth": 4
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.8,
+        "details": {
+          "score": 80,
+          "score_normalized": 0.8,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 4,
+              "layout_draw_calls": 7
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 12,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 1,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 8,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 0,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 7
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:25/25 | smoothness:35/35 | balance:12/20 | audio_animation:8/20"
+        }
+      },
+      "total_score": 0.7589999999999999,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "breakout",
+    "difficulty": "medium",
+    "model": "deepseek.v3.2",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\breakout_deepseek.v3.2.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.69,
+        "details": {
+          "score": 69,
+          "score_normalized": 0.69,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 19,
+            "reuse": 15,
+            "naming": 15,
+            "comments": 10,
+            "constants": 0,
+            "complexity": 10
+          },
+          "category_scores": {
+            "structure": 34,
+            "readability": 25,
+            "maintainability": 10
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 19,
+              "num_functions": 20,
+              "num_classes": 4,
+              "responsibility_hits": 4,
+              "function_scale_score": 10,
+              "class_structure_score": 5,
+              "responsibility_score": 4
+            },
+            "indicator_2_reuse": {
+              "score": 15,
+              "duplicate_ratio": 0.11827956989247312,
+              "duplicated_lines": 22,
+              "effective_lines": 186,
+              "reused_func_count": 0,
+              "base_score": 15,
+              "bonus": 0
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 62,
+              "good_names": 60,
+              "ratio": 0.967741935483871
+            },
+            "indicator_4_comments": {
+              "score": 10,
+              "comment_lines": 21,
+              "hash_comment_lines": 21,
+              "docstring_lines": 0,
+              "total_lines": 258,
+              "ratio": 0.08139534883720931
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 5,
+              "magic_numbers": 68,
+              "ratio": 0.07246376811594203
+            },
+            "indicator_6_complexity": {
+              "score": 10,
+              "max_func_length": 28,
+              "max_depth": 6
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.8,
+        "details": {
+          "score": 80,
+          "score_normalized": 0.8,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 8,
+              "layout_draw_calls": 8
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 0,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 8
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:25/25 | smoothness:35/35 | balance:6/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.8029999999999999,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "tetris",
+    "difficulty": "medium",
+    "model": "amazon.nova-pro-v1:0",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\tetris_amazon.nova-pro-v1_0.py",
+    "scores": {
+      "d1_executability": {
+        "score": 0,
+        "details": {
+          "score": 0,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 0,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 0
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": ", in run_path\n  File \"<frozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\tetris_amazon.nova-pro-v1_0.py\", line 147, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\tetris_amazon.nova-pro-v1_0.py\", line 137, in main\n    for x, cell in enumerate(row):\n                   ~~~~~~~~~^^^^^\nTypeError: 'int' object is not iterable\n",
+            "env_notice": ""
+          },
+          "reason": "2. 短时间运行不稳定，程序在 3~5 秒内异常退出或崩溃。 | 6. 进程可控性不足，存在不可控循环或资源占用风险。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.5,
+        "details": {
+          "score": 50,
+          "score_normalized": 0.5,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 13,
+            "reuse": 17,
+            "naming": 15,
+            "comments": 0,
+            "constants": 0,
+            "complexity": 5
+          },
+          "category_scores": {
+            "structure": 30,
+            "readability": 15,
+            "maintainability": 5
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 13,
+              "num_functions": 9,
+              "num_classes": 1,
+              "responsibility_hits": 1,
+              "function_scale_score": 10,
+              "class_structure_score": 3,
+              "responsibility_score": 0
+            },
+            "indicator_2_reuse": {
+              "score": 17,
+              "duplicate_ratio": 0.10483870967741936,
+              "duplicated_lines": 13,
+              "effective_lines": 124,
+              "reused_func_count": 1,
+              "base_score": 15,
+              "bonus": 2
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 44,
+              "good_names": 41,
+              "ratio": 0.9318181818181818
+            },
+            "indicator_4_comments": {
+              "score": 0,
+              "comment_lines": 2,
+              "hash_comment_lines": 2,
+              "docstring_lines": 0,
+              "total_lines": 147,
+              "ratio": 0.013605442176870748
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 3,
+              "magic_numbers": 23,
+              "ratio": 0.125
+            },
+            "indicator_6_complexity": {
+              "score": 5,
+              "max_func_length": 62,
+              "max_depth": 5
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.42,
+        "details": {
+          "score": 42,
+          "score_normalized": 0.42,
+          "visual": {
+            "score": 15,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 0,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 10,
+              "layout_draw_calls": 2
+            }
+          },
+          "smoothness": {
+            "score": 15,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 1,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": false,
+              "returncode": 1,
+              "sampled_fps": 1.4869247274095243
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 1,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 0
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 0,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 2
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ", in run_path\n  File \"<frozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\tetris_amazon.nova-pro-v1_0.py\", line 147, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\tetris_amazon.nova-pro-v1_0.py\", line 137, in main\n    for x, cell in enumerate(row):\n                   ~~~~~~~~~^^^^^\nTypeError: 'int' object is not iterable\n"
+          },
+          "reason": "visual:15/25 | smoothness:15/35 | balance:6/20 | audio_animation:6/20"
+        }
+      },
+      "total_score": 0.408,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "tetris",
+    "difficulty": "medium",
+    "model": "deepseek.v3.2",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\tetris_deepseek.v3.2.py",
+    "scores": {
+      "d1_executability": {
+        "score": 0,
+        "details": {
+          "score": 0,
+          "indicators": {
+            "python_syntax_correct": 0,
+            "short_runtime_stable": 0,
+            "dependency_initialization_complete": 0,
+            "window_creation": 0,
+            "event_handling_mechanism": 0,
+            "process_controllability": 0
+          },
+          "reason": "1. Python 语法不正确，代码无法被解释器解析；2~6 指标未执行。",
+          "runtime": {
+            "file_found": true,
+            "pygame_available": true,
+            "env_notice": ""
+          }
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.0,
+        "details": {
+          "score": 0,
+          "score_normalized": 0.0,
+          "reason": "Python 语法错误，无法进行代码质量评估。",
+          "indicator_scores": {
+            "modularity": 0,
+            "reuse": 0,
+            "naming": 0,
+            "comments": 0,
+            "constants": 0,
+            "complexity": 0
+          },
+          "category_scores": {
+            "structure": 0,
+            "readability": 0,
+            "maintainability": 0
+          },
+          "details": {}
+        }
+      },
+      "d4_ux": {
+        "score": 0.0,
+        "details": {
+          "score": 0,
+          "score_normalized": 0.0,
+          "reason": "Python 语法错误，无法进行维度4评估。",
+          "visual": {
+            "score": 0,
+            "max_score": 25,
+            "indicators": {},
+            "details": {}
+          },
+          "smoothness": {
+            "score": 0,
+            "max_score": 35,
+            "indicators": {},
+            "details": {}
+          },
+          "balance": {
+            "score": 0,
+            "max_score": 20,
+            "indicators": {},
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 0,
+            "max_score": 20,
+            "indicators": {},
+            "details": {}
+          },
+          "runtime": {
+            "file_found": true,
+            "syntax_ok": false
+          }
+        }
+      },
+      "total_score": 0.24499999999999997,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "tetris",
+    "difficulty": "medium",
+    "model": "qwen.qwen3-coder-next",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\tetris_qwen.qwen3-coder-next.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.55,
+        "details": {
+          "score": 55,
+          "score_normalized": 0.55,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 13,
+            "reuse": 17,
+            "naming": 15,
+            "comments": 10,
+            "constants": 0,
+            "complexity": 0
+          },
+          "category_scores": {
+            "structure": 30,
+            "readability": 25,
+            "maintainability": 0
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 13,
+              "num_functions": 9,
+              "num_classes": 1,
+              "responsibility_hits": 1,
+              "function_scale_score": 10,
+              "class_structure_score": 3,
+              "responsibility_score": 0
+            },
+            "indicator_2_reuse": {
+              "score": 17,
+              "duplicate_ratio": 0.15568862275449102,
+              "duplicated_lines": 26,
+              "effective_lines": 167,
+              "reused_func_count": 3,
+              "base_score": 15,
+              "bonus": 2
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 55,
+              "good_names": 52,
+              "ratio": 0.9454545454545454
+            },
+            "indicator_4_comments": {
+              "score": 10,
+              "comment_lines": 18,
+              "hash_comment_lines": 18,
+              "docstring_lines": 0,
+              "total_lines": 221,
+              "ratio": 0.08144796380090498
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 3,
+              "magic_numbers": 39,
+              "ratio": 0.075
+            },
+            "indicator_6_complexity": {
+              "score": 0,
+              "max_func_length": 97,
+              "max_depth": 8
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.86,
+        "details": {
+          "score": 86,
+          "score_normalized": 0.86,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 10,
+              "layout_draw_calls": 5
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 12,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 1,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 5
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:25/25 | smoothness:35/35 | balance:12/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.7839999999999999,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "space_invaders",
+    "difficulty": "medium",
+    "model": "amazon.nova-pro-v1:0",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\space_invaders_amazon.nova-pro-v1_0.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.59,
+        "details": {
+          "score": 59,
+          "score_normalized": 0.59,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 9,
+            "reuse": 20,
+            "naming": 15,
+            "comments": 0,
+            "constants": 0,
+            "complexity": 15
+          },
+          "category_scores": {
+            "structure": 29,
+            "readability": 15,
+            "maintainability": 15
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 9,
+              "num_functions": 6,
+              "num_classes": 0,
+              "responsibility_hits": 2,
+              "function_scale_score": 7,
+              "class_structure_score": 0,
+              "responsibility_score": 2
+            },
+            "indicator_2_reuse": {
+              "score": 20,
+              "duplicate_ratio": 0.0761904761904762,
+              "duplicated_lines": 8,
+              "effective_lines": 105,
+              "reused_func_count": 1,
+              "base_score": 20,
+              "bonus": 2
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 38,
+              "good_names": 34,
+              "ratio": 0.8947368421052632
+            },
+            "indicator_4_comments": {
+              "score": 0,
+              "comment_lines": 0,
+              "hash_comment_lines": 0,
+              "docstring_lines": 0,
+              "total_lines": 127,
+              "ratio": 0.0
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 0,
+              "magic_numbers": 57,
+              "ratio": 0.0
+            },
+            "indicator_6_complexity": {
+              "score": 15,
+              "max_func_length": 5,
+              "max_depth": 1
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.54,
+        "details": {
+          "score": 54,
+          "score_normalized": 0.54,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 5,
+              "layout_draw_calls": 5
+            }
+          },
+          "smoothness": {
+            "score": 15,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 0,
+              "has_tick_fps_limit": 0,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 0,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 0,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 0
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 5
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:25/25 | smoothness:15/35 | balance:0/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.7439999999999999,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "space_invaders",
+    "difficulty": "medium",
+    "model": "deepseek.v3.2",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\space_invaders_deepseek.v3.2.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.62,
+        "details": {
+          "score": 62,
+          "score_normalized": 0.62,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 17,
+            "reuse": 15,
+            "naming": 15,
+            "comments": 5,
+            "constants": 0,
+            "complexity": 10
+          },
+          "category_scores": {
+            "structure": 32,
+            "readability": 20,
+            "maintainability": 10
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 17,
+              "num_functions": 17,
+              "num_classes": 3,
+              "responsibility_hits": 3,
+              "function_scale_score": 10,
+              "class_structure_score": 5,
+              "responsibility_score": 2
+            },
+            "indicator_2_reuse": {
+              "score": 15,
+              "duplicate_ratio": 0.12234042553191489,
+              "duplicated_lines": 23,
+              "effective_lines": 188,
+              "reused_func_count": 0,
+              "base_score": 15,
+              "bonus": 0
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 46,
+              "good_names": 44,
+              "ratio": 0.9565217391304348
+            },
+            "indicator_4_comments": {
+              "score": 5,
+              "comment_lines": 11,
+              "hash_comment_lines": 11,
+              "docstring_lines": 0,
+              "total_lines": 230,
+              "ratio": 0.04782608695652174
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 0,
+              "magic_numbers": 68,
+              "ratio": 0.0
+            },
+            "indicator_6_complexity": {
+              "score": 10,
+              "max_func_length": 27,
+              "max_depth": 5
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.8,
+        "details": {
+          "score": 80,
+          "score_normalized": 0.8,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 6,
+              "layout_draw_calls": 10
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 0,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 10
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:25/25 | smoothness:35/35 | balance:6/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.7889999999999999,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "space_invaders",
+    "difficulty": "medium",
+    "model": "qwen.qwen3-coder-next",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\space_invaders_qwen.qwen3-coder-next.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.69,
+        "details": {
+          "score": 69,
+          "score_normalized": 0.69,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 17,
+            "reuse": 17,
+            "naming": 15,
+            "comments": 15,
+            "constants": 0,
+            "complexity": 5
+          },
+          "category_scores": {
+            "structure": 34,
+            "readability": 30,
+            "maintainability": 5
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 17,
+              "num_functions": 16,
+              "num_classes": 4,
+              "responsibility_hits": 3,
+              "function_scale_score": 10,
+              "class_structure_score": 5,
+              "responsibility_score": 2
+            },
+            "indicator_2_reuse": {
+              "score": 17,
+              "duplicate_ratio": 0.18324607329842932,
+              "duplicated_lines": 35,
+              "effective_lines": 191,
+              "reused_func_count": 1,
+              "base_score": 15,
+              "bonus": 2
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 60,
+              "good_names": 58,
+              "ratio": 0.9666666666666667
+            },
+            "indicator_4_comments": {
+              "score": 15,
+              "comment_lines": 34,
+              "hash_comment_lines": 34,
+              "docstring_lines": 0,
+              "total_lines": 274,
+              "ratio": 0.12408759124087591
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 5,
+              "magic_numbers": 45,
+              "ratio": 0.10869565217391304
+            },
+            "indicator_6_complexity": {
+              "score": 5,
+              "max_func_length": 82,
+              "max_depth": 4
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.86,
+        "details": {
+          "score": 86,
+          "score_normalized": 0.86,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 5,
+              "layout_draw_calls": 10
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": true,
+              "returncode": 1,
+              "sampled_fps": null
+            }
+          },
+          "balance": {
+            "score": 12,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 1,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 10
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": true,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": ""
+          },
+          "reason": "visual:25/25 | smoothness:35/35 | balance:12/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.8119999999999999,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "platformer",
+    "difficulty": "hard",
+    "model": "amazon.nova-pro-v1:0",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\platformer_amazon.nova-pro-v1_0.py",
+    "scores": {
+      "d1_executability": {
+        "score": 0,
+        "details": {
+          "score": 0,
+          "indicators": {
+            "python_syntax_correct": 0,
+            "short_runtime_stable": 0,
+            "dependency_initialization_complete": 0,
+            "window_creation": 0,
+            "event_handling_mechanism": 0,
+            "process_controllability": 0
+          },
+          "reason": "1. Python 语法不正确，代码无法被解释器解析；2~6 指标未执行。",
+          "runtime": {
+            "file_found": true,
+            "pygame_available": true,
+            "env_notice": ""
+          }
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.0,
+        "details": {
+          "score": 0,
+          "score_normalized": 0.0,
+          "reason": "Python 语法错误，无法进行代码质量评估。",
+          "indicator_scores": {
+            "modularity": 0,
+            "reuse": 0,
+            "naming": 0,
+            "comments": 0,
+            "constants": 0,
+            "complexity": 0
+          },
+          "category_scores": {
+            "structure": 0,
+            "readability": 0,
+            "maintainability": 0
+          },
+          "details": {}
+        }
+      },
+      "d4_ux": {
+        "score": 0.0,
+        "details": {
+          "score": 0,
+          "score_normalized": 0.0,
+          "reason": "Python 语法错误，无法进行维度4评估。",
+          "visual": {
+            "score": 0,
+            "max_score": 25,
+            "indicators": {},
+            "details": {}
+          },
+          "smoothness": {
+            "score": 0,
+            "max_score": 35,
+            "indicators": {},
+            "details": {}
+          },
+          "balance": {
+            "score": 0,
+            "max_score": 20,
+            "indicators": {},
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 0,
+            "max_score": 20,
+            "indicators": {},
+            "details": {}
+          },
+          "runtime": {
+            "file_found": true,
+            "syntax_ok": false
+          }
+        }
+      },
+      "total_score": 0.24499999999999997,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "platformer",
+    "difficulty": "hard",
+    "model": "deepseek.v3.2",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\platformer_deepseek.v3.2.py",
+    "scores": {
+      "d1_executability": {
+        "score": 1,
+        "details": {
+          "score": 1,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 1,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 1
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 0,
+            "pygame_available": true,
+            "diagnosis": "normal_exit",
+            "window_created_marker": false,
+            "stderr_tail": "",
+            "env_notice": ""
+          },
+          "reason": "全部通过：1~6 指标均满足。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.72,
+        "details": {
+          "score": 72,
+          "score_normalized": 0.72,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 17,
+            "reuse": 20,
+            "naming": 15,
+            "comments": 10,
+            "constants": 0,
+            "complexity": 10
+          },
+          "category_scores": {
+            "structure": 37,
+            "readability": 25,
+            "maintainability": 10
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 17,
+              "num_functions": 12,
+              "num_classes": 5,
+              "responsibility_hits": 3,
+              "function_scale_score": 10,
+              "class_structure_score": 5,
+              "responsibility_score": 2
+            },
+            "indicator_2_reuse": {
+              "score": 20,
+              "duplicate_ratio": 0.05303030303030303,
+              "duplicated_lines": 7,
+              "effective_lines": 132,
+              "reused_func_count": 0,
+              "base_score": 20,
+              "bonus": 0
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 42,
+              "good_names": 36,
+              "ratio": 0.8571428571428571
+            },
+            "indicator_4_comments": {
+              "score": 10,
+              "comment_lines": 11,
+              "hash_comment_lines": 11,
+              "docstring_lines": 0,
+              "total_lines": 170,
+              "ratio": 0.06470588235294118
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 2,
+              "magic_numbers": 59,
+              "ratio": 0.03333333333333333
+            },
+            "indicator_6_complexity": {
+              "score": 10,
+              "max_func_length": 38,
+              "max_depth": 5
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.65,
+        "details": {
+          "score": 65,
+          "score_normalized": 0.65,
+          "visual": {
+            "score": 10,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 0,
+              "has_layout_structure": 0
+            },
+            "details": {
+              "rgb_tuple_count": 9,
+              "layout_draw_calls": 1
+            }
+          },
+          "smoothness": {
+            "score": 35,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 0,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": false,
+              "returncode": 0,
+              "sampled_fps": 0.0
+            }
+          },
+          "balance": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 1,
+              "has_progressive_difficulty": 1,
+              "has_protection_or_recovery": 0
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 0,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 1
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 0,
+            "window_created_marker": false,
+            "stderr_tail": ""
+          },
+          "reason": "visual:10/25 | smoothness:35/35 | balance:14/20 | audio_animation:6/20"
+        }
+      },
+      "total_score": 0.7865,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "platformer",
+    "difficulty": "hard",
+    "model": "qwen.qwen3-coder-next",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\platformer_qwen.qwen3-coder-next.py",
+    "scores": {
+      "d1_executability": {
+        "score": 0,
+        "details": {
+          "score": 0,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 0,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 0
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "esktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\platformer_qwen.qwen3-coder-next.py\", line 461, in main\n    game.draw_ui()\n    ~~~~~~~~~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\platformer_qwen.qwen3-coder-next.py\", line 380, in draw_ui\n    score_text = small_font.render(\"Score: \" + str(self.player.score + self.score), True, WHITE)\n                                                   ^^^^^^^^^^^^^^^^^\nAttributeError: 'Player' object has no attribute 'score'\n",
+            "env_notice": ""
+          },
+          "reason": "2. 短时间运行不稳定，程序在 3~5 秒内异常退出或崩溃。 | 6. 进程可控性不足，存在不可控循环或资源占用风险。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.6,
+        "details": {
+          "score": 60,
+          "score_normalized": 0.6,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 15,
+            "reuse": 15,
+            "naming": 15,
+            "comments": 15,
+            "constants": 0,
+            "complexity": 0
+          },
+          "category_scores": {
+            "structure": 30,
+            "readability": 30,
+            "maintainability": 0
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 15,
+              "num_functions": 22,
+              "num_classes": 6,
+              "responsibility_hits": 3,
+              "function_scale_score": 8,
+              "class_structure_score": 5,
+              "responsibility_score": 2
+            },
+            "indicator_2_reuse": {
+              "score": 15,
+              "duplicate_ratio": 0.15625,
+              "duplicated_lines": 55,
+              "effective_lines": 352,
+              "reused_func_count": 0,
+              "base_score": 15,
+              "bonus": 0
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 70,
+              "good_names": 68,
+              "ratio": 0.9714285714285714
+            },
+            "indicator_4_comments": {
+              "score": 15,
+              "comment_lines": 60,
+              "hash_comment_lines": 60,
+              "docstring_lines": 0,
+              "total_lines": 475,
+              "ratio": 0.12631578947368421
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 10,
+              "magic_numbers": 188,
+              "ratio": 0.05291005291005291
+            },
+            "indicator_6_complexity": {
+              "score": 0,
+              "max_func_length": 89,
+              "max_depth": 7
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.66,
+        "details": {
+          "score": 66,
+          "score_normalized": 0.66,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 10,
+              "layout_draw_calls": 24
+            }
+          },
+          "smoothness": {
+            "score": 15,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 1,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": false,
+              "returncode": 1,
+              "sampled_fps": 0.0
+            }
+          },
+          "balance": {
+            "score": 12,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 1,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 24
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": "esktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\platformer_qwen.qwen3-coder-next.py\", line 461, in main\n    game.draw_ui()\n    ~~~~~~~~~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\platformer_qwen.qwen3-coder-next.py\", line 380, in draw_ui\n    score_text = small_font.render(\"Score: \" + str(self.player.score + self.score), True, WHITE)\n                                                   ^^^^^^^^^^^^^^^^^\nAttributeError: 'Player' object has no attribute 'score'\n"
+          },
+          "reason": "visual:25/25 | smoothness:15/35 | balance:12/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.46399999999999997,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "roguelike_dungeon",
+    "difficulty": "hard",
+    "model": "amazon.nova-pro-v1:0",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_amazon.nova-pro-v1_0.py",
+    "scores": {
+      "d1_executability": {
+        "score": 0,
+        "details": {
+          "score": 0,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 0,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 0
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "25\\roguelike_dungeon_amazon.nova-pro-v1_0.py\", line 131, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_amazon.nova-pro-v1_0.py\", line 121, in main\n    draw_map(map, entities)\n    ~~~~~~~~^^^^^^^^^^^^^^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_amazon.nova-pro-v1_0.py\", line 77, in draw_map\n    if map[x][y] == '.':\n       ~~~~~~^^^\nIndexError: list index out of range\n",
+            "env_notice": ""
+          },
+          "reason": "2. 短时间运行不稳定，程序在 3~5 秒内异常退出或崩溃。 | 6. 进程可控性不足，存在不可控循环或资源占用风险。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.6,
+        "details": {
+          "score": 60,
+          "score_normalized": 0.6,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 15,
+            "reuse": 20,
+            "naming": 15,
+            "comments": 0,
+            "constants": 0,
+            "complexity": 10
+          },
+          "category_scores": {
+            "structure": 35,
+            "readability": 15,
+            "maintainability": 10
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 15,
+              "num_functions": 9,
+              "num_classes": 4,
+              "responsibility_hits": 1,
+              "function_scale_score": 10,
+              "class_structure_score": 5,
+              "responsibility_score": 0
+            },
+            "indicator_2_reuse": {
+              "score": 20,
+              "duplicate_ratio": 0.017241379310344827,
+              "duplicated_lines": 2,
+              "effective_lines": 116,
+              "reused_func_count": 0,
+              "base_score": 20,
+              "bonus": 0
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 47,
+              "good_names": 40,
+              "ratio": 0.851063829787234
+            },
+            "indicator_4_comments": {
+              "score": 0,
+              "comment_lines": 0,
+              "hash_comment_lines": 0,
+              "docstring_lines": 0,
+              "total_lines": 131,
+              "ratio": 0.0
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 0,
+              "magic_numbers": 60,
+              "ratio": 0.0
+            },
+            "indicator_6_complexity": {
+              "score": 10,
+              "max_func_length": 47,
+              "max_depth": 9
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.54,
+        "details": {
+          "score": 54,
+          "score_normalized": 0.54,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 6,
+              "layout_draw_calls": 4
+            }
+          },
+          "smoothness": {
+            "score": 15,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 1,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": false,
+              "returncode": 1,
+              "sampled_fps": 0.0
+            }
+          },
+          "balance": {
+            "score": 0,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 0,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 0
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 4
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": "25\\roguelike_dungeon_amazon.nova-pro-v1_0.py\", line 131, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_amazon.nova-pro-v1_0.py\", line 121, in main\n    draw_map(map, entities)\n    ~~~~~~~~^^^^^^^^^^^^^^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_amazon.nova-pro-v1_0.py\", line 77, in draw_map\n    if map[x][y] == '.':\n       ~~~~~~^^^\nIndexError: list index out of range\n"
+          },
+          "reason": "visual:25/25 | smoothness:15/35 | balance:0/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.446,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "roguelike_dungeon",
+    "difficulty": "hard",
+    "model": "deepseek.v3.2",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_deepseek.v3.2.py",
+    "scores": {
+      "d1_executability": {
+        "score": 0,
+        "details": {
+          "score": 0,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 0,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 0
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_deepseek.v3.2.py\", line 178, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_deepseek.v3.2.py\", line 103, in main\n    tiles, player_x, player_y = generate_level(map_w, map_h)\n                                ^^^^^^^^^^^^^^\nNameError: name 'generate_level' is not defined\n",
+            "env_notice": ""
+          },
+          "reason": "2. 短时间运行不稳定，程序在 3~5 秒内异常退出或崩溃。 | 6. 进程可控性不足，存在不可控循环或资源占用风险。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.6,
+        "details": {
+          "score": 60,
+          "score_normalized": 0.6,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 10,
+            "reuse": 20,
+            "naming": 15,
+            "comments": 10,
+            "constants": 0,
+            "complexity": 5
+          },
+          "category_scores": {
+            "structure": 30,
+            "readability": 25,
+            "maintainability": 5
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 10,
+              "num_functions": 5,
+              "num_classes": 1,
+              "responsibility_hits": 1,
+              "function_scale_score": 7,
+              "class_structure_score": 3,
+              "responsibility_score": 0
+            },
+            "indicator_2_reuse": {
+              "score": 20,
+              "duplicate_ratio": 0.02702702702702703,
+              "duplicated_lines": 4,
+              "effective_lines": 148,
+              "reused_func_count": 0,
+              "base_score": 20,
+              "bonus": 0
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 77,
+              "good_names": 74,
+              "ratio": 0.961038961038961
+            },
+            "indicator_4_comments": {
+              "score": 10,
+              "comment_lines": 11,
+              "hash_comment_lines": 11,
+              "docstring_lines": 0,
+              "total_lines": 178,
+              "ratio": 0.06179775280898876
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 2,
+              "magic_numbers": 115,
+              "ratio": 0.017241379310344827
+            },
+            "indicator_6_complexity": {
+              "score": 5,
+              "max_func_length": 78,
+              "max_depth": 6
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.6,
+        "details": {
+          "score": 60,
+          "score_normalized": 0.6,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 22,
+              "layout_draw_calls": 9
+            }
+          },
+          "smoothness": {
+            "score": 15,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 1,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": false,
+              "returncode": 1,
+              "sampled_fps": 0.0
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 1,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 0
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 9
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": "_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_deepseek.v3.2.py\", line 178, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_deepseek.v3.2.py\", line 103, in main\n    tiles, player_x, player_y = generate_level(map_w, map_h)\n                                ^^^^^^^^^^^^^^\nNameError: name 'generate_level' is not defined\n"
+          },
+          "reason": "visual:25/25 | smoothness:15/35 | balance:6/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.45499999999999996,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  },
+  {
+    "game": "roguelike_dungeon",
+    "difficulty": "hard",
+    "model": "qwen.qwen3-coder-next",
+    "provider": "bedrock",
+    "timestamp": "20260408_203425",
+    "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_qwen.qwen3-coder-next.py",
+    "scores": {
+      "d1_executability": {
+        "score": 0,
+        "details": {
+          "score": 0,
+          "indicators": {
+            "python_syntax_correct": 1,
+            "short_runtime_stable": 0,
+            "dependency_initialization_complete": 1,
+            "window_creation": 1,
+            "event_handling_mechanism": 1,
+            "process_controllability": 0
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "pygame_available": true,
+            "diagnosis": "window_created",
+            "window_created_marker": true,
+            "stderr_tail": "ozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_qwen.qwen3-coder-next.py\", line 460, in <module>\n    draw()\n    ~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_qwen.qwen3-coder-next.py\", line 365, in draw\n    screen, entity.color,\n            ^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'color'\n",
+            "env_notice": ""
+          },
+          "reason": "2. 短时间运行不稳定，程序在 3~5 秒内异常退出或崩溃。 | 6. 进程可控性不足，存在不可控循环或资源占用风险。"
+        }
+      },
+      "d2_functionality": {
+        "score": 0.7,
+        "details": "TODO: 实现具体游戏测试"
+      },
+      "d3_code_quality": {
+        "score": 0.57,
+        "details": {
+          "score": 57,
+          "score_normalized": 0.57,
+          "reason": "评估完成。",
+          "indicator_scores": {
+            "modularity": 15,
+            "reuse": 17,
+            "naming": 15,
+            "comments": 10,
+            "constants": 0,
+            "complexity": 0
+          },
+          "category_scores": {
+            "structure": 32,
+            "readability": 25,
+            "maintainability": 0
+          },
+          "details": {
+            "indicator_1_modularity": {
+              "score": 15,
+              "num_functions": 22,
+              "num_classes": 5,
+              "responsibility_hits": 2,
+              "function_scale_score": 8,
+              "class_structure_score": 5,
+              "responsibility_score": 2
+            },
+            "indicator_2_reuse": {
+              "score": 17,
+              "duplicate_ratio": 0.10249307479224377,
+              "duplicated_lines": 37,
+              "effective_lines": 361,
+              "reused_func_count": 1,
+              "base_score": 15,
+              "bonus": 2
+            },
+            "indicator_3_naming": {
+              "score": 15,
+              "total_names": 111,
+              "good_names": 102,
+              "ratio": 0.918918918918919
+            },
+            "indicator_4_comments": {
+              "score": 10,
+              "comment_lines": 28,
+              "hash_comment_lines": 28,
+              "docstring_lines": 0,
+              "total_lines": 464,
+              "ratio": 0.0603448275862069
+            },
+            "indicator_5_constants": {
+              "score": 0,
+              "constants_count": 4,
+              "magic_numbers": 101,
+              "ratio": 0.0392156862745098
+            },
+            "indicator_6_complexity": {
+              "score": 0,
+              "max_func_length": 102,
+              "max_depth": 5
+            }
+          }
+        }
+      },
+      "d4_ux": {
+        "score": 0.6,
+        "details": {
+          "score": 60,
+          "score_normalized": 0.6,
+          "visual": {
+            "score": 25,
+            "max_score": 25,
+            "indicators": {
+              "has_color_rendering": 1,
+              "multi_color_rgb_ge_3": 1,
+              "has_text_rendering": 1,
+              "has_layout_structure": 1
+            },
+            "details": {
+              "rgb_tuple_count": 15,
+              "layout_draw_calls": 8
+            }
+          },
+          "smoothness": {
+            "score": 15,
+            "max_score": 35,
+            "indicators": {
+              "has_main_loop": 1,
+              "has_event_handling": 1,
+              "has_clock_control": 1,
+              "has_tick_fps_limit": 1,
+              "runtime_crash": 1,
+              "busy_loop_risk": 0
+            },
+            "details": {
+              "timed_out": false,
+              "returncode": 1,
+              "sampled_fps": 1.545169953243157
+            }
+          },
+          "balance": {
+            "score": 6,
+            "max_score": 20,
+            "indicators": {
+              "has_parametric_difficulty": 0,
+              "has_progressive_difficulty": 0,
+              "has_protection_or_recovery": 1
+            },
+            "details": {}
+          },
+          "audio_animation": {
+            "score": 14,
+            "max_score": 20,
+            "indicators": {
+              "has_multiple_visual_objects": 1,
+              "has_animation_update": 1,
+              "has_sound_system": 0
+            },
+            "details": {
+              "draw_calls": 8
+            }
+          },
+          "runtime": {
+            "file_found": true,
+            "timed_out": false,
+            "returncode": 1,
+            "window_created_marker": true,
+            "stderr_tail": "ozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_qwen.qwen3-coder-next.py\", line 460, in <module>\n    draw()\n    ~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_qwen.qwen3-coder-next.py\", line 365, in draw\n    screen, entity.color,\n            ^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'color'\n"
+          },
+          "reason": "visual:25/25 | smoothness:15/35 | balance:6/20 | audio_animation:14/20"
+        }
+      },
+      "total_score": 0.44899999999999995,
+      "weights": {
+        "executability": 0.3,
+        "functionality": 0.35,
+        "code_quality": 0.2,
+        "ux": 0.15
+      }
+    }
+  }
+]

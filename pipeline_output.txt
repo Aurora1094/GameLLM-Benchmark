@@ -1,0 +1,57 @@
+============================================================
+GameLLM-Benchmark Pipeline 启动
+============================================================
+
+共 9 个游戏，3 个模型
+总计 27 个测试任务
+
+
+============================================================
+游戏: snake (easy)
+============================================================
+
+  模型: amazon.nova-pro-v1:0
+    → 调用 bedrock API...
+    → 代码已保存: snake_amazon.nova-pro-v1_0.py
+    → 开始评分...
+    [OK] 总分: 0.753
+      - D1 可执行性: 1.000
+      - D2 功能正确性: 0.700
+      - D3 代码质量: 0.440
+      - D4 用户体验: 0.800
+
+  模型: deepseek.v3.2
+    → 调用 bedrock API...
+    → 代码已保存: snake_deepseek.v3.2.py
+    → 开始评分...
+    [OK] 总分: 0.245
+      - D1 可执行性: 0.000
+      - D2 功能正确性: 0.700
+      - D3 代码质量: 0.000
+      - D4 用户体验: 0.000
+
+  模型: qwen.qwen3-coder-next
+    → 调用 bedrock API...
+    → 代码已保存: snake_qwen.qwen3-coder-next.py
+    → 开始评分...
+    [OK] 总分: 0.781
+      - D1 可执行性: 1.000
+      - D2 功能正确性: 0.700
+      - D3 代码质量: 0.700
+      - D4 用户体验: 0.640
+[SKIP] 跳过 breakout：prompt 文件不存在
+[SKIP] 跳过 flappy_bird：prompt 文件不存在
+[SKIP] 跳过 plane_shooter：prompt 文件不存在
+[SKIP] 跳过 tetris：prompt 文件不存在
+[SKIP] 跳过 sokoban：prompt 文件不存在
+[SKIP] 跳过 mario_level1：prompt 文件不存在
+[SKIP] 跳过 mario_level2：prompt 文件不存在
+[SKIP] 跳过 mario_level3：prompt 文件不存在
+
+============================================================
+Traceback (most recent call last):
+  File "c:\Users\19902\Desktop\GameLLM-Benchmark\run_pipeline.py", line 217, in <module>
+    main()
+  File "c:\Users\19902\Desktop\GameLLM-Benchmark\run_pipeline.py", line 209, in main
+    print(f"\u2713 测试完成！")
+UnicodeEncodeError: 'gbk' codec can't encode character '\u2713' in position 0: illegal multibyte sequence

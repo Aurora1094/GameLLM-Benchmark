@@ -1,0 +1,180 @@
+{
+  "game": "roguelike_dungeon",
+  "difficulty": "hard",
+  "model": "amazon.nova-pro-v1:0",
+  "provider": "bedrock",
+  "timestamp": "20260408_203425",
+  "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_amazon.nova-pro-v1_0.py",
+  "scores": {
+    "d1_executability": {
+      "score": 0,
+      "details": {
+        "score": 0,
+        "indicators": {
+          "python_syntax_correct": 1,
+          "short_runtime_stable": 0,
+          "dependency_initialization_complete": 1,
+          "window_creation": 1,
+          "event_handling_mechanism": 1,
+          "process_controllability": 0
+        },
+        "runtime": {
+          "file_found": true,
+          "timed_out": false,
+          "returncode": 1,
+          "pygame_available": true,
+          "diagnosis": "window_created",
+          "window_created_marker": true,
+          "stderr_tail": "25\\roguelike_dungeon_amazon.nova-pro-v1_0.py\", line 131, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_amazon.nova-pro-v1_0.py\", line 121, in main\n    draw_map(map, entities)\n    ~~~~~~~~^^^^^^^^^^^^^^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_amazon.nova-pro-v1_0.py\", line 77, in draw_map\n    if map[x][y] == '.':\n       ~~~~~~^^^\nIndexError: list index out of range\n",
+          "env_notice": ""
+        },
+        "reason": "2. 短时间运行不稳定，程序在 3~5 秒内异常退出或崩溃。 | 6. 进程可控性不足，存在不可控循环或资源占用风险。"
+      }
+    },
+    "d2_functionality": {
+      "score": 0.7,
+      "details": "TODO: 实现具体游戏测试"
+    },
+    "d3_code_quality": {
+      "score": 0.6,
+      "details": {
+        "score": 60,
+        "score_normalized": 0.6,
+        "reason": "评估完成。",
+        "indicator_scores": {
+          "modularity": 15,
+          "reuse": 20,
+          "naming": 15,
+          "comments": 0,
+          "constants": 0,
+          "complexity": 10
+        },
+        "category_scores": {
+          "structure": 35,
+          "readability": 15,
+          "maintainability": 10
+        },
+        "details": {
+          "indicator_1_modularity": {
+            "score": 15,
+            "num_functions": 9,
+            "num_classes": 4,
+            "responsibility_hits": 1,
+            "function_scale_score": 10,
+            "class_structure_score": 5,
+            "responsibility_score": 0
+          },
+          "indicator_2_reuse": {
+            "score": 20,
+            "duplicate_ratio": 0.017241379310344827,
+            "duplicated_lines": 2,
+            "effective_lines": 116,
+            "reused_func_count": 0,
+            "base_score": 20,
+            "bonus": 0
+          },
+          "indicator_3_naming": {
+            "score": 15,
+            "total_names": 47,
+            "good_names": 40,
+            "ratio": 0.851063829787234
+          },
+          "indicator_4_comments": {
+            "score": 0,
+            "comment_lines": 0,
+            "hash_comment_lines": 0,
+            "docstring_lines": 0,
+            "total_lines": 131,
+            "ratio": 0.0
+          },
+          "indicator_5_constants": {
+            "score": 0,
+            "constants_count": 0,
+            "magic_numbers": 60,
+            "ratio": 0.0
+          },
+          "indicator_6_complexity": {
+            "score": 10,
+            "max_func_length": 47,
+            "max_depth": 9
+          }
+        }
+      }
+    },
+    "d4_ux": {
+      "score": 0.54,
+      "details": {
+        "score": 54,
+        "score_normalized": 0.54,
+        "visual": {
+          "score": 25,
+          "max_score": 25,
+          "indicators": {
+            "has_color_rendering": 1,
+            "multi_color_rgb_ge_3": 1,
+            "has_text_rendering": 1,
+            "has_layout_structure": 1
+          },
+          "details": {
+            "rgb_tuple_count": 6,
+            "layout_draw_calls": 4
+          }
+        },
+        "smoothness": {
+          "score": 15,
+          "max_score": 35,
+          "indicators": {
+            "has_main_loop": 1,
+            "has_event_handling": 1,
+            "has_clock_control": 1,
+            "has_tick_fps_limit": 1,
+            "runtime_crash": 1,
+            "busy_loop_risk": 0
+          },
+          "details": {
+            "timed_out": false,
+            "returncode": 1,
+            "sampled_fps": 0.0
+          }
+        },
+        "balance": {
+          "score": 0,
+          "max_score": 20,
+          "indicators": {
+            "has_parametric_difficulty": 0,
+            "has_progressive_difficulty": 0,
+            "has_protection_or_recovery": 0
+          },
+          "details": {}
+        },
+        "audio_animation": {
+          "score": 14,
+          "max_score": 20,
+          "indicators": {
+            "has_multiple_visual_objects": 1,
+            "has_animation_update": 1,
+            "has_sound_system": 0
+          },
+          "details": {
+            "draw_calls": 4
+          }
+        },
+        "runtime": {
+          "file_found": true,
+          "timed_out": false,
+          "returncode": 1,
+          "window_created_marker": true,
+          "stderr_tail": "25\\roguelike_dungeon_amazon.nova-pro-v1_0.py\", line 131, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_amazon.nova-pro-v1_0.py\", line 121, in main\n    draw_map(map, entities)\n    ~~~~~~~~^^^^^^^^^^^^^^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\roguelike_dungeon_amazon.nova-pro-v1_0.py\", line 77, in draw_map\n    if map[x][y] == '.':\n       ~~~~~~^^^\nIndexError: list index out of range\n"
+        },
+        "reason": "visual:25/25 | smoothness:15/35 | balance:0/20 | audio_animation:14/20"
+      }
+    },
+    "total_score": 0.446,
+    "weights": {
+      "executability": 0.3,
+      "functionality": 0.35,
+      "code_quality": 0.2,
+      "ux": 0.15
+    }
+  }
+}

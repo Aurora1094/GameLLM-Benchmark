@@ -1,0 +1,99 @@
+{
+  "game": "platformer",
+  "difficulty": "hard",
+  "model": "amazon.nova-pro-v1:0",
+  "provider": "bedrock",
+  "timestamp": "20260408_203425",
+  "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\platformer_amazon.nova-pro-v1_0.py",
+  "scores": {
+    "d1_executability": {
+      "score": 0,
+      "details": {
+        "score": 0,
+        "indicators": {
+          "python_syntax_correct": 0,
+          "short_runtime_stable": 0,
+          "dependency_initialization_complete": 0,
+          "window_creation": 0,
+          "event_handling_mechanism": 0,
+          "process_controllability": 0
+        },
+        "reason": "1. Python 语法不正确，代码无法被解释器解析；2~6 指标未执行。",
+        "runtime": {
+          "file_found": true,
+          "pygame_available": true,
+          "env_notice": ""
+        }
+      }
+    },
+    "d2_functionality": {
+      "score": 0.7,
+      "details": "TODO: 实现具体游戏测试"
+    },
+    "d3_code_quality": {
+      "score": 0.0,
+      "details": {
+        "score": 0,
+        "score_normalized": 0.0,
+        "reason": "Python 语法错误，无法进行代码质量评估。",
+        "indicator_scores": {
+          "modularity": 0,
+          "reuse": 0,
+          "naming": 0,
+          "comments": 0,
+          "constants": 0,
+          "complexity": 0
+        },
+        "category_scores": {
+          "structure": 0,
+          "readability": 0,
+          "maintainability": 0
+        },
+        "details": {}
+      }
+    },
+    "d4_ux": {
+      "score": 0.0,
+      "details": {
+        "score": 0,
+        "score_normalized": 0.0,
+        "reason": "Python 语法错误，无法进行维度4评估。",
+        "visual": {
+          "score": 0,
+          "max_score": 25,
+          "indicators": {},
+          "details": {}
+        },
+        "smoothness": {
+          "score": 0,
+          "max_score": 35,
+          "indicators": {},
+          "details": {}
+        },
+        "balance": {
+          "score": 0,
+          "max_score": 20,
+          "indicators": {},
+          "details": {}
+        },
+        "audio_animation": {
+          "score": 0,
+          "max_score": 20,
+          "indicators": {},
+          "details": {}
+        },
+        "runtime": {
+          "file_found": true,
+          "syntax_ok": false
+        }
+      }
+    },
+    "total_score": 0.24499999999999997,
+    "weights": {
+      "executability": 0.3,
+      "functionality": 0.35,
+      "code_quality": 0.2,
+      "ux": 0.15
+    }
+  }
+}

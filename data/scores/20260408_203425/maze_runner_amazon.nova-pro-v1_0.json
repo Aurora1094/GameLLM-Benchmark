@@ -1,0 +1,180 @@
+{
+  "game": "maze_runner",
+  "difficulty": "easy",
+  "model": "amazon.nova-pro-v1:0",
+  "provider": "bedrock",
+  "timestamp": "20260408_203425",
+  "code_path": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\data\\raw\\20260408_203425\\maze_runner_amazon.nova-pro-v1_0.py",
+  "scores": {
+    "d1_executability": {
+      "score": 1,
+      "details": {
+        "score": 1,
+        "indicators": {
+          "python_syntax_correct": 1,
+          "short_runtime_stable": 1,
+          "dependency_initialization_complete": 1,
+          "window_creation": 1,
+          "event_handling_mechanism": 1,
+          "process_controllability": 1
+        },
+        "runtime": {
+          "file_found": true,
+          "timed_out": true,
+          "returncode": 1,
+          "pygame_available": true,
+          "diagnosis": "window_created",
+          "window_created_marker": true,
+          "stderr_tail": "",
+          "env_notice": ""
+        },
+        "reason": "全部通过：1~6 指标均满足。"
+      }
+    },
+    "d2_functionality": {
+      "score": 0.7,
+      "details": "TODO: 实现具体游戏测试"
+    },
+    "d3_code_quality": {
+      "score": 0.44,
+      "details": {
+        "score": 44,
+        "score_normalized": 0.44,
+        "reason": "评估完成。",
+        "indicator_scores": {
+          "modularity": 7,
+          "reuse": 17,
+          "naming": 15,
+          "comments": 0,
+          "constants": 0,
+          "complexity": 5
+        },
+        "category_scores": {
+          "structure": 24,
+          "readability": 15,
+          "maintainability": 5
+        },
+        "details": {
+          "indicator_1_modularity": {
+            "score": 7,
+            "num_functions": 5,
+            "num_classes": 0,
+            "responsibility_hits": 1,
+            "function_scale_score": 7,
+            "class_structure_score": 0,
+            "responsibility_score": 0
+          },
+          "indicator_2_reuse": {
+            "score": 17,
+            "duplicate_ratio": 0.14,
+            "duplicated_lines": 14,
+            "effective_lines": 100,
+            "reused_func_count": 1,
+            "base_score": 15,
+            "bonus": 2
+          },
+          "indicator_3_naming": {
+            "score": 15,
+            "total_names": 35,
+            "good_names": 32,
+            "ratio": 0.9142857142857143
+          },
+          "indicator_4_comments": {
+            "score": 0,
+            "comment_lines": 0,
+            "hash_comment_lines": 0,
+            "docstring_lines": 0,
+            "total_lines": 121,
+            "ratio": 0.0
+          },
+          "indicator_5_constants": {
+            "score": 0,
+            "constants_count": 0,
+            "magic_numbers": 22,
+            "ratio": 0.0
+          },
+          "indicator_6_complexity": {
+            "score": 5,
+            "max_func_length": 78,
+            "max_depth": 8
+          }
+        }
+      }
+    },
+    "d4_ux": {
+      "score": 0.8,
+      "details": {
+        "score": 80,
+        "score_normalized": 0.8,
+        "visual": {
+          "score": 25,
+          "max_score": 25,
+          "indicators": {
+            "has_color_rendering": 1,
+            "multi_color_rgb_ge_3": 1,
+            "has_text_rendering": 1,
+            "has_layout_structure": 1
+          },
+          "details": {
+            "rgb_tuple_count": 4,
+            "layout_draw_calls": 5
+          }
+        },
+        "smoothness": {
+          "score": 35,
+          "max_score": 35,
+          "indicators": {
+            "has_main_loop": 1,
+            "has_event_handling": 1,
+            "has_clock_control": 1,
+            "has_tick_fps_limit": 1,
+            "runtime_crash": 0,
+            "busy_loop_risk": 0
+          },
+          "details": {
+            "timed_out": true,
+            "returncode": 1,
+            "sampled_fps": null
+          }
+        },
+        "balance": {
+          "score": 6,
+          "max_score": 20,
+          "indicators": {
+            "has_parametric_difficulty": 0,
+            "has_progressive_difficulty": 0,
+            "has_protection_or_recovery": 1
+          },
+          "details": {}
+        },
+        "audio_animation": {
+          "score": 14,
+          "max_score": 20,
+          "indicators": {
+            "has_multiple_visual_objects": 1,
+            "has_animation_update": 1,
+            "has_sound_system": 0
+          },
+          "details": {
+            "draw_calls": 5
+          }
+        },
+        "runtime": {
+          "file_found": true,
+          "timed_out": true,
+          "returncode": 1,
+          "window_created_marker": true,
+          "stderr_tail": ""
+        },
+        "reason": "visual:25/25 | smoothness:35/35 | balance:6/20 | audio_animation:14/20"
+      }
+    },
+    "total_score": 0.7529999999999999,
+    "weights": {
+      "executability": 0.3,
+      "functionality": 0.35,
+      "code_quality": 0.2,
+      "ux": 0.15
+    }
+  }
+}
