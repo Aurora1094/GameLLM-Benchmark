@@ -4,6 +4,8 @@ import re
 from pathlib import Path
 from typing import Any
 
+from prompt_builder import load_checkpoints
+
 from .base import FunctionalityResult
 from .profiles import CRITERIA, GAME_PROFILES, GameProfile, StaticCheck, TestPort
 
@@ -29,10 +31,14 @@ def evaluate_profiled_functionality(
     code_path: Path | str,
     runtime_signals: dict[str, Any] | None = None,
     source_code: str | None = None,
+    spec_path: Path | str | None = None,
 ) -> FunctionalityResult | None:
     profile = GAME_PROFILES.get(game_id)
     if profile is None:
         return None
+    checkpoint_meta: dict[str, Any] | None = None
+    if spec_path is not None:
+        profile, checkpoint_meta = _apply_spec_checkpoint_contract(profile, spec_path)
 
     source = source_code if source_code is not None else Path(code_path).read_text(encoding="utf-8", errors="ignore")
     runtime = _normalize_runtime_signals(runtime_signals)
@@ -64,13 +70,66 @@ def evaluate_profiled_functionality(
                 "game_id": profile.game_id,
                 "display_name": profile.display_name,
                 "test_port_count": len(profile.test_ports),
+                "active_checkpoint_ids": [port.port_id for port in profile.test_ports],
             },
             "runtime_signals": runtime,
             "criteria": criteria_evidence,
             "review_required": review_required,
             "method": "profiled_test_ports_static_first_runtime_assisted",
+            "spec_checkpoints": checkpoint_meta,
         },
         specialized_items=port_results,
+    )
+
+
+def _apply_spec_checkpoint_contract(
+    profile: GameProfile,
+    spec_path: Path | str,
+) -> tuple[GameProfile, dict[str, Any]]:
+    checkpoints = load_checkpoints(spec_path)
+    recipe_by_id = {port.port_id: port for port in profile.test_ports}
+    missing_recipe = [checkpoint["id"] for checkpoint in checkpoints if checkpoint["id"] not in recipe_by_id]
+    if missing_recipe:
+        joined = ", ".join(missing_recipe)
+        raise ValueError(
+            f"D2 profile {profile.game_id} has no detection recipe for spec checkpoint id(s): {joined}"
+        )
+
+    active_ports: list[TestPort] = []
+    items: list[dict[str, Any]] = []
+    for order, checkpoint in enumerate(checkpoints, start=1):
+        base_port = recipe_by_id[checkpoint["id"]]
+        active_ports.append(
+            TestPort(
+                port_id=base_port.port_id,
+                name=base_port.name,
+                target=checkpoint["desc"],
+                criteria=base_port.criteria,
+                static_checks=base_port.static_checks,
+                runtime_keys=base_port.runtime_keys,
+            )
+        )
+        items.append(
+            {
+                "order": order,
+                "id": checkpoint["id"],
+                "desc": checkpoint["desc"],
+                "weight": checkpoint.get("weight", 1),
+            }
+        )
+
+    return (
+        GameProfile(
+            game_id=profile.game_id,
+            display_name=profile.display_name,
+            test_ports=tuple(active_ports),
+        ),
+        {
+            "source": str(Path(spec_path)),
+            "items": items,
+            "ids": [item["id"] for item in items],
+            "weights": {item["id"]: item["weight"] for item in items},
+        },
     )
 
 
@@ -291,4 +350,3 @@ def _criterion_runtime_support(
         "matched_keys": matched,
         "matched_ports": [],
     }
-

@@ -67,6 +67,7 @@ def evaluate_dimension2(
     game_id: str,
     code_path: Path | str,
     runtime_signals: dict[str, Any] | None = None,
+    spec_path: Path | str | None = None,
 ) -> FunctionalityResult:
     """Unified entry for dimension2.
 
@@ -79,6 +80,7 @@ def evaluate_dimension2(
         game_id=module_name or _normalize_game_id(game_id),
         code_path=code_path,
         runtime_signals=runtime_signals,
+        spec_path=spec_path,
     )
     if profile_result is not None:
         profile_result.evidence.setdefault(

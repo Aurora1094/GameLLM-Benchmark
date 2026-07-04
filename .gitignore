@@ -11,3 +11,4 @@ data/scores/*
 !data/scores/.gitkeep
 analysis/figures/*
 !analysis/figures/.gitkeep
+runs/
