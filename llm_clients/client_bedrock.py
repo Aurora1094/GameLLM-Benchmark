@@ -1,117 +1,164 @@
-"""AWS Bedrock API 客户端"""
-import os
+"""AWS Bedrock API client."""
+
+from __future__ import annotations
+
 import json
+import os
+import re
+from typing import Any
+
 import boto3
 from botocore.config import Config
 
 
-def call_bedrock(prompt: str, model: str = "anthropic.claude-3-sonnet-20240229-v1:0", 
-                 aws_access_key_id: str = None, aws_secret_access_key: str = None,
-                 region: str = "us-east-1") -> str:
-    """
-    调用 AWS Bedrock API 生成代码
-    
-    Args:
-        prompt: 游戏开发提示词
-        model: 模型名称，默认 claude-3-sonnet
-        aws_access_key_id: AWS Access Key ID
-        aws_secret_access_key: AWS Secret Access Key
-        region: AWS 区域
-    
-    Returns:
-        生成的 Python 代码
-    """
-    aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID")
-    aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
-    region = os.getenv("AWS_REGION", "us-east-1")
+SYSTEM_PROMPT = (
+    "你是一个专业的 Python 游戏开发专家，擅长使用 Pygame 开发游戏。"
+    "请只返回完整的 Python 代码，不要包含任何解释文字。"
+)
 
-    if not aws_access_key_id or not aws_secret_access_key:
+
+def _resolve_credentials(
+    aws_access_key_id: str | None,
+    aws_secret_access_key: str | None,
+) -> tuple[str, str]:
+    access_key = aws_access_key_id or os.getenv("AWS_ACCESS_KEY_ID", "")
+    secret_key = aws_secret_access_key or os.getenv("AWS_SECRET_ACCESS_KEY", "")
+    if not access_key or not secret_key:
         raise ValueError(
-            "Missing AWS credentials. Please set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY."
+            "Missing AWS credentials. Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY."
         )
+    return access_key, secret_key
 
-    bedrock_runtime = boto3.client(
+
+def _request_body(prompt: str, model: str, max_tokens: int, temperature: float) -> dict[str, Any]:
+    if "anthropic.claude" in model:
+        return {
+            "anthropic_version": "bedrock-2023-05-31",
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "system": SYSTEM_PROMPT,
+            "messages": [{"role": "user", "content": prompt}],
+        }
+    if "amazon.nova" in model:
+        return {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [{"text": f"{SYSTEM_PROMPT}\n\n{prompt}"}],
+                }
+            ],
+            "inferenceConfig": {
+                "max_new_tokens": max_tokens,
+                "temperature": temperature,
+            },
+        }
+    if any(
+        marker in model
+        for marker in (
+            "deepseek",
+            "qwen",
+            "mistral",
+            "minimax",
+            "zai.glm",
+            "moonshotai",
+        )
+    ):
+        return {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": f"{SYSTEM_PROMPT}\n\n{prompt}",
+                }
+            ],
+            "inferenceConfig": {
+                "max_new_tokens": max_tokens,
+                "temperature": temperature,
+            },
+        }
+    raise ValueError(f"Unsupported Bedrock model: {model}")
+
+
+def _response_text(response_body: dict[str, Any], model: str) -> str:
+    if "anthropic.claude" in model:
+        return str(response_body["content"][0]["text"])
+    if "amazon.nova" in model:
+        return str(response_body["output"]["message"]["content"][0]["text"])
+    if any(
+        marker in model
+        for marker in (
+            "deepseek",
+            "qwen",
+            "mistral",
+            "minimax",
+            "zai.glm",
+            "moonshotai",
+        )
+    ):
+        return str(response_body["choices"][0]["message"]["content"])
+    raise ValueError(f"Unsupported Bedrock model response: {model}")
+
+
+def strip_code_fence(text: str) -> str:
+    """Strip one complete Markdown fence without altering unfenced model text."""
+    cleaned = text.strip().lstrip("\ufeff")
+    match = re.fullmatch(r"```(?:python|py)?\s*\n(?P<code>.*)\n```", cleaned, re.DOTALL)
+    if match:
+        cleaned = match.group("code").strip()
+    return cleaned
+
+
+def call_bedrock_detailed(
+    prompt: str,
+    model: str = "anthropic.claude-3-sonnet-20240229-v1:0",
+    aws_access_key_id: str | None = None,
+    aws_secret_access_key: str | None = None,
+    aws_session_token: str | None = None,
+    region: str | None = None,
+    max_tokens: int = 8_000,
+    temperature: float = 0.2,
+) -> dict[str, Any]:
+    """Call Bedrock and retain the model text and non-secret response payload."""
+    access_key, secret_key = _resolve_credentials(aws_access_key_id, aws_secret_access_key)
+    session_token = aws_session_token or os.getenv("AWS_SESSION_TOKEN") or None
+    resolved_region = region or os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or "us-east-1"
+    request_body = _request_body(prompt, model, max_tokens, temperature)
+    runtime = boto3.client(
         service_name="bedrock-runtime",
-        region_name=region,
+        region_name=resolved_region,
+        aws_access_key_id=access_key,
+        aws_secret_access_key=secret_key,
+        aws_session_token=session_token,
+        config=Config(retries={"max_attempts": 3, "mode": "standard"}),
+    )
+    response = runtime.invoke_model(modelId=model, body=json.dumps(request_body))
+    response_body = json.loads(response["body"].read())
+    response_metadata = response.get("ResponseMetadata", {})
+    return {
+        "model": model,
+        "region": resolved_region,
+        "text": _response_text(response_body, model),
+        "response_body": response_body,
+        "request_id": response_metadata.get("RequestId"),
+        "http_status_code": response_metadata.get("HTTPStatusCode"),
+        "retry_attempts": response_metadata.get("RetryAttempts"),
+    }
+
+
+def call_bedrock(
+    prompt: str,
+    model: str = "anthropic.claude-3-sonnet-20240229-v1:0",
+    aws_access_key_id: str | None = None,
+    aws_secret_access_key: str | None = None,
+    aws_session_token: str | None = None,
+    region: str | None = None,
+) -> str:
+    """Backward-compatible code-only Bedrock interface used by run_pipeline.py."""
+    result = call_bedrock_detailed(
+        prompt=prompt,
+        model=model,
         aws_access_key_id=aws_access_key_id,
         aws_secret_access_key=aws_secret_access_key,
-        config=Config(
-            retries={"max_attempts": 3, "mode": "standard"}
-        )
+        aws_session_token=aws_session_token,
+        region=region,
     )
-    
-    # 构建请求体（针对不同模型）
-    if "anthropic.claude" in model:
-        body = json.dumps({
-            "anthropic_version": "bedrock-2023-05-31",
-            "max_tokens": 4000,
-            "temperature": 0.7,
-            "system": "你是一个专业的 Python 游戏开发专家，擅长使用 Pygame 开发游戏。请只返回完整的 Python 代码，不要包含任何解释文字。",
-            "messages": [
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
-        })
-    elif "amazon.nova" in model:
-        # Amazon Nova 使用 Converse API 格式
-        body = json.dumps({
-            "messages": [
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "text": f"你是一个专业的 Python 游戏开发专家，擅长使用 Pygame 开发游戏。请只返回完整的 Python 代码，不要包含任何解释文字。\n\n{prompt}"
-                        }
-                    ]
-                }
-            ],
-            "inferenceConfig": {
-                "max_new_tokens": 4000,
-                "temperature": 0.7
-            }
-        })
-    elif "deepseek" in model or "qwen" in model or "mistral" in model or "minimax" in model or "zai.glm" in model or "moonshotai" in model:
-        # 其他模型使用简化的消息格式
-        body = json.dumps({
-            "messages": [
-                {
-                    "role": "user",
-                    "content": f"你是一个专业的 Python 游戏开发专家，擅长使用 Pygame 开发游戏。请只返回完整的 Python 代码，不要包含任何解释文字。\n\n{prompt}"
-                }
-            ],
-            "inferenceConfig": {
-                "max_new_tokens": 4000,
-                "temperature": 0.7
-            }
-        })
-    else:
-        raise ValueError(f"不支持的 Bedrock 模型: {model}")
-    
-    # 调用 Bedrock API
-    response = bedrock_runtime.invoke_model(
-        modelId=model,
-        body=body
-    )
-    
-    # 解析响应
-    response_body = json.loads(response['body'].read())
-    
-    if "anthropic.claude" in model:
-        code = response_body['content'][0]['text']
-    elif "amazon.nova" in model:
-        code = response_body['output']['message']['content'][0]['text']
-    elif "deepseek" in model or "qwen" in model or "mistral" in model or "minimax" in model or "zai.glm" in model:
-        # 这些模型使用OpenAI兼容格式
-        code = response_body['choices'][0]['message']['content']
-    else:
-        code = response_body.get('completion', '')
-    
-    # 提取代码块（如果 LLM 返回了 markdown 格式）
-    if "```python" in code:
-        code = code.split("```python")[1].split("```")[0].strip()
-    elif "```" in code:
-        code = code.split("```")[1].split("```")[0].strip()
-    
-    return code
+    return strip_code_fence(result["text"])

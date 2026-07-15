@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import ast
 import importlib.util
-import re
+import os
 import subprocess
 import sys
 import textwrap
@@ -10,33 +10,94 @@ from pathlib import Path
 from typing import Any
 
 
-# 指标 2/4/6 的动态执行包装器：
-# - 在子进程中运行目标代码
-# - 拦截 pygame.display.set_mode 打标记
-# - 发生异常时返回非零退出码
+WINDOW_MARKER = "__D1_WINDOW_CREATED__"
+SURFACE_MARKER = "__D1_WINDOW_SURFACE__"
+EVENT_MARKER = "__D1_EVENT_FETCH__"
+QUIT_MARKER = "__D1_QUIT_POSTED__"
+
+
+# D1 is a deterministic harness: no LLM calls, just static parsing and two
+# short subprocess probes under pygame's dummy video driver.
 WRAPPER_CODE = textwrap.dedent(
     """
     import os
     import runpy
     import sys
+    import threading
+    import time
     import traceback
 
     os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 
+    WINDOW_MARKER = "__D1_WINDOW_CREATED__"
+    SURFACE_MARKER = "__D1_WINDOW_SURFACE__"
+    EVENT_MARKER = "__D1_EVENT_FETCH__"
+    QUIT_MARKER = "__D1_QUIT_POSTED__"
+
+    mode = sys.argv[2] if len(sys.argv) > 2 else "stability"
+    emitted = set()
+
+    def emit_once(marker):
+        if marker not in emitted:
+            emitted.add(marker)
+            print(marker, flush=True)
+
     try:
         import pygame
+
         original_set_mode = pygame.display.set_mode
 
         def wrapped_set_mode(*args, **kwargs):
-            print("__WINDOW_CREATED__", flush=True)
-            return original_set_mode(*args, **kwargs)
+            surface = original_set_mode(*args, **kwargs)
+            emit_once(WINDOW_MARKER)
+            try:
+                if isinstance(surface, pygame.Surface):
+                    emit_once(SURFACE_MARKER)
+            except Exception:
+                pass
+            return surface
 
         pygame.display.set_mode = wrapped_set_mode
+
+        original_get = pygame.event.get
+        original_poll = pygame.event.poll
+
+        def wrapped_get(*args, **kwargs):
+            emit_once(EVENT_MARKER)
+            return original_get(*args, **kwargs)
+
+        def wrapped_poll(*args, **kwargs):
+            emit_once(EVENT_MARKER)
+            return original_poll(*args, **kwargs)
+
+        pygame.event.get = wrapped_get
+        pygame.event.poll = wrapped_poll
+
+        def post_quit_repeatedly():
+            time.sleep(1.0)
+            deadline = time.time() + 3.0
+            while time.time() < deadline:
+                try:
+                    pygame.event.post(pygame.event.Event(pygame.QUIT))
+                    emit_once(QUIT_MARKER)
+                except Exception:
+                    pass
+                time.sleep(0.1)
+
+        if mode == "quit":
+            threading.Thread(target=post_quit_repeatedly, daemon=True).start()
     except Exception:
         pass
 
     try:
         runpy.run_path(sys.argv[1], run_name="__main__")
+    except SystemExit as exc:
+        code = exc.code
+        if code is None:
+            code = 0
+        if not isinstance(code, int):
+            code = 1
+        sys.exit(code)
     except Exception:
         traceback.print_exc()
         sys.exit(1)
@@ -50,50 +111,128 @@ WRAPPER_CODE = textwrap.dedent(
 )
 
 
+INDICATOR_ORDER: list[tuple[str, str]] = [
+    ("python_syntax_correct", "Python 语法正确性"),
+    ("dependency_initialization_complete", "导入 pygame"),
+    ("window_creation", "图形窗口创建能力"),
+    ("event_handling_mechanism", "事件循环处理完整性"),
+    ("short_runtime_stable", "短时间运行稳定性"),
+    ("process_controllability", "执行进程可控性"),
+]
+
+
 def _safe_read_text(code_path: Path) -> str:
-    # 兼容 UTF-8 BOM，避免 ast.parse 被 BOM 干扰。
     source = code_path.read_text(encoding="utf-8-sig", errors="ignore")
     return source.lstrip("\ufeff")
 
 
 def _empty_indicators() -> dict[str, int]:
-    return {
-        "python_syntax_correct": 0,
-        "short_runtime_stable": 0,
-        "dependency_initialization_complete": 0,
-        "window_creation": 0,
-        "event_handling_mechanism": 0,
-        "process_controllability": 0,
-    }
+    return {key: 0 for key, _ in INDICATOR_ORDER}
 
 
-def _build_numbered_reason(indicators: dict[str, int]) -> str:
-    # 按 1~6 编号输出失败原因，便于和评分指标一一对应。
-    failures: list[str] = []
-
-    if indicators["python_syntax_correct"] == 0:
-        failures.append("1. Python 语法不正确，代码无法被解释器解析。")
-    if indicators["short_runtime_stable"] == 0:
-        failures.append("2. 短时间运行不稳定，程序在 3~5 秒内异常退出或崩溃。")
-    if indicators["dependency_initialization_complete"] == 0:
-        failures.append("3. 依赖初始化不完整，未检测到 pygame 导入语句。")
-    if indicators["window_creation"] == 0:
-        failures.append("4. 未能确认窗口创建（静态或动态信号均未满足）。")
-    if indicators["event_handling_mechanism"] == 0:
-        failures.append("5. 事件处理机制不足，未检测到 pygame.event.get() 或 pygame.event.poll()。")
-    if indicators["process_controllability"] == 0:
-        failures.append("6. 进程可控性不足，存在不可控循环或资源占用风险。")
-
-    if not failures:
-        return "全部通过：1~6 指标均满足。"
-
-    return " | ".join(failures)
+def _parse_source_once(source: str) -> ast.AST | None:
+    try:
+        return ast.parse(source)
+    except SyntaxError:
+        return None
 
 
-def _run_for_stability(code_path: Path, runtime_sec: int) -> dict[str, Any]:
-    # 子进程运行一次，结果给指标 2/4/6 复用。
+def _attribute_name(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        parent = _attribute_name(node.value)
+        if parent:
+            return f"{parent}.{node.attr}"
+    return None
+
+
+def _imports_pygame(tree: ast.AST) -> bool:
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            if any(alias.name == "pygame" for alias in node.names):
+                return True
+        elif isinstance(node, ast.ImportFrom):
+            if node.module == "pygame" or (node.module or "").startswith("pygame."):
+                return True
+    return False
+
+
+def _subprocess_can_import_pygame(timeout_sec: int = 5) -> bool:
+    env = os.environ.copy()
+    env.setdefault("SDL_VIDEODRIVER", "dummy")
+    try:
+        result = subprocess.run(
+            [sys.executable, "-c", "import pygame"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=timeout_sec,
+            env=env,
+        )
+    except Exception:
+        return False
+    return result.returncode == 0
+
+
+def _has_event_fetch_call(tree: ast.AST) -> bool:
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call) and _attribute_name(node.func) in {
+            "pygame.event.get",
+            "pygame.event.poll",
+        }:
+            return True
+    return False
+
+
+def _has_event_loop_shape(tree: ast.AST) -> bool:
+    for node in ast.walk(tree):
+        if isinstance(node, ast.For):
+            iter_call = node.iter
+            if isinstance(iter_call, ast.Call) and _attribute_name(iter_call.func) == "pygame.event.get":
+                return True
+        if isinstance(node, ast.Assign):
+            value = node.value
+            if isinstance(value, ast.Call) and _attribute_name(value.func) == "pygame.event.poll":
+                return True
+    return False
+
+
+def _has_busy_loop_risk(tree: ast.AST) -> bool:
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.While):
+            continue
+        if not (isinstance(node.test, ast.Constant) and node.test.value is True):
+            continue
+
+        body = node.body
+        if len(body) == 1 and isinstance(body[0], (ast.Pass, ast.Continue)):
+            return True
+
+        has_event_fetch = any(
+            isinstance(child, ast.Call)
+            and _attribute_name(child.func) in {"pygame.event.get", "pygame.event.poll"}
+            for child in ast.walk(node)
+        )
+        has_timing_control = any(
+            isinstance(child, ast.Call)
+            and (
+                _attribute_name(child.func) == "time.sleep"
+                or (
+                    isinstance(child.func, ast.Attribute)
+                    and child.func.attr == "tick"
+                )
+            )
+            for child in ast.walk(node)
+        )
+        if not (has_event_fetch or has_timing_control):
+            return True
+    return False
+
+
+def _run_probe(code_path: Path, mode: str, timeout_sec: int) -> dict[str, Any]:
     process = subprocess.Popen(
-        [sys.executable, "-c", WRAPPER_CODE, str(code_path)],
+        [sys.executable, "-c", WRAPPER_CODE, str(code_path), mode],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
@@ -101,141 +240,65 @@ def _run_for_stability(code_path: Path, runtime_sec: int) -> dict[str, Any]:
 
     timed_out = False
     try:
-        stdout, stderr = process.communicate(timeout=runtime_sec)
+        stdout, stderr = process.communicate(timeout=timeout_sec)
     except subprocess.TimeoutExpired:
         timed_out = True
         process.kill()
         stdout, stderr = process.communicate(timeout=2)
 
     return {
+        "mode": mode,
         "returncode": process.returncode,
         "stdout": stdout,
         "stderr": stderr,
         "timed_out": timed_out,
+        "window_created": WINDOW_MARKER in stdout,
+        "surface_returned": SURFACE_MARKER in stdout,
+        "event_fetch_seen": EVENT_MARKER in stdout,
+        "quit_posted": QUIT_MARKER in stdout,
     }
 
 
-def _parse_source_once(source: str) -> ast.AST | None:
-    # 统一做一次 AST 解析，给指标 1/3 复用，减少重复解析开销。
-    try:
-        return ast.parse(source)
-    except SyntaxError:
-        return None
+def _pipeline_steps_passed(indicators: dict[str, int]) -> int:
+    passed = 0
+    for key, _ in INDICATOR_ORDER:
+        if indicators.get(key) != 1:
+            break
+        passed += 1
+    return passed
 
 
-def _build_runtime_diagnosis(run_result: dict[str, Any], pygame_available: bool) -> str:
-    # 给运行态打细粒度标签，便于统计窗口创建率/循环运行率/崩溃率。
-    stdout_text = run_result.get("stdout") or ""
-    if "__WINDOW_CREATED__" in stdout_text:
-        return "window_created"
+def _build_numbered_reason(indicators: dict[str, int]) -> str:
+    failures: list[str] = []
+    messages = {
+        "python_syntax_correct": "1. Python 语法不正确，代码无法被解释器解析。",
+        "dependency_initialization_complete": "2. pygame 导入不完整，未检测到有效 pygame 导入或评测环境无法 import pygame。",
+        "window_creation": "3. 未能确认 pygame.display.set_mode 创建并返回 Surface。",
+        "event_handling_mechanism": "4. 事件循环处理不足，未检测到 get/poll 事件读取结构。",
+        "short_runtime_stable": "5. 短时间运行不稳定，程序崩溃或在检测窗口内提前退出。",
+        "process_controllability": "6. 进程可控性不足，注入 QUIT 后未能在超时内干净退出。",
+    }
+    for key, _ in INDICATOR_ORDER:
+        if indicators.get(key) == 0:
+            failures.append(messages[key])
 
-    if run_result["timed_out"]:
-        return "loop_running"
-
-    if run_result["returncode"] == 0:
-        return "normal_exit"
-
-    stderr_text = (run_result.get("stderr") or "").lower()
-    if (not pygame_available) and ("no module named 'pygame'" in stderr_text):
-        return "env_missing_pygame"
-    return "crash"
-
-
-# =========================
-# 指标 1：Python 语法正确性
-# =========================
-def _indicator_1_python_syntax_correct(parsed_tree: ast.AST | None) -> int:
-    return 1 if parsed_tree is not None else 0
+    if not failures:
+        return "全部通过：D1 六级流水线均满足，可进入 D2-D4。"
+    return " | ".join(failures)
 
 
-# =========================
-# 指标 2：短时间运行稳定（3~5 秒）
-# =========================
-def _indicator_2_short_runtime_stable(run_result: dict[str, Any]) -> int:
-    crashed = (run_result["returncode"] != 0) and (not run_result["timed_out"])
-    return 0 if crashed else 1
-
-
-# =========================
-# 指标 3：依赖初始化完整性
-# =========================
-def _indicator3_imports_pygame(tree: ast.AST) -> bool:
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Import) and any(alias.name == "pygame" for alias in node.names):
-            return True
-        if isinstance(node, ast.ImportFrom) and node.module == "pygame":
-            return True
-    return False
-
-
-def _indicator_3_dependency_initialization_complete(tree: ast.AST) -> int:
-    ok_import = _indicator3_imports_pygame(tree)
-    return 1 if ok_import else 0
-
-
-# =========================
-# 指标 4：能打开窗口
-# =========================
-def _indicator4_has_set_mode_call(source: str) -> bool:
-    return bool(re.search(r"pygame\.display\.set_mode\s*\(", source))
-
-
-def _indicator_4_window_creation(source: str, run_result: dict[str, Any]) -> int:
-    static_ok = _indicator4_has_set_mode_call(source)
-    dynamic_ok = "__WINDOW_CREATED__" in (run_result["stdout"] or "")
-    # 优先使用动态证据；无动态证据时回退到静态证据。
-    if dynamic_ok:
-        return 1
-    return 1 if static_ok else 0
-
-
-# =========================
-# 指标 5：事件处理机制
-# =========================
-def _indicator5_has_event_get_or_poll(source: str) -> bool:
-    return bool(re.search(r"pygame\.event\.(get|poll)\s*\(", source))
-
-
-def _indicator5_has_event_iteration_or_branch(source: str) -> bool:
-    # 检测是否存在“对事件结果的处理结构”，降低空调用误判。
-    has_for_get = bool(re.search(r"for\s+\w+\s+in\s+pygame\.event\.get\s*\(", source))
-    has_poll_assign = bool(re.search(r"\w+\s*=\s*pygame\.event\.poll\s*\(", source))
-    has_event_if = bool(re.search(r"if\s+.*event", source))
-    return has_for_get or (has_poll_assign and has_event_if)
-
-
-def _indicator_5_event_handling_mechanism(source: str) -> int:
-    has_event_fetch = _indicator5_has_event_get_or_poll(source)
-    has_event_structure = _indicator5_has_event_iteration_or_branch(source)
-    return 1 if (has_event_fetch and has_event_structure) else 0
-
-
-# =========================
-# 指标 6：进程可控性
-# =========================
-def _indicator6_has_busy_loop_risk(source: str) -> bool:
-    simple_busy_loop = bool(re.search(r"while\s+True\s*:\s*(pass|continue)\b", source))
-    if simple_busy_loop:
-        return True
-
-    has_while_true = bool(re.search(r"while\s+True\s*:", source))
-    if not has_while_true:
-        return False
-
-    has_event_polling = bool(re.search(r"pygame\.event\.(get|poll)\s*\(", source))
-    has_sleep_or_tick = bool(re.search(r"(time\.sleep\s*\(|\.tick\s*\()", source))
-    return not (has_event_polling or has_sleep_or_tick)
-
-
-def _indicator_6_process_controllability(source: str, run_result: dict[str, Any]) -> int:
-    busy_risk = _indicator6_has_busy_loop_risk(source)
-    if busy_risk:
-        return 0
-    if run_result["timed_out"]:
-        return 1
-    if run_result["returncode"] == 0:
-        return 1
-    return 0
+def _runtime_diagnosis(stability: dict[str, Any] | None, quit_probe: dict[str, Any] | None) -> str:
+    if stability is None:
+        return "not_run"
+    if stability["returncode"] not in (0, None) and not stability["timed_out"]:
+        return "crash"
+    if stability["returncode"] == 0 and not stability["timed_out"]:
+        return "early_exit"
+    if quit_probe and quit_probe["quit_posted"] and quit_probe["returncode"] == 0 and not quit_probe["timed_out"]:
+        return "quit_controlled"
+    if stability["timed_out"]:
+        return "stable_loop"
+    return "unknown"
 
 
 def evaluate_dimension1(code_path: Path | str, runtime_sec: int = 5) -> dict[str, Any]:
@@ -244,75 +307,66 @@ def evaluate_dimension1(code_path: Path | str, runtime_sec: int = 5) -> dict[str
     if not target.exists():
         indicators = _empty_indicators()
         return {
-            "score": 0,
+            "score": 0.0,
+            "raw_pass_count": 0,
+            "pipeline_steps_passed": 0,
+            "gate_pass": False,
             "indicators": indicators,
+            "step_order": INDICATOR_ORDER,
             "reason": f"0. 代码文件不存在：{target}。",
-            "runtime": {
-                "file_found": False,
-            },
+            "runtime": {"file_found": False},
         }
 
     source = _safe_read_text(target)
-    runtime_pygame_available = importlib.util.find_spec("pygame") is not None
-    parsed_tree = _parse_source_once(source)
+    tree = _parse_source_once(source)
+    pygame_available = importlib.util.find_spec("pygame") is not None
+    pygame_import_ok = pygame_available and _subprocess_can_import_pygame()
+    indicators = _empty_indicators()
+    stability_probe: dict[str, Any] | None = None
+    quit_probe: dict[str, Any] | None = None
 
-    # 1) 语法
-    indicator_1 = _indicator_1_python_syntax_correct(parsed_tree)
-    if indicator_1 == 0:
-        indicators = _empty_indicators()
-        return {
-            "score": 0,
-            "indicators": indicators,
-            "reason": "1. Python 语法不正确，代码无法被解释器解析；2~6 指标未执行。",
-            "runtime": {
-                "file_found": True,
-                "pygame_available": runtime_pygame_available,
-                "env_notice": "若评测环境未安装 pygame，动态指标可能受影响。" if not runtime_pygame_available else "",
-            },
-        }
+    indicators["python_syntax_correct"] = 1 if tree is not None else 0
+    if tree is not None:
+        indicators["dependency_initialization_complete"] = 1 if (_imports_pygame(tree) and pygame_import_ok) else 0
 
-    # 2/4/6 共享一次动态执行
-    run_result = _run_for_stability(target, runtime_sec=runtime_sec)
+        if indicators["dependency_initialization_complete"] == 1:
+            stability_probe = _run_probe(target, mode="stability", timeout_sec=runtime_sec)
+            indicators["window_creation"] = 1 if stability_probe["surface_returned"] else 0
 
-    # 2) 短时稳定
-    indicator_2 = _indicator_2_short_runtime_stable(run_result)
+            static_event_ok = _has_event_fetch_call(tree) and _has_event_loop_shape(tree)
+            dynamic_event_ok = stability_probe["event_fetch_seen"]
+            indicators["event_handling_mechanism"] = 1 if (dynamic_event_ok or static_event_ok) else 0
 
-    # 3) 依赖初始化
-    indicator_3 = _indicator_3_dependency_initialization_complete(parsed_tree)
+            indicators["short_runtime_stable"] = 1 if stability_probe["timed_out"] else 0
 
-    # 4) 窗口创建
-    indicator_4 = _indicator_4_window_creation(source, run_result)
+            if indicators["short_runtime_stable"] == 1 and not _has_busy_loop_risk(tree):
+                quit_probe = _run_probe(target, mode="quit", timeout_sec=runtime_sec)
+                clean_quit = (
+                    quit_probe["quit_posted"]
+                    and quit_probe["returncode"] == 0
+                    and not quit_probe["timed_out"]
+                )
+                indicators["process_controllability"] = 1 if clean_quit else 0
 
-    # 5) 事件机制
-    indicator_5 = _indicator_5_event_handling_mechanism(source)
-
-    # 6) 进程可控
-    indicator_6 = _indicator_6_process_controllability(source, run_result)
-
-    indicators = {
-        "python_syntax_correct": indicator_1,
-        "short_runtime_stable": indicator_2,
-        "dependency_initialization_complete": indicator_3,
-        "window_creation": indicator_4,
-        "event_handling_mechanism": indicator_5,
-        "process_controllability": indicator_6,
-    }
-
-    total_binary_score = 1 if all(value == 1 for value in indicators.values()) else 0
-    runtime_diagnosis = _build_runtime_diagnosis(run_result, runtime_pygame_available)
+    raw_pass_count = sum(indicators.values())
+    pipeline_steps = _pipeline_steps_passed(indicators)
+    gate_pass = pipeline_steps == len(INDICATOR_ORDER)
 
     return {
-        "score": total_binary_score,
+        "score": pipeline_steps / len(INDICATOR_ORDER),
+        "raw_pass_count": raw_pass_count,
+        "pipeline_steps_passed": pipeline_steps,
+        "gate_pass": gate_pass,
         "indicators": indicators,
+        "step_order": INDICATOR_ORDER,
         "runtime": {
             "file_found": True,
-            "timed_out": run_result["timed_out"],
-            "returncode": run_result["returncode"],
-            "pygame_available": runtime_pygame_available,
-            "diagnosis": runtime_diagnosis,
-            "window_created_marker": "__WINDOW_CREATED__" in (run_result["stdout"] or ""),
-            "stderr_tail": (run_result["stderr"] or "")[-500:],
-            "env_notice": "若评测环境未安装 pygame，动态指标可能受影响。" if not runtime_pygame_available else "",
+            "pygame_available": pygame_available,
+            "pygame_import_ok": pygame_import_ok,
+            "diagnosis": _runtime_diagnosis(stability_probe, quit_probe),
+            "stability_probe": stability_probe,
+            "quit_probe": quit_probe,
+            "env_notice": "评测环境无法在子进程中 import pygame，D1 会停在第 2 级。" if not pygame_import_ok else "",
         },
         "reason": _build_numbered_reason(indicators),
     }

@@ -5,11 +5,12 @@ from pathlib import Path
 
 import yaml
 
-from config import DATA_RAW_DIR, DATA_SCORES_DIR, DEFAULT_WEIGHTS, PROMPTS_DIR, ROOT_DIR
+from config import DATA_RAW_DIR, DATA_SCORES_DIR, DEFAULT_WEIGHTS, ROOT_DIR
 from evaluator.dimension1.dimension1_executable import evaluate_dimension1
 from evaluator.dimension2_functionality import evaluate_dimension2
 from evaluator.dimension3.dimension3_code_quality import evaluate_dimension3_code_quality
 from evaluator.dimension4.dimension4_ux import evaluate_dimension4_ux
+from prompt_builder import MAIN_TEMPLATE, SPECS_DIR, PromptBuildError, build_prompt
 
 
 def load_config(config_file: Path) -> dict:
@@ -66,13 +67,77 @@ def _build_indicator_list(scores: dict, max_scores: dict | None = None) -> list[
     return items
 
 
-def evaluate_code(game_name: str, code_path: Path, weights: dict, difficulty: str | None = None) -> dict:
+def evaluate_code(
+    game_name: str,
+    code_path: Path,
+    weights: dict,
+    difficulty: str | None = None,
+    spec_path: Path | None = None,
+) -> dict:
     d1_result = evaluate_dimension1(code_path)
     d1_score = float(d1_result["score"])
+    d1_gate_pass = bool(d1_result.get("gate_pass", d1_score >= 1.0))
+
+    d1_payload = {
+        "score": d1_score,
+        "raw_score": float(sum(d1_result.get("indicators", {}).values())),
+        "max_score": float(len(d1_result.get("indicators", {}))),
+        "gate_pass": d1_gate_pass,
+        "weighted_contribution": d1_score * weights["executability"],
+        "indicators": _build_indicator_list(
+            d1_result.get("indicators", {}),
+            {key: 1.0 for key in d1_result.get("indicators", {})},
+        ),
+        "details": d1_result,
+    }
+
+    if not d1_gate_pass:
+        skipped = {
+            "status": "skipped_d1_gate",
+            "reason": "D1 gate failed; this dimension was not evaluated.",
+        }
+        return {
+            "d1_executability": d1_payload,
+            "d2_functionality": {
+                "score": 0.0,
+                "raw_score": 0.0,
+                "max_score": 10.0,
+                "weighted_contribution": 0.0,
+                "indicators": [],
+                "details": dict(skipped),
+            },
+            "d3_code_quality": {
+                "score": 0.0,
+                "raw_score": 0.0,
+                "max_score": 100.0,
+                "weighted_contribution": 0.0,
+                "indicators": [],
+                "details": dict(skipped),
+            },
+            "d4_ux": {
+                "score": 0.0,
+                "raw_score": 0.0,
+                "max_score": 100.0,
+                "weighted_contribution": 0.0,
+                "indicators": [],
+                "details": dict(skipped),
+            },
+            "total_score": d1_score * weights["executability"],
+            "weights": weights,
+            "final_score_formula": (
+                "D1 score = passed steps / 6; D2-D4 run only when D1 gate passes. "
+                "Final Score = 0.2 * D1 + D1_gate * (0.5 * D2 + 0.15 * D3 + 0.15 * D4)"
+            ),
+        }
 
     runtime_signals = _build_runtime_signals_from_dim1(d1_result)
     game_id = f"{difficulty}_{game_name}" if difficulty else game_name
-    d2_result = evaluate_dimension2(game_id=game_id, code_path=code_path, runtime_signals=runtime_signals)
+    d2_result = evaluate_dimension2(
+        game_id=game_id,
+        code_path=code_path,
+        runtime_signals=runtime_signals,
+        spec_path=spec_path,
+    )
     d2_score = float(d2_result.score)
 
     d3_result = evaluate_dimension3_code_quality(code_path)
@@ -89,17 +154,7 @@ def evaluate_code(game_name: str, code_path: Path, weights: dict, difficulty: st
     )
 
     return {
-        "d1_executability": {
-            "score": d1_score,
-            "raw_score": float(sum(d1_result.get("indicators", {}).values())),
-            "max_score": float(len(d1_result.get("indicators", {}))),
-            "weighted_contribution": d1_score * weights["executability"],
-            "indicators": _build_indicator_list(
-                d1_result.get("indicators", {}),
-                {key: 1.0 for key in d1_result.get("indicators", {})},
-            ),
-            "details": d1_result,
-        },
+        "d1_executability": d1_payload,
         "d2_functionality": {
             "score": d2_score,
             "raw_score": float(d2_result.passed),
@@ -177,8 +232,8 @@ def evaluate_code(game_name: str, code_path: Path, weights: dict, difficulty: st
         "total_score": total_score,
         "weights": weights,
         "final_score_formula": (
-            "Final Score = 0.2 * Dimension1 + 0.5 * Dimension2 + "
-            "0.15 * Dimension3 + 0.15 * Dimension4"
+            "D1 score = passed steps / 6; D2-D4 run only when D1 gate passes. "
+            "Final Score = 0.2 * D1 + D1_gate * (0.5 * D2 + 0.15 * D3 + 0.15 * D4)"
         ),
     }
 
@@ -222,14 +277,13 @@ def main():
     for game_info in all_games:
         difficulty = game_info["difficulty"]
         game_name = game_info["name"]
-        prompt_file = PROMPTS_DIR / difficulty / game_name / "prompt.txt"
+        spec_path = SPECS_DIR / difficulty / f"{game_name}.md"
 
-        if not prompt_file.exists():
-            print(f"[SKIP] 跳过 {game_name}，prompt 文件不存在")
+        try:
+            prompt = build_prompt(MAIN_TEMPLATE, spec_path)
+        except PromptBuildError as exc:
+            print(f"[SKIP] 跳过 {game_name}，prompt 构建失败: {exc}")
             continue
-
-        with open(prompt_file, "r", encoding="utf-8") as f:
-            prompt = f.read()
 
         print(f"\n{'=' * 60}")
         print(f"游戏: {game_name} ({difficulty})")
@@ -253,7 +307,13 @@ def main():
                 print(f"    -> 代码已保存: {code_filename}")
 
                 print("    -> 开始评分...")
-                scores = evaluate_code(game_name, code_path, weights, difficulty=difficulty)
+                scores = evaluate_code(
+                    game_name,
+                    code_path,
+                    weights,
+                    difficulty=difficulty,
+                    spec_path=spec_path,
+                )
 
                 result = {
                     "game": game_name,

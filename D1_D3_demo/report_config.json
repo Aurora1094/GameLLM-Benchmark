@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "experiment_id": "",
+  "model": "qwen.qwen3-coder-next",
+  "provider": "bedrock",
+  "region": "us-east-1",
+  "temperature": 0.2,
+  "max_tokens": 8000,
+  "runtime_sec": 3,
+  "run_ids": []
+}

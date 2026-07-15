@@ -1,0 +1,357 @@
+\documentclass[UTF8,zihao=-4,fontset=fandol]{ctexart}
+
+\usepackage[a4paper,left=2.35cm,right=2.35cm,top=2.2cm,bottom=2.3cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,tabularx,array,multirow}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\definecolor{tocblue}{RGB}{0,0,150}
+\definecolor{codegray}{RGB}{247,247,247}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=tocblue,
+  urlcolor=tocblue,
+  citecolor=tocblue,
+  pdfauthor={GameLLM-Benchmark Project},
+  pdftitle={GameBench D1/D3 Live Generation Experiment and Evaluator Calibration}
+}
+
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.25em}
+\linespread{1.34}
+\setlist[itemize]{leftmargin=2.2em,itemsep=0.35em,topsep=0.45em}
+\setlist[enumerate]{leftmargin=2.5em,itemsep=0.35em,topsep=0.45em}
+\renewcommand{\arraystretch}{1.35}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\nouppercase{\leftmark}}
+\fancyhead[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[C]{\small\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+\ctexset{
+  section={format=\centering\bfseries\zihao{3},beforeskip=1.2em,afterskip=0.9em},
+  subsection={format=\bfseries\zihao{4},beforeskip=1em,afterskip=0.55em},
+  subsubsection={format=\bfseries\zihao{-4},beforeskip=0.8em,afterskip=0.4em}
+}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{codegray},
+  frame=single,
+  rulecolor=\color{black!18},
+  breaklines=true,
+  columns=fullflexible,
+  xleftmargin=0.4em,
+  xrightmargin=0.4em,
+  aboveskip=0.7em,
+  belowskip=0.7em
+}
+
+\begin{document}
+\input{../results/generated/calibration_metrics.tex}
+\input{../results/generated/live_metrics.tex}
+
+\thispagestyle{plain}
+\begin{center}
+  \vspace*{2.1cm}
+  {\zihao{2}\bfseries 从真实生成到可审计评分：\par}
+  \vspace{0.25em}
+  {\zihao{2}\bfseries GameBench D1/D3 实验与评分器校准\par}
+  \vspace{1.1cm}
+  {\zihao{4} GameLLM-Benchmark Project\par}
+  \vspace{0.8cm}
+  {\zihao{4} 2026 年 7 月\par}
+\end{center}
+
+\vspace{1.5cm}
+\noindent\textbf{目标：}验证真实 LLM 是否能依据结构化 Prompt 生成可执行的单文件 pygame Pong，并用不依赖 LLM、证据可追溯的 D1/D3 评估器测量执行能力与静态代码质量。
+
+\vspace{0.55em}
+\noindent\textbf{核心：}三次独立 Bedrock 调用均保存 Prompt、模型原文、生成代码和运行证据；D1 同时承担有序能力信号和后续维度准入闸门，D3 将代码质量拆成六个静态代理指标。受控 known-groups calibration 单独验证评分器的阶梯性、缺陷敏感性、区分性与确定性。
+
+\vspace{0.55em}
+\noindent\textbf{结论边界：}真实实验只覆盖一个模型、一个游戏和三次采样；本报告不运行 D2/D4，因此不能把 D1/D3 结果解释为功能完整性或总体游戏体验。本校准支持内部一致性和初步构念效度，不证明当前阈值与权重是唯一最优选择。
+
+\vfill
+\begin{center}
+  {\zihao{-4}真实实验：\LiveModelCallSuccessCount/\LiveRunCount 次模型调用成功，D1 \LiveDOnePassCount/\LiveRunCount 通过，D3 均值 \LiveDThreeMean。}
+
+  \vspace{0.35em}
+  {\zihao{-4}评分器校准：D1 7/7 阶梯样例通过；D3 6/6 定向退化通过；三轮结果一致。}
+\end{center}
+\clearpage
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\clearpage
+
+\section{研究问题与实验分层}
+
+本报告回答两个彼此独立的问题。第一，真实模型在相同 Pong Prompt 下能否生成可执行代码，所得 D1/D3 分布如何；第二，负责给出这些分数的机械评估器是否按声明的构念工作。前者是模型生成实验，后者是评分器校准，二者不能互相冒充。
+
+D1 和 D3 的判断对象直接存在于程序代码或运行轨迹中，不需要语言模型进行主观解释。D1 关心程序能否沿着一条有依赖关系的执行流水线前进；D3 关心复杂度、重复、常量、命名、结构和注释等可观测代码属性。若这些维度仍由 LLM 打分，会引入模型版本、提示词措辞、采样参数和上下文顺序等无关波动。
+
+但是，“机械测量”并不自动等于“测量有效”。评估器仍可能存在三类问题：一是实现没有准确命中声称的构念；二是单一缺陷引起大量无关指标同时下降；三是相同输入在重复运行时产生不一致结果。因此，本文件将 D1/D3 评估器视为待验证系统，用预先定义的受控样例分别检验其阶梯性、敏感性、特异性和可复现性。
+
+验证遵循两个原则：第一，运行器直接调用正式评估函数，不复制一套“演示版评分逻辑”；第二，预期标签只定义能力级别或分数变化方向，不将实际输出事后回填为答案。若评估结果与预期冲突，demo 应失败并保留证据，而不是修改样例来制造通过。
+
+评分器校准结构参考 \texttt{GB-D4-main.zip}：设置一个无刻意缺陷的参考组，并为每个子指标设置一个定向缺陷组，同时比较目标变化和非目标漂移。借鉴的是实验结构与结论边界，不是 D4 的视觉采样、LLM Judge 或实现代码。校准过程的 D1/D3 仍完全由正式机械评估器测量，模型调用数和 API 成本均为零。
+
+真实主链由 \texttt{run\_demo.py} 将结构化 Prompt 发送给实际 LLM，保存模型原文和生成代码，再对该代码执行 D1/D3。人工 fixtures 只出现在 supporting calibration 中，所有真实样本必须同时满足 \texttt{origin=llm\_api}、成功请求记录、不同生成代码哈希和完整 manifest 校验，因而不会把回放或人工基线标成模型输出。
+
+\section{真实 LLM Pong 生成实验}
+
+\subsection{实验设置}
+
+实验通过 AWS Bedrock 调用 \texttt{qwen.qwen3-coder-next}，区域为 \texttt{us-east-1}。三次独立调用使用同一份由 \texttt{prompts/main.md} 与 \texttt{prompts/specs/easy/pong.md} 渲染的最终 Prompt，温度为 0.2，最大输出为 8000 tokens。Prompt 向模型公开游戏描述、窗口规格和五条编号功能要求，但不暴露 checkpoint 内部 ID 或权重。
+
+每次调用均建立独立 run 目录，保存输入快照、最终 Prompt、请求元数据、模型原文、提取后的 Python 文件、D1/D3 原始输出、汇总 JSON 和带 SHA256 的 manifest。AWS 凭据只注入调用进程，不写入上述产物。三次调用都记录为 \texttt{requested\_origin=llm\_api} 和 \texttt{origin=llm\_api}；三个生成代码 SHA256 均不同，排除了 fixture、响应回放和缓存结果。
+
+\subsection{实验结果}
+
+\input{../results/generated/live_table.tex}
+
+三次生成均通过 Python 语法、pygame 导入、窗口创建、事件读取、三秒稳定运行和 QUIT 可控退出，D1 闸门通过率为 \LiveDOnePassCount/\LiveRunCount。这里的“运行”不是静态猜测：评估器在独立子进程中实际启动每份生成代码，拦截窗口创建与事件读取，并在退出探针中注入 QUIT 后观察到返回码零。
+
+三份代码均进入 D3，总分依次为 75、77 和 74，均值为 \LiveDThreeMean，样本标准差为 \LiveDThreeStd，范围为 [\LiveDThreeMin,\LiveDThreeMax]。代码复用和命名规范在三次生成中稳定获得满分；复杂度、模块划分和注释存在小幅差异。三次“常量使用”均为 0/15，说明当前魔法数字密度规则会系统性惩罚直接书写尺寸、速度、颜色和几何参数的 pygame 代码。这既是模型代码的共同特征，也是 D3 阈值可能过严、需要后续敏感性分析的实证信号。
+
+\subsection{结果解释}
+
+本实验可以支持“该模型在当前 Prompt 和运行环境下三次都生成了可启动、持续运行且可控退出的 pygame 程序”，也可以描述这些程序在六项 D3 静态代理上的分布。它不能单独证明球拍控制、反弹、计分、对手 AI 和胜利条件全部正确，因为这些属于 D2；也不能证明画面或交互体验优秀，因为本报告没有执行 D4。D1 的全通过是进入后续评估的必要条件，不是完整游戏质量的充分条件。
+
+\section{D1：有序可执行流水线与准入闸门}
+
+\subsection{形式化定义}
+
+设六个机械判定按依赖顺序组成向量
+\begin{equation}
+\mathbf{z}=(z_1,z_2,z_3,z_4,z_5,z_6), \qquad z_i\in\{0,1\}.
+\end{equation}
+其中依次对应 Python 语法、pygame 导入、窗口创建、事件循环、短时稳定运行和可控退出。定义程序通过的有序前缀长度为
+\begin{equation}
+p=\max\left\{k\in\{0,\ldots,6\}:\prod_{i=1}^{k}z_i=1\right\}.
+\end{equation}
+于是 D1 的连续能力分和准入闸门分别为
+\begin{equation}
+\mathrm{D1\_score}=\frac{p}{6},
+\qquad
+\mathrm{D1\_gate}=\mathbb{I}[p=6].
+\end{equation}
+
+前缀长度与简单通过项计数不同。某程序可能创建窗口并保持运行，却从不读取事件；此时稳定运行项可观测为真，但程序只走到第三级。能力分采用前缀长度，保留流水线的先决条件；同时报告 \texttt{raw\_pass\_count}，用于诊断非连续通过现象。
+
+总分将能力信号与准入功能分开：
+\begin{equation}
+\mathrm{Final}=w_1\mathrm{D1\_score}+\mathrm{D1\_gate}
+\left(w_2\mathrm{D2}+w_3\mathrm{D3}+w_4\mathrm{D4}\right).
+\end{equation}
+因此，未完全跑通的程序仍保留 D1 能力梯度，但不会凭借不可执行代码获得功能、质量或体验分。
+
+\subsection{六项机械判定}
+
+\begin{table}[htbp]
+\centering
+\caption{D1 六级流水线的测量契约}
+\small
+\begin{tabularx}{\textwidth}{C{0.75cm} L{2.7cm} X L{3.2cm}}
+\toprule
+级别 & 指标 & 机械判定 & 主要证据 \\
+\midrule
+1 & Python 语法正确性 & 使用 \texttt{ast.parse} 解析完整源码。 & 无 \texttt{SyntaxError}。 \\
+2 & pygame 导入 & AST 确认源码导入 pygame，并在独立子进程实际执行导入。 & 导入结构存在且子进程返回码为零。 \\
+3 & 图形窗口创建 & 在 dummy video driver 下拦截 \texttt{display.set\_mode}。 & 调用发生且返回 \texttt{Surface}。 \\
+4 & 事件循环完整性 & 动态记录 \texttt{event.get/poll}；静态结构作为补充证据。 & 主循环持续读取事件。 \\
+5 & 短时运行稳定性 & 在限定时间内运行目标脚本。 & 无未捕获异常、无提前正常退出。 \\
+6 & 执行进程可控性 & 向事件队列重复注入 \texttt{QUIT}。 & 进程在超时内以返回码零干净退出。 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+所有动态探针均在子进程中执行，并设置 \texttt{SDL\_VIDEODRIVER=dummy}。评估器不依赖屏幕截图，也不允许待测程序阻塞批量评测主进程。稳定性探针和退出探针分开运行：前者要求游戏继续存活，后者要求游戏能够结束。
+
+\section{D1 受控阶梯实验}
+
+\subsection{实验设计}
+
+七个最小样例预先对应 $p=0$ 到 $p=6$。每个后一级样例满足前一级条件，并有意在下一条件失败：语法错误、不导入 pygame、只导入不建窗、建窗但不读事件、事件读取后提前退出、稳定运行但忽略 QUIT，以及完整通过。预注册文件同时声明样例 ID、干预内容、应保留能力、六位布尔指标签名和预期运行诊断。
+
+实验的主要断言是：实际前缀级别与预期完全一致，分数等于级别除以 6，六位指标签名与诊断类别命中预注册值，且只有第六级打开闸门。运行器额外记录各个原始布尔项，用于解释前缀分和简单求和的差异。
+
+\subsection{实验结果}
+
+\input{../results/generated/d1_table.tex}
+
+七个样例全部命中预期。特别地，\texttt{level\_3\_window\_no\_events.py} 的原始通过项数为 4，但流水线级别为 3：它满足语法、导入、窗口和稳定运行，却缺失作为第四级的事件读取。该结果直接证明了采用有序前缀而非简单计数的必要性。
+
+第六级样例的动态证据完整闭合：稳定性探针在检测窗口内持续运行，退出探针成功注入 QUIT，程序返回码为零且未超时。其余样例的闸门均保持关闭。
+
+\section{D3：六项静态代码质量代理}
+
+\subsection{分数结构}
+
+D3 不使用 LLM。对能够通过 D1 闸门的代码，评估器解析 AST 并计算六个指标：
+\begin{equation}
+\mathrm{D3\_raw}=s_C+s_R+s_K+s_N+s_M+s_D,
+\end{equation}
+其中上限依次为
+\begin{equation}
+(s_C,s_R,s_K,s_N,s_M,s_D)\leq(15,20,15,15,20,15),
+\qquad
+\mathrm{D3}=\frac{\mathrm{D3\_raw}}{100}.
+\end{equation}
+
+这些分数是工程代理而非审美裁决。每项必须同时报告原始证据，使研究者能够区分“代码发生了什么”和“阈值如何把证据映射成分数”。
+
+\begin{table}[htbp]
+\centering
+\caption{D3 指标、原始证据与分值构成}
+\small
+\begin{tabularx}{\textwidth}{L{2.7cm} C{1.1cm} X X}
+\toprule
+指标 & 满分 & 原始证据 & 分值构成 \\
+\midrule
+复杂度控制 & 15 & 函数圈复杂度、最大/平均函数长度、最大嵌套深度 & 圈复杂度 9 分，函数长度 3 分，嵌套深度 3 分。 \\
+代码复用 & 20 & 归一化四行代码块重复比例、重复块数量 & 重复比例不超过 3\% 得 20 分，随后按 15/10/5/0 阶梯下降。 \\
+常量使用 & 15 & 非赋值位置的数值字面量、魔法数字密度、已命名常量值 & 密度不超过 3\% 得 15 分，随后按 10/5/0 阶梯下降。 \\
+命名规范 & 15 & snake\_case、UPPER\_CASE、CapWords 合规率及泛化短名 & 约定合规率乘 10，表意率乘 5，四舍五入。 \\
+模块划分 & 20 & 函数数量、最长函数、\texttt{\_\_main\_\_} guard、职责关键词 & 函数数量 5 分，长度 5 分，入口保护 4 分，职责分离 6 分。 \\
+注释质量 & 15 & 有效注释密度、模块/类/函数 docstring 覆盖率 & 密度 8 分，docstring 覆盖 5 分，非噪声范围 2 分。 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+复杂度优先尝试 radon；当前验证环境没有安装 radon，因此正式结果明确记录为 \texttt{ast\_fallback}。该回退仍使用分支、循环、异常处理、断言、推导式和布尔连接计算函数级圈复杂度。报告方法字段可以防止不同工具后端的结果被误当成完全相同的测量条件。
+
+\subsection{边界与耦合}
+
+指标之间并非严格正交。超长函数既削弱模块划分，也会降低复杂度中的长度子分；增加大量代码还可能稀释注释密度。因此，验证不要求所有非目标分数绝对不变，而要求目标指标发生正向最大响应，并完整报告交叉变化。交叉效应本身也是评估器构念边界的一部分。
+
+\section{D3 Pong 单变量退化实验}
+
+\subsection{实验协议}
+
+基线是一个完整、可退出的单文件 Pong，D1 为 6/6，D3 为 100。六个变体从同一基线出发，分别引入深嵌套、重复代码块、散落数值、非规范函数命名、超长单体函数和注释移除。每个版本在进入 D3 前必须再次通过 D1，避免把“无法运行”混入代码质量测量。
+
+\input{../results/generated/d3_design_table.tex}
+
+对于目标指标 $j$ 和变体 $v$，定义相对基线的降分为
+\begin{equation}
+\Delta_j(v)=s_j(\mathrm{baseline})-s_j(v).
+\end{equation}
+自动断言要求 $\Delta_j(v)>0$、总分下降，并且目标降分等于所有指标降分的最大值。预注册文件保存设计干预、应保留条件和目标指标，但不保存实际分数。参考组还必须高于所有缺陷组，排除“目标项下降但总分排序失效”的情况。
+
+\subsection{实验结果}
+
+\input{../results/generated/d3_table.tex}
+
+\input{../results/generated/d3_delta_table.tex}
+
+六个变体均保持 D1 为 6/6。复杂度、复用、常量、命名和注释变体只改变目标指标，目标降分依次为 7、5、10、2 和 15。模块划分变体中，模块分下降 5 分，同时复杂度和注释各下降 3 分；原因是 128 行超长函数同时越过函数长度阈值并稀释注释密度。目标指标仍是最大下降项，且交叉效应与测量定义一致。
+
+六个目标单元的平均降分为 \DThreeTargetMean，30 个非目标单元的平均绝对漂移为 \DThreeNonTargetMean，目标/非目标信号比为 \DThreeSignalRatio；参考组总分 \DThreeBaselineScore，高于全部缺陷组，最近缺陷组为 \DThreeHighestDefectScore。该结果支持初步的已知组分离和区分效度，但不意味着六个构念严格正交。
+
+该结果也表明不同指标的动态范围不同：命名约定的十个违规函数只造成 2 分下降，而完全移除注释造成 15 分下降。因此，当前实验验证“方向是否正确”，不单独证明六项权重已经校准到等效的人类感知差异，也不能据此排列指标重要性。
+
+\section{合理性、有效性与可复现性证据}
+
+\subsection{内部一致性}
+
+D1 的七个能力级别全部精确命中，且闸门只在 6/6 时开放。D3 的七个校准代码文件全部通过 D1，排除了运行失败这一混杂因素。真实实验的三份代码也由同一正式评估器处理，没有另写“报告专用”评分逻辑。所有表格数字均从正式 JSON 自动聚合，JSON、CSV、Markdown 和本文档不维护相互独立的手工分数。
+
+\subsection{敏感性与特异性}
+
+六个 D3 目标指标均按预期下降，且目标下降为最大值。五个变体实现了零非目标漂移；单体结构变体出现的两个交叉变化可由共享的函数长度和注释密度证据解释。因此，实验支持指标对目标缺陷具有基本特异性，同时不掩盖现实中的构念耦合。
+
+\subsection{确定性}
+
+评分器校准中的完整 D1/D3 流程连续运行三轮。紧凑结果保留级别、闸门、各项分数、诊断类别、布尔运行证据和静态原始指标；三轮完整紧凑对象的规范化 JSON SHA256 完全一致。该确定性结论针对“固定代码输入下的机械评估器”，不要求生成模型每次给出相同代码。
+
+真实生成实验恰好展示了两类变化的区别：三个代码 SHA256 均不同，D3 在 74--77 之间变化，这是采样输出差异；每个 run 内部则保存固定代码、固定评分结果和可复核哈希。模型随机性由跨 run 分布报告，评估器确定性由固定输入重复实验报告，二者没有混写。
+
+\subsection{可审计性}
+
+每个校准案例都单独保存预注册说明、fixture SHA256、正式 evaluator SHA256、完整原始输出和供比较使用的紧凑结果。运行器在校准前后重复计算正式 D1/D3 evaluator 哈希并断言相等，防止 demo 执行期间评分逻辑发生变化。每个真实 run 的 \texttt{manifest.json} 则索引 Prompt、模型原文、生成代码、D1/D3 输出和汇总文件的大小与 SHA256；报告聚合器在制表前逐项重新校验，任一缺失或不一致都会停止构建。
+
+\input{../results/generated/audit_table.tex}
+
+\subsection{能够支持的结论}
+
+当前证据支持以下有限结论：三个真实模型样本都沿 D1 流水线走到 6/6，并得到 74--77 的 D3 静态代理分；D1 的有序流水线和闸门按设计工作；D3 对六类受控缺陷产生方向正确且大体集中的响应；固定代码在相同环境下重复评分可复现。这构成模型运行结果、内部合理性检查和初步构念效度证据，但不替代 D2 功能测试、D4 体验评估或人工代码审查。
+
+\section{局限性与后续验证}
+
+\subsection{D1 局限}
+
+\begin{itemize}
+  \item 动态探针使用 pygame dummy video driver，证明窗口 API 和事件循环成立，但不证明真实 GPU、字体、音频或平台资源均可用。
+  \item “短时稳定”只覆盖有限时间窗口，无法发现长局内存泄漏、累积数值误差或极低概率崩溃。
+  \item 当前协议面向持续主循环游戏；设计为短时自动结束的程序需要单独声明生命周期，否则会被识别为提前退出。
+  \item pygame 冷启动导入时间属于环境条件。Demo 在正式计时前执行独立导入预热，并仍保留每个探针的导入证据。
+\end{itemize}
+
+\subsection{D3 局限}
+
+\begin{itemize}
+  \item 静态代理能够被针对性优化，例如机械增加函数、常量或 docstring，而不真正提高可维护性。
+  \item 四行重复块、魔法数字密度和函数长度阈值具有任务与规模依赖性，不应直接外推到多文件工程。
+  \item 命名“表意性”目前只排除少量泛化短名，无法理解领域语义；注释指标也主要衡量密度和覆盖率，而不是解释是否准确。
+  \item 单变量样例由评估设计者构造，尚未形成独立人工标注数据集，因此不能替代专家相关性实验。
+\end{itemize}
+
+\subsection{真实生成实验局限}
+
+\begin{itemize}
+  \item 当前只覆盖 \texttt{qwen.qwen3-coder-next}、Pong 和三次采样，不能外推到其他模型、游戏难度或更长上下文。
+  \item D1 使用 dummy video driver 验证运行结构，没有保存真实显示器截图；因此“窗口创建成功”不等于视觉渲染正确。
+  \item 本报告没有运行 D2 和 D4，不能确认五个 Pong checkpoint 的行为正确性，也不能评价画面、可玩性与用户体验。
+  \item 三次常量分均为零，提示该指标可能把游戏领域常见数值当作普遍坏味道；在完成人工相关性与阈值敏感性分析前，不应把 D3 总分当成人类代码质量的无偏估计。
+\end{itemize}
+
+下一阶段建议增加四类证据：第一，将同一批真实生成代码接入 D2 与 D4，形成完整评分链；第二，由多名开发者盲评并报告与 D3 的 Spearman 相关；第三，对六项阈值和权重做敏感性分析，重点复核魔法数字密度；第四，加入保持语义不变的重命名、函数拆分与常量抽取等 metamorphic test，检验分数变化是否符合设计预期。
+
+\section{复现接口与产物链}
+
+真实模型生成、运行和评分的主入口为；AWS 凭据通过环境变量提供，不写入命令、配置或产物：
+\begin{lstlisting}[language={}]
+python D1_D3_demo/run_demo.py
+\end{lstlisting}
+
+该入口把每次 Prompt、模型响应、生成代码、D1/D3 输出和哈希写入独立 run 目录。本文三次真实 run 的 ID 固定记录在 \texttt{D1\_D3\_demo/report\_config.json}；下列命令会校验三份 manifest，并重新生成真实实验 CSV、JSON 和 LaTeX 表格：
+\begin{lstlisting}[language={}]
+python D1_D3_demo/aggregate_live_runs.py
+\end{lstlisting}
+
+评分器校准结果的复现命令为：
+\begin{lstlisting}[language={}]
+python D1_D3_demo/run_calibration.py --check --repeat 3 --runtime-sec 3
+\end{lstlisting}
+
+运行器输出 \texttt{summary.json}、\texttt{manifest.json}、逐案例原始证据、CSV、Markdown 报告，以及真实结果表、分数表、降分矩阵和审计表等 LaTeX 片段。任一来源不是 \texttt{llm\_api}、manifest 校验失败或校准预期不满足时，报告构建都会返回非零退出码。文档构建命令为：
+\begin{lstlisting}[language={}]
+powershell -ExecutionPolicy Bypass -File D1_D3_demo/build_pdf.ps1
+\end{lstlisting}
+
+构建脚本固定使用 Tectonic 0.16.9，并校验下载归档的 SHA256。只有真实 run 的来源与哈希全部有效、校准 \texttt{summary.json} 的 \texttt{overall\_pass} 为真时才编译文档。最终 PDF 位于仓库根目录，表格数据仍可沿着 PDF、生成片段、CSV、逐案例证据、汇总 JSON 和 manifest 追溯到正式评估。
+
+Overleaf 包的构建命令为：
+\begin{lstlisting}[language={}]
+powershell -ExecutionPolicy Bypass -File D1_D3_demo/build_overleaf.ps1
+\end{lstlisting}
+该 ZIP 在根目录提供 \texttt{main.tex}，使用 XeLaTeX 与 TeX Live 自带 Fandol 字体，不依赖本机 Windows 字体；脚本会在压缩前从空目录完成一次独立编译验证。
+
+\end{document}

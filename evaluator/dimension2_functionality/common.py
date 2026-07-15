@@ -94,6 +94,11 @@ def evaluate_dimension2(
         )
         return profile_result
 
+    if spec_path is not None:
+        raise ValueError(
+            f"D2 has no detection profile for {game_id}; cannot score checkpoints from {spec_path}"
+        )
+
     # 先尝试路由到游戏独立文件；若未实现则回退通用评分。
     game_specific_result, route_meta = _call_game_specific_evaluator(
         module_name=module_name,

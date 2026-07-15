@@ -1,0 +1,143 @@
+{
+  "schema_version": 2,
+  "calibration_method": "known_groups",
+  "d1": {
+    "step_order": [
+      "python_syntax_correct",
+      "dependency_initialization_complete",
+      "window_creation",
+      "event_handling_mechanism",
+      "short_runtime_stable",
+      "process_controllability"
+    ],
+    "cases": [
+      {
+        "id": "d1_level_0",
+        "file": "level_0_syntax_error.py",
+        "expected_pipeline_steps": 0,
+        "expected_diagnosis": "not_run",
+        "expected_indicators": [0, 0, 0, 0, 0, 0],
+        "intervention": "引入 Python 语法错误。",
+        "preserved": "不假设任何后续能力。"
+      },
+      {
+        "id": "d1_level_1",
+        "file": "level_1_no_pygame.py",
+        "expected_pipeline_steps": 1,
+        "expected_diagnosis": "not_run",
+        "expected_indicators": [1, 0, 0, 0, 0, 0],
+        "intervention": "保留合法 Python，但不导入 pygame。",
+        "preserved": "Python 解析保持有效。"
+      },
+      {
+        "id": "d1_level_2",
+        "file": "level_2_import_only.py",
+        "expected_pipeline_steps": 2,
+        "expected_diagnosis": "early_exit",
+        "expected_indicators": [1, 1, 0, 0, 0, 0],
+        "intervention": "导入 pygame，但不创建窗口即退出。",
+        "preserved": "语法和依赖导入保持有效。"
+      },
+      {
+        "id": "d1_level_3",
+        "file": "level_3_window_no_events.py",
+        "expected_pipeline_steps": 3,
+        "expected_diagnosis": "stable_loop",
+        "expected_indicators": [1, 1, 1, 0, 1, 0],
+        "intervention": "创建稳定窗口循环，但从不读取事件。",
+        "preserved": "进程保持运行，用于显式区分有序前缀和原始通过数。"
+      },
+      {
+        "id": "d1_level_4",
+        "file": "level_4_early_exit.py",
+        "expected_pipeline_steps": 4,
+        "expected_diagnosis": "early_exit",
+        "expected_indicators": [1, 1, 1, 1, 0, 0],
+        "intervention": "创建窗口并读取事件，但在稳定性时限前退出。",
+        "preserved": "语法、导入、窗口和事件处理保持有效。"
+      },
+      {
+        "id": "d1_level_5",
+        "file": "level_5_ignores_quit.py",
+        "expected_pipeline_steps": 5,
+        "expected_diagnosis": "stable_loop",
+        "expected_indicators": [1, 1, 1, 1, 1, 0],
+        "intervention": "稳定运行，但故意忽略注入的 QUIT 事件。",
+        "preserved": "除可控退出外，其余能力保持有效。"
+      },
+      {
+        "id": "d1_level_6",
+        "file": "level_6_full_pass.py",
+        "expected_pipeline_steps": 6,
+        "expected_diagnosis": "quit_controlled",
+        "expected_indicators": [1, 1, 1, 1, 1, 1],
+        "intervention": "不植入 D1 缺陷。",
+        "preserved": "作为完整六级契约的参考实现。"
+      }
+    ]
+  },
+  "d3": {
+    "baseline": "baseline",
+    "cases": [
+      {
+        "id": "baseline",
+        "file": "baseline.py",
+        "target_indicator": null,
+        "intervention": "不植入 D3 缺陷。",
+        "preserved": "单文件 Pong 可运行并通过 D1 闸门。"
+      },
+      {
+        "id": "high_complexity",
+        "file": "high_complexity.py",
+        "target_indicator": "complexity",
+        "intervention": "增加嵌套决策路径，提高函数级控制流复杂度。",
+        "preserved": "游戏保持可运行并通过完整 D1 闸门。"
+      },
+      {
+        "id": "duplicated_code",
+        "file": "duplicated_code.py",
+        "target_indicator": "reuse",
+        "intervention": "复制归一化后的多行逻辑块。",
+        "preserved": "游戏保持可运行并通过完整 D1 闸门。"
+      },
+      {
+        "id": "magic_numbers",
+        "file": "magic_numbers.py",
+        "target_indicator": "constants",
+        "intervention": "用重复数值字面量替换集中管理的常量。",
+        "preserved": "游戏保持可运行并通过完整 D1 闸门。"
+      },
+      {
+        "id": "bad_naming",
+        "file": "bad_naming.py",
+        "target_indicator": "naming",
+        "intervention": "引入命名约定违规和泛化标识符。",
+        "preserved": "游戏保持可运行并通过完整 D1 闸门。"
+      },
+      {
+        "id": "monolithic_structure",
+        "file": "monolithic_structure.py",
+        "target_indicator": "modularity",
+        "intervention": "把多项职责合并进一个超长单体函数。",
+        "preserved": "游戏保持可运行并通过完整 D1 闸门。"
+      },
+      {
+        "id": "no_comments",
+        "file": "no_comments.py",
+        "target_indicator": "comments",
+        "intervention": "移除解释性注释和 docstring。",
+        "preserved": "游戏保持可运行并通过完整 D1 闸门。"
+      }
+    ]
+  },
+  "reference": {
+    "archive": "GB-D4-main.zip",
+    "adopted_patterns": [
+      "known-groups calibration",
+      "one reference plus one targeted defect per indicator",
+      "target-versus-non-target drop analysis",
+      "explicit audit trail and conclusion boundaries"
+    ],
+    "code_imported": false
+  }
+}

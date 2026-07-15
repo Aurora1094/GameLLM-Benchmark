@@ -53,10 +53,10 @@ GAME_PROFILES: dict[str, GameProfile] = {
             TestPort(
                 "direction_control",
                 "Direction control",
-                "Arrow-key input changes snake direction.",
+                "WASD input changes snake direction while direct reversal is ignored.",
                 ("interaction_validity",),
                 (
-                    kw("input keys", "K_UP", "K_DOWN", "K_LEFT", "K_RIGHT", "pygame.K_"),
+                    kw("input keys", "K_w", "K_a", "K_s", "K_d"),
                     kw("direction state", "direction", "dx", "dy", "velocity", "snake_dir"),
                 ),
                 ("input_effective",),
@@ -88,7 +88,7 @@ GAME_PROFILES: dict[str, GameProfile] = {
             TestPort(
                 "wall_or_self_end",
                 "Wall or self collision end",
-                "Boundary or self collision ends the game.",
+                "Vertical boundaries wrap; horizontal-wall or self collision ends the game.",
                 ("constraint_termination", "rule_completeness"),
                 (
                     kw("boundary", "WIDTH", "HEIGHT", "wall", "boundary"),
@@ -128,8 +128,8 @@ GAME_PROFILES: dict[str, GameProfile] = {
             ),
             TestPort(
                 "pipe_scoring",
-                "Pipe pass scoring",
-                "Passing pipes updates score and feedback.",
+                "Survival-time scoring",
+                "Elapsed survival time updates score while passing pipes adds no bonus.",
                 ("rule_completeness", "goal_feedback_alignment"),
                 (
                     kw("pipes", "pipe", "pipes"),
@@ -343,7 +343,7 @@ GAME_PROFILES: dict[str, GameProfile] = {
             TestPort(
                 "enemy_wave_motion",
                 "Enemy wave motion",
-                "Enemy formation moves over time.",
+                "Each enemy wave advances downward over time without horizontal bouncing.",
                 ("state_evolution",),
                 (
                     kw("enemy", "enemy", "invader", "aliens"),

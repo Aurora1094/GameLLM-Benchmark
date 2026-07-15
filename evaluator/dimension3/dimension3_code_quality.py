@@ -1,25 +1,34 @@
 from __future__ import annotations
 
 import ast
+import re
 from collections import Counter
 from pathlib import Path
+from statistics import mean
 from typing import Any
 
 
 RESPONSIBILITY_KEYWORDS = {
-    "update",
-    "draw",
-    "render",
+    "init",
+    "setup",
     "handle",
     "input",
-    "spawn",
+    "event",
+    "update",
+    "move",
     "collision",
+    "collide",
     "score",
+    "draw",
+    "render",
     "reset",
 }
 
-BAD_NAMES = {"a", "b", "x", "tmp", "var", "data"}
-IGNORED_MAGIC_NUMBERS = {0, 1, -1}
+BAD_NAMES = {"a", "b", "c", "x", "y", "z", "tmp", "temp", "var", "data", "foo", "bar"}
+IGNORED_NUMBERS = {0, 1, -1}
+SNAKE_CASE_RE = re.compile(r"^_?[a-z][a-z0-9_]*$")
+UPPER_CASE_RE = re.compile(r"^[A-Z][A-Z0-9_]*$")
+CAP_WORDS_RE = re.compile(r"^[A-Z][A-Za-z0-9]*$")
 
 
 def _read_source(code_path: Path) -> str:
@@ -33,84 +42,166 @@ def _parse_source(source: str) -> ast.AST | None:
         return None
 
 
-def _numeric_value(node: ast.AST) -> int | float | None:
-    if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)) and not isinstance(node.value, bool):
-        return node.value
-    if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.USub):
-        inner = _numeric_value(node.operand)
-        if inner is None:
-            return None
-        return -inner
-    return None
-
-
 def _line_bounds(node: ast.AST) -> tuple[int, int]:
     start = getattr(node, "lineno", 0)
     end = getattr(node, "end_lineno", start)
     return start, end
 
 
+def _parent_map(tree: ast.AST) -> dict[ast.AST, ast.AST]:
+    parents: dict[ast.AST, ast.AST] = {}
+    for parent in ast.walk(tree):
+        for child in ast.iter_child_nodes(parent):
+            parents[child] = parent
+    return parents
+
+
+def _function_nodes(tree: ast.AST) -> list[ast.FunctionDef | ast.AsyncFunctionDef]:
+    return [n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
+
+
+def _class_nodes(tree: ast.AST) -> list[ast.ClassDef]:
+    return [n for n in ast.walk(tree) if isinstance(n, ast.ClassDef)]
+
+
+def _effective_code_lines(source_lines: list[str]) -> list[str]:
+    lines: list[str] = []
+    for raw in source_lines:
+        line = raw.split("#", 1)[0].strip()
+        if not line:
+            continue
+        if line.lower() in {"pass", "return", "return none", "continue", "break"}:
+            continue
+        lines.append(re.sub(r"\s+", " ", line))
+    return lines
+
+
+def _attribute_name(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        parent = _attribute_name(node.value)
+        if parent:
+            return f"{parent}.{node.attr}"
+    return None
+
+
 # =========================
-# 指标 1：模块划分（20）
+# 指标 1：复杂度控制（15）
 # =========================
-def _indicator_1_modularity(tree: ast.AST) -> dict[str, Any]:
-    functions = [n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
-    classes = [n for n in ast.walk(tree) if isinstance(n, ast.ClassDef)]
+def _fallback_cyclomatic_complexities(tree: ast.AST) -> list[int]:
+    decision_nodes = (
+        ast.If,
+        ast.For,
+        ast.AsyncFor,
+        ast.While,
+        ast.IfExp,
+        ast.ExceptHandler,
+        ast.Assert,
+        ast.comprehension,
+    )
 
-    num_functions = len(functions)
-    num_classes = len(classes)
+    def complexity(node: ast.AST) -> int:
+        score = 1
+        for child in ast.walk(node):
+            if child is node:
+                continue
+            if isinstance(child, decision_nodes):
+                score += 1
+            elif isinstance(child, ast.BoolOp):
+                score += max(0, len(child.values) - 1)
+        return score
 
-    # 子项 A：函数规模（10分）
-    if num_functions == 0:
-        function_scale_score = 0
-    elif 1 <= num_functions <= 3:
-        function_scale_score = 3
-    elif 4 <= num_functions <= 8:
-        function_scale_score = 7
-    elif 9 <= num_functions <= 20:
-        function_scale_score = 10
-    elif 21 <= num_functions <= 40:
-        function_scale_score = 8
+    functions = _function_nodes(tree)
+    if functions:
+        return [complexity(fn) for fn in functions]
+    return [complexity(tree)]
+
+
+def _radon_cyclomatic_complexities(source: str) -> tuple[list[int], str]:
+    try:
+        from radon.complexity import cc_visit  # type: ignore
+    except Exception:
+        return [], "ast_fallback"
+
+    try:
+        blocks = cc_visit(source)
+    except Exception:
+        return [], "ast_fallback"
+
+    complexities = [int(block.complexity) for block in blocks if getattr(block, "complexity", None) is not None]
+    return complexities, "radon"
+
+
+def _max_nesting_depth_in_node(node: ast.AST) -> int:
+    control_nodes = (ast.If, ast.For, ast.While, ast.AsyncFor)
+
+    def walk(current: ast.AST, depth: int) -> int:
+        next_depth = depth + 1 if isinstance(current, control_nodes) else depth
+        best = next_depth
+        for child in ast.iter_child_nodes(current):
+            best = max(best, walk(child, next_depth))
+        return best
+
+    return walk(node, 0)
+
+
+def _indicator_1_complexity(source: str, tree: ast.AST) -> dict[str, Any]:
+    functions = _function_nodes(tree)
+    lengths = [max(0, _line_bounds(fn)[1] - _line_bounds(fn)[0] + 1) for fn in functions]
+    max_func_length = max(lengths, default=0)
+    avg_func_length = mean(lengths) if lengths else 0.0
+    max_depth = max((_max_nesting_depth_in_node(fn) for fn in functions), default=0)
+
+    complexities, method = _radon_cyclomatic_complexities(source)
+    if not complexities:
+        complexities = _fallback_cyclomatic_complexities(tree)
+        method = "ast_fallback"
+
+    max_cc = max(complexities, default=0)
+    avg_cc = mean(complexities) if complexities else 0.0
+
+    if max_cc <= 8 and avg_cc <= 4:
+        cc_score = 9
+    elif max_cc <= 12 and avg_cc <= 6:
+        cc_score = 7
+    elif max_cc <= 18 and avg_cc <= 8:
+        cc_score = 5
+    elif max_cc <= 25 and avg_cc <= 10:
+        cc_score = 3
     else:
-        function_scale_score = 6
+        cc_score = 0
 
-    # 子项 B：类结构（5分）
-    if num_classes == 0:
-        class_structure_score = 0
-    elif 1 <= num_classes <= 2:
-        class_structure_score = 3
-    elif 3 <= num_classes <= 6:
-        class_structure_score = 5
+    if max_func_length <= 50 and avg_func_length <= 35:
+        length_score = 3
+    elif max_func_length <= 80:
+        length_score = 2
+    elif max_func_length <= 120:
+        length_score = 1
     else:
-        class_structure_score = 4
+        length_score = 0
 
-    # 子项 C：职责分离（5分）
-    function_names = [f.name.lower() for f in functions]
-    responsibility_hits = 0
-    for keyword in RESPONSIBILITY_KEYWORDS:
-        if any(keyword in fn for fn in function_names):
-            responsibility_hits += 1
-
-    if responsibility_hits <= 1:
-        responsibility_score = 0
-    elif responsibility_hits <= 3:
-        responsibility_score = 2
-    elif responsibility_hits <= 5:
-        responsibility_score = 4
+    if max_depth <= 3:
+        depth_score = 3
+    elif max_depth == 4:
+        depth_score = 2
+    elif max_depth == 5:
+        depth_score = 1
     else:
-        responsibility_score = 5
-
-    score = function_scale_score + class_structure_score + responsibility_score
-    score = min(20, score)
+        depth_score = 0
 
     return {
-        "score": score,
-        "num_functions": num_functions,
-        "num_classes": num_classes,
-        "responsibility_hits": responsibility_hits,
-        "function_scale_score": function_scale_score,
-        "class_structure_score": class_structure_score,
-        "responsibility_score": responsibility_score,
+        "score": cc_score + length_score + depth_score,
+        "method": method,
+        "cyclomatic_complexities": complexities,
+        "max_cc": max_cc,
+        "avg_cc": avg_cc,
+        "max_func_length": max_func_length,
+        "avg_func_length": avg_func_length,
+        "max_depth": max_depth,
+        "cc_score": cc_score,
+        "length_score": length_score,
+        "depth_score": depth_score,
     }
 
 
@@ -118,118 +209,311 @@ def _indicator_1_modularity(tree: ast.AST) -> dict[str, Any]:
 # 指标 2：代码复用（20）
 # =========================
 def _indicator_2_reuse(tree: ast.AST, source_lines: list[str]) -> dict[str, Any]:
-    # 行级重复：去掉空行和纯注释行后做频次统计。
-    trivial_lines = {"pass", "return", "return none", "continue", "break"}
-    effective_lines = []
-    for raw in source_lines:
-        # 去掉行内注释后再统计，避免同一语句因注释不同被误判成不重复。
-        line = raw.split("#", 1)[0].strip()
-        if not line:
-            continue
-        # 忽略低信息量语句，降低误罚概率。
-        if line.lower() in trivial_lines:
-            continue
-        effective_lines.append(line)
-
-    total_effective = len(effective_lines)
-    counter = Counter(effective_lines)
-    duplicated_lines = sum(count - 1 for count in counter.values() if count > 1)
-    duplicate_ratio = duplicated_lines / total_effective if total_effective > 0 else 0.0
-
-    if duplicate_ratio > 0.3:
-        base_score = 0
-    elif duplicate_ratio > 0.2:
-        base_score = 8
-    elif duplicate_ratio > 0.1:
-        base_score = 15
+    effective_lines = _effective_code_lines(source_lines)
+    ngram_size = 4
+    if len(effective_lines) >= ngram_size:
+        blocks = [tuple(effective_lines[i : i + ngram_size]) for i in range(len(effective_lines) - ngram_size + 1)]
     else:
-        base_score = 20
+        blocks = []
 
-    # 复用加分：有自定义函数被调用次数 >=2。
-    defined_funcs = {
-        n.name
-        for n in ast.walk(tree)
-        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
-    }
+    block_counter = Counter(blocks)
+    duplicated_blocks = sum(count - 1 for count in block_counter.values() if count > 1)
+    duplicate_block_ratio = duplicated_blocks / len(blocks) if blocks else 0.0
+
+    if duplicate_block_ratio <= 0.03:
+        duplication_score = 20
+    elif duplicate_block_ratio <= 0.08:
+        duplication_score = 15
+    elif duplicate_block_ratio <= 0.15:
+        duplication_score = 10
+    elif duplicate_block_ratio <= 0.25:
+        duplication_score = 5
+    else:
+        duplication_score = 0
+
+    defined_funcs = {n.name for n in _function_nodes(tree)}
     call_counter: Counter[str] = Counter()
     for node in ast.walk(tree):
-        if not isinstance(node, ast.Call):
-            continue
-        if isinstance(node.func, ast.Name) and node.func.id in defined_funcs:
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id in defined_funcs:
             call_counter[node.func.id] += 1
+    reused_func_count = sum(1 for count in call_counter.values() if count >= 2)
 
-    reused_func_count = sum(1 for _, c in call_counter.items() if c >= 2)
-    bonus = 2 if reused_func_count > 0 else 0
-
-    score = min(20, base_score + bonus)
     return {
-        "score": score,
-        "duplicate_ratio": duplicate_ratio,
-        "duplicated_lines": duplicated_lines,
-        "effective_lines": total_effective,
+        "score": duplication_score,
+        "method": "normalized_4_line_block_similarity",
+        "duplicate_block_ratio": duplicate_block_ratio,
+        "duplicated_blocks": duplicated_blocks,
+        "total_blocks": len(blocks),
+        "effective_lines": len(effective_lines),
         "reused_func_count": reused_func_count,
-        "base_score": base_score,
-        "bonus": bonus,
     }
 
 
 # =========================
-# 指标 3：命名规范（15）
+# 指标 3：常量使用（15）
 # =========================
-def _is_good_name(name: str) -> bool:
-    n = name.strip().lower()
-    if len(n) < 2:
+def _literal_numeric_value(node: ast.Constant, parents: dict[ast.AST, ast.AST]) -> int | float | None:
+    if not isinstance(node.value, (int, float)) or isinstance(node.value, bool):
+        return None
+    value: int | float = node.value
+    parent = parents.get(node)
+    if isinstance(parent, ast.UnaryOp) and isinstance(parent.op, ast.USub):
+        value = -value
+    return value
+
+
+def _assignment_targets_upper(assign_node: ast.AST) -> bool:
+    targets: list[ast.AST] = []
+    if isinstance(assign_node, ast.Assign):
+        targets = list(assign_node.targets)
+    elif isinstance(assign_node, ast.AnnAssign):
+        targets = [assign_node.target]
+
+    for target in targets:
+        if isinstance(target, ast.Name) and UPPER_CASE_RE.match(target.id):
+            return True
+        if isinstance(target, (ast.Tuple, ast.List)):
+            if any(isinstance(item, ast.Name) and UPPER_CASE_RE.match(item.id) for item in target.elts):
+                return True
+    return False
+
+
+def _inside_upper_constant_assignment(node: ast.AST, parents: dict[ast.AST, ast.AST]) -> bool:
+    current = node
+    while current in parents:
+        current = parents[current]
+        if isinstance(current, (ast.Assign, ast.AnnAssign)):
+            return _assignment_targets_upper(current)
+    return False
+
+
+def _inside_range_boundary(node: ast.AST, parents: dict[ast.AST, ast.AST]) -> bool:
+    current = node
+    while current in parents:
+        current = parents[current]
+        if isinstance(current, ast.Call) and _attribute_name(current.func) == "range":
+            return True
+        if isinstance(current, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            return False
+    return False
+
+
+def _constant_numeric_values(tree: ast.AST, parents: dict[ast.AST, ast.AST]) -> set[int | float]:
+    values: set[int | float] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Constant):
+            value = _literal_numeric_value(node, parents)
+            if value is not None and _inside_upper_constant_assignment(node, parents):
+                values.add(value)
+    return values
+
+
+def _indicator_3_constants(tree: ast.AST, source_lines: list[str]) -> dict[str, Any]:
+    parents = _parent_map(tree)
+    constant_values = _constant_numeric_values(tree, parents)
+    numeric_literals = 0
+    magic_numbers = 0
+
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Constant):
+            continue
+        value = _literal_numeric_value(node, parents)
+        if value is None or value in IGNORED_NUMBERS:
+            continue
+        if _inside_range_boundary(node, parents):
+            continue
+
+        numeric_literals += 1
+        if _inside_upper_constant_assignment(node, parents):
+            continue
+        if value in constant_values:
+            continue
+        magic_numbers += 1
+
+    effective_lines = max(1, len(_effective_code_lines(source_lines)))
+    magic_density = magic_numbers / effective_lines
+
+    if magic_density <= 0.03:
+        score = 15
+    elif magic_density <= 0.07:
+        score = 10
+    elif magic_density <= 0.12:
+        score = 5
+    else:
+        score = 0
+
+    if numeric_literals > 2 and not constant_values:
+        score = min(score, 5)
+
+    return {
+        "score": score,
+        "method": "ast_magic_number_density",
+        "constants_count": len(constant_values),
+        "constant_values": sorted(constant_values),
+        "numeric_literals": numeric_literals,
+        "magic_numbers": magic_numbers,
+        "effective_lines": effective_lines,
+        "magic_density": magic_density,
+    }
+
+
+# =========================
+# 指标 4：命名规范（15）
+# =========================
+def _is_descriptive_name(name: str) -> bool:
+    stripped = name.strip("_").lower()
+    if len(stripped) < 2:
         return False
-    if n in BAD_NAMES:
+    if stripped in BAD_NAMES:
         return False
     return True
 
 
-def _indicator_3_naming(tree: ast.AST) -> dict[str, Any]:
-    names: list[str] = []
+def _indicator_4_naming(tree: ast.AST) -> dict[str, Any]:
+    checked: list[tuple[str, str, bool]] = []
 
-    # 变量名：仅收集赋值上下文，避免把所有引用都重复计数。
+    for fn in _function_nodes(tree):
+        checked.append(("function", fn.name, bool(SNAKE_CASE_RE.match(fn.name))))
+        for arg in fn.args.args:
+            if arg.arg in {"self", "cls"}:
+                continue
+            checked.append(("parameter", arg.arg, bool(SNAKE_CASE_RE.match(arg.arg))))
+
+    for cls in _class_nodes(tree):
+        checked.append(("class", cls.name, bool(CAP_WORDS_RE.match(cls.name))))
+
     for node in ast.walk(tree):
         if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Store):
-            names.append(node.id)
-        if isinstance(node, ast.arg):
-            names.append(node.arg)
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            names.append(node.name)
+            if UPPER_CASE_RE.match(node.id):
+                checked.append(("constant", node.id, True))
+            else:
+                checked.append(("variable", node.id, bool(SNAKE_CASE_RE.match(node.id))))
 
-    # 去重后再评分，避免同名变量多次赋值导致统计偏差。
-    names = sorted(set(names))
+    unique_checked = sorted(set(checked), key=lambda item: (item[0], item[1]))
+    total = len(unique_checked)
+    convention_ok = sum(1 for _, _, ok in unique_checked if ok)
+    descriptive_ok = sum(1 for _, name, _ in unique_checked if _is_descriptive_name(name))
+    convention_ratio = convention_ok / total if total else 0.0
+    descriptive_ratio = descriptive_ok / total if total else 0.0
 
-    total_names = len(names)
-    if total_names == 0:
-        ratio = 0.0
-        score = 0
-        good_names = 0
-    else:
-        good_names = sum(1 for n in names if _is_good_name(n))
-        ratio = good_names / total_names
-        if ratio > 0.8:
-            score = 15
-        elif ratio > 0.6:
-            score = 10
-        elif ratio > 0.4:
-            score = 6
-        else:
-            score = 0
+    score = round(convention_ratio * 10 + descriptive_ratio * 5)
 
     return {
         "score": score,
-        "total_names": total_names,
-        "good_names": good_names,
-        "ratio": ratio,
+        "method": "pep8_naming_and_generic_name_scan",
+        "total_names": total,
+        "convention_ok": convention_ok,
+        "descriptive_ok": descriptive_ok,
+        "convention_ratio": convention_ratio,
+        "descriptive_ratio": descriptive_ratio,
+        "violations": [
+            {"kind": kind, "name": name}
+            for kind, name, ok in unique_checked
+            if not ok or not _is_descriptive_name(name)
+        ][:50],
     }
 
 
 # =========================
-# 指标 4：注释质量（15）
+# 指标 5：模块划分（20）
+# =========================
+def _is_main_guard(node: ast.AST) -> bool:
+    if not isinstance(node, ast.If):
+        return False
+    test = node.test
+    if not isinstance(test, ast.Compare):
+        return False
+    if not (isinstance(test.left, ast.Name) and test.left.id == "__name__"):
+        return False
+    if len(test.ops) != 1 or not isinstance(test.ops[0], ast.Eq):
+        return False
+    if len(test.comparators) != 1:
+        return False
+    comparator = test.comparators[0]
+    return isinstance(comparator, ast.Constant) and comparator.value == "__main__"
+
+
+def _top_level_executable_count(tree: ast.AST) -> int:
+    count = 0
+    passive = (ast.Import, ast.ImportFrom, ast.Assign, ast.AnnAssign, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+    for node in getattr(tree, "body", []):
+        if isinstance(node, passive):
+            continue
+        if _is_main_guard(node):
+            continue
+        count += 1
+    return count
+
+
+def _indicator_5_modularity(tree: ast.AST) -> dict[str, Any]:
+    functions = _function_nodes(tree)
+    classes = _class_nodes(tree)
+    num_functions = len(functions)
+    num_classes = len(classes)
+    lengths = [max(0, _line_bounds(fn)[1] - _line_bounds(fn)[0] + 1) for fn in functions]
+    max_func_length = max(lengths, default=0)
+    avg_func_length = mean(lengths) if lengths else 0.0
+    has_main_guard = any(_is_main_guard(node) for node in getattr(tree, "body", []))
+    top_level_executable = _top_level_executable_count(tree)
+
+    if num_functions == 0:
+        function_count_score = 0
+    elif num_functions <= 2:
+        function_count_score = 2
+    elif num_functions <= 5:
+        function_count_score = 4
+    else:
+        function_count_score = 5
+
+    if max_func_length <= 40:
+        length_score = 5
+    elif max_func_length <= 70:
+        length_score = 3
+    elif max_func_length <= 100:
+        length_score = 1
+    else:
+        length_score = 0
+
+    main_guard_score = 4 if has_main_guard else 0
+
+    function_names = [fn.name.lower() for fn in functions]
+    responsibility_hits = sum(
+        1 for keyword in RESPONSIBILITY_KEYWORDS if any(keyword in name for name in function_names)
+    )
+    if responsibility_hits >= 6:
+        responsibility_score = 6
+    elif responsibility_hits >= 4:
+        responsibility_score = 4
+    elif responsibility_hits >= 2:
+        responsibility_score = 2
+    else:
+        responsibility_score = 0
+
+    score = function_count_score + length_score + main_guard_score + responsibility_score
+    if top_level_executable > 3:
+        score = max(0, score - 2)
+
+    return {
+        "score": min(20, score),
+        "method": "ast_structure_metrics",
+        "num_functions": num_functions,
+        "num_classes": num_classes,
+        "max_func_length": max_func_length,
+        "avg_func_length": avg_func_length,
+        "has_main_guard": has_main_guard,
+        "top_level_executable_count": top_level_executable,
+        "responsibility_hits": responsibility_hits,
+        "function_count_score": function_count_score,
+        "length_score": length_score,
+        "main_guard_score": main_guard_score,
+        "responsibility_score": responsibility_score,
+    }
+
+
+# =========================
+# 指标 6：注释质量（15）
 # =========================
 def _effective_comment_lines(source_lines: list[str]) -> int:
-    # 防“连续注释刷分”：每个连续注释块最多计 2 行。
     count = 0
     run = 0
     for raw in source_lines:
@@ -237,24 +521,21 @@ def _effective_comment_lines(source_lines: list[str]) -> int:
         if stripped.startswith("#"):
             run += 1
             continue
-
-        if run > 0:
+        if run:
             count += min(run, 2)
             run = 0
-
-    if run > 0:
+    if run:
         count += min(run, 2)
     return count
 
 
-def _docstring_line_count(tree: ast.AST) -> int:
-    # 将模块/函数/类 docstring 折算为注释行，避免漏计说明性文档。
-    total = 0
-    holders = [tree]
-    holders.extend(
-        n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
-    )
+def _docstring_stats(tree: ast.AST) -> tuple[int, int, int]:
+    holders: list[ast.AST] = [tree]
+    holders.extend(_function_nodes(tree))
+    holders.extend(_class_nodes(tree))
 
+    with_docstring = 0
+    docstring_lines = 0
     for holder in holders:
         body = getattr(holder, "body", None)
         if not body:
@@ -262,148 +543,67 @@ def _docstring_line_count(tree: ast.AST) -> int:
         first_stmt = body[0]
         if not isinstance(first_stmt, ast.Expr):
             continue
-
         value = first_stmt.value
         if isinstance(value, ast.Constant) and isinstance(value.value, str):
+            with_docstring += 1
             start = getattr(first_stmt, "lineno", 0)
             end = getattr(first_stmt, "end_lineno", start)
-            total += max(1, end - start + 1)
+            docstring_lines += max(1, end - start + 1)
+    return len(holders), with_docstring, docstring_lines
 
-    return total
 
-
-def _indicator_4_comments(source_lines: list[str], tree: ast.AST) -> dict[str, Any]:
-    total_lines = len(source_lines)
+def _indicator_6_comments(source_lines: list[str], tree: ast.AST) -> dict[str, Any]:
+    total_lines = max(1, len(source_lines))
     hash_comment_lines = _effective_comment_lines(source_lines)
-    docstring_lines = _docstring_line_count(tree)
+    doc_targets, docstring_count, docstring_lines = _docstring_stats(tree)
     comment_lines = hash_comment_lines + docstring_lines
-    ratio = comment_lines / total_lines if total_lines > 0 else 0.0
+    comment_density = comment_lines / total_lines
+    docstring_coverage = docstring_count / doc_targets if doc_targets else 0.0
 
-    if ratio > 0.1:
-        score = 15
-    elif ratio > 0.05:
-        score = 10
-    elif ratio > 0.02:
-        score = 5
+    if 0.04 <= comment_density <= 0.18:
+        density_score = 8
+    elif 0.02 <= comment_density < 0.04 or 0.18 < comment_density <= 0.25:
+        density_score = 5
+    elif comment_density > 0:
+        density_score = 2
     else:
-        score = 0
+        density_score = 0
+
+    if docstring_coverage >= 0.5:
+        docstring_score = 5
+    elif docstring_coverage >= 0.2:
+        docstring_score = 3
+    elif docstring_count > 0:
+        docstring_score = 1
+    else:
+        docstring_score = 0
+    non_noise_score = 2 if 0 < comment_density <= 0.25 else 0
 
     return {
-        "score": score,
+        "score": density_score + docstring_score + non_noise_score,
+        "method": "comment_density_and_docstring_coverage",
         "comment_lines": comment_lines,
         "hash_comment_lines": hash_comment_lines,
         "docstring_lines": docstring_lines,
         "total_lines": total_lines,
-        "ratio": ratio,
+        "comment_density": comment_density,
+        "docstring_targets": doc_targets,
+        "docstring_count": docstring_count,
+        "docstring_coverage": docstring_coverage,
+        "density_score": density_score,
+        "docstring_score": docstring_score,
+        "non_noise_score": non_noise_score,
     }
 
 
-# =========================
-# 指标 5：常量使用（15）
-# =========================
-def _count_constants_and_magic(tree: ast.AST) -> tuple[int, int]:
-    constants_count = 0
-    constant_values: set[int | float] = set()
-
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Assign):
-            if any(isinstance(t, ast.Name) and t.id.isupper() for t in node.targets):
-                constant_value = _numeric_value(node.value)
-                if constant_value is not None:
-                    constants_count += 1
-                    constant_values.add(constant_value)
-        elif isinstance(node, ast.AnnAssign):
-            if isinstance(node.target, ast.Name) and node.target.id.isupper():
-                constant_value = _numeric_value(node.value)
-                if constant_value is not None:
-                    constants_count += 1
-                    constant_values.add(constant_value)
-
-    magic_numbers = 0
-    for node in ast.walk(tree):
-        value = _numeric_value(node)
-        if value is None:
-            continue
-        if value in IGNORED_MAGIC_NUMBERS:
-            continue
-
-        # 如果该数字值已被抽象为常量，则不再记为 magic number。
-        if value in constant_values:
-            continue
-
-        magic_numbers += 1
-
-    return constants_count, magic_numbers
-
-
-def _indicator_5_constants(tree: ast.AST) -> dict[str, Any]:
-    constants_count, magic_numbers = _count_constants_and_magic(tree)
-    ratio = constants_count / (magic_numbers + 1)
-
-    if ratio > 0.7:
-        score = 15
-    elif ratio > 0.4:
-        score = 10
-    elif ratio > 0.2:
-        score = 5
-    else:
-        score = 0
-
+def _zero_indicator_scores() -> dict[str, int]:
     return {
-        "score": score,
-        "constants_count": constants_count,
-        "magic_numbers": magic_numbers,
-        "ratio": ratio,
-    }
-
-
-# =========================
-# 指标 6：复杂度控制（15）
-# =========================
-def _max_nesting_depth_in_node(node: ast.AST) -> int:
-    control_nodes = (ast.If, ast.For, ast.While, ast.AsyncFor)
-
-    def walk(node: ast.AST, depth: int) -> int:
-        next_depth = depth + 1 if isinstance(node, control_nodes) else depth
-        best = next_depth
-        for child in ast.iter_child_nodes(node):
-            best = max(best, walk(child, next_depth))
-        return best
-
-    return walk(node, 0)
-
-
-def _max_function_nesting_depth(functions: list[ast.AST]) -> int:
-    # 复杂度深度只在函数内部计算，避免顶层控制流污染评分。
-    if not functions:
-        return 0
-    return max(_max_nesting_depth_in_node(fn) for fn in functions)
-
-
-def _indicator_6_complexity(tree: ast.AST) -> dict[str, Any]:
-    functions = [n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
-
-    max_func_length = 0
-    for fn in functions:
-        start, end = _line_bounds(fn)
-        fn_len = max(0, end - start + 1)
-        max_func_length = max(max_func_length, fn_len)
-
-    max_depth = _max_function_nesting_depth(functions)
-
-    score = 15
-    if max_func_length > 50:
-        score -= 5
-    if max_depth > 4:
-        score -= 5
-    if max_func_length > 80:
-        score -= 5
-    score = max(0, score)
-
-    return {
-        "score": score,
-        "max_func_length": max_func_length,
-        "max_depth": max_depth,
+        "complexity": 0,
+        "reuse": 0,
+        "constants": 0,
+        "naming": 0,
+        "modularity": 0,
+        "comments": 0,
     }
 
 
@@ -414,19 +614,8 @@ def evaluate_dimension3_code_quality(code_path: Path | str) -> dict[str, Any]:
             "score": 0,
             "score_normalized": 0.0,
             "reason": f"代码文件不存在：{target}",
-            "indicator_scores": {
-                "modularity": 0,
-                "reuse": 0,
-                "naming": 0,
-                "comments": 0,
-                "constants": 0,
-                "complexity": 0,
-            },
-            "category_scores": {
-                "structure": 0,
-                "readability": 0,
-                "maintainability": 0,
-            },
+            "indicator_scores": _zero_indicator_scores(),
+            "category_scores": {"structure": 0, "readability": 0, "maintainability": 0},
             "details": {},
         }
 
@@ -438,47 +627,25 @@ def evaluate_dimension3_code_quality(code_path: Path | str) -> dict[str, Any]:
             "score": 0,
             "score_normalized": 0.0,
             "reason": "Python 语法错误，无法进行代码质量评估。",
-            "indicator_scores": {
-                "modularity": 0,
-                "reuse": 0,
-                "naming": 0,
-                "comments": 0,
-                "constants": 0,
-                "complexity": 0,
-            },
-            "category_scores": {
-                "structure": 0,
-                "readability": 0,
-                "maintainability": 0,
-            },
+            "indicator_scores": _zero_indicator_scores(),
+            "category_scores": {"structure": 0, "readability": 0, "maintainability": 0},
             "details": {},
         }
 
-    # 1) 模块划分
-    d1 = _indicator_1_modularity(tree)
-
-    # 2) 代码复用
+    d1 = _indicator_1_complexity(source, tree)
     d2 = _indicator_2_reuse(tree, lines)
-
-    # 3) 命名规范
-    d3 = _indicator_3_naming(tree)
-
-    # 4) 注释质量
-    d4 = _indicator_4_comments(lines, tree)
-
-    # 5) 常量使用
-    d5 = _indicator_5_constants(tree)
-
-    # 6) 复杂度控制
-    d6 = _indicator_6_complexity(tree)
+    d3 = _indicator_3_constants(tree, lines)
+    d4 = _indicator_4_naming(tree)
+    d5 = _indicator_5_modularity(tree)
+    d6 = _indicator_6_comments(lines, tree)
 
     indicator_scores = {
-        "modularity": d1["score"],
+        "complexity": d1["score"],
         "reuse": d2["score"],
-        "naming": d3["score"],
-        "comments": d4["score"],
-        "constants": d5["score"],
-        "complexity": d6["score"],
+        "constants": d3["score"],
+        "naming": d4["score"],
+        "modularity": d5["score"],
+        "comments": d6["score"],
     }
 
     category_scores = {
@@ -492,16 +659,16 @@ def evaluate_dimension3_code_quality(code_path: Path | str) -> dict[str, Any]:
     return {
         "score": total_score,
         "score_normalized": total_score / 100.0,
-        "reason": "评估完成。",
+        "reason": "评估完成：D3 使用静态工具化/AST 指标，无 LLM 参与。",
         "indicator_scores": indicator_scores,
         "category_scores": category_scores,
         "details": {
-            "indicator_1_modularity": d1,
+            "indicator_1_complexity": d1,
             "indicator_2_reuse": d2,
-            "indicator_3_naming": d3,
-            "indicator_4_comments": d4,
-            "indicator_5_constants": d5,
-            "indicator_6_complexity": d6,
+            "indicator_3_constants": d3,
+            "indicator_4_naming": d4,
+            "indicator_5_modularity": d5,
+            "indicator_6_comments": d6,
         },
     }
 

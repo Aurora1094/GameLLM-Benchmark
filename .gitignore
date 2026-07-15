@@ -1,14 +1,25 @@
 __pycache__/
-*.pyc
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
 .env
 *.env
 
-# Pipeline outputs are generated locally. Existing tracked experiment snapshots
-# remain available, while new runs stay out of normal source changes.
-data/raw/*
-!data/raw/.gitkeep
-data/scores/*
-!data/scores/.gitkeep
-analysis/figures/*
-!analysis/figures/.gitkeep
-runs/
+# Pipeline and analysis outputs.
+/data/raw/*
+!/data/raw/.gitkeep
+/data/scores/*
+!/data/scores/.gitkeep
+/analysis/figures/*
+!/analysis/figures/.gitkeep
+/runs/
+
+# Locally generated reports and reference/source archives.
+/GameBench_D1_D3.pdf
+/GameBench_D1_D3_Overleaf.zip
+/GameBench_D2.pdf
+/GB-D4-main.zip
+/*.zip

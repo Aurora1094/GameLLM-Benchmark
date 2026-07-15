@@ -1,0 +1,17 @@
+# Python 3.10+ is recommended. The codebase uses modern type-hint syntax.
+
+# Core pipeline and prompt/config parsing
+PyYAML>=6.0
+pygame>=2.5.0
+
+# LLM provider clients
+boto3>=1.34.0
+openai>=1.0.0
+anthropic>=0.25.0
+requests>=2.31.0
+google-generativeai>=0.8.0
+
+# Result analysis and visualization
+pandas>=1.5.0
+matplotlib>=3.7.0
+seaborn>=0.12.0

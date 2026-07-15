@@ -1,19 +1,18 @@
-# 游戏列表配置
-# 根据实际存在的 prompt 文件组织
-
+# 正式流水线只启用同时具有 prompt spec 和 D2 检测 recipe 的游戏。
 games:
   easy:
-    - snake              # Prism Relay：延迟残留障碍
-    - flappy_bird        # Pulse Gates：间隙脉冲球
-    - dodge_blocks       # Lane Cipher：固定车道与芯片
-    - pong               # Gate Rally：指定得分门
-  
+    - snake
+    - flappy_bird
+    - pong
   medium:
-    - tetris             # Glyph Stack：自定义五格块
-    - space_invaders     # Polarity Fleet：双色极性射击
-    - pacman             # Switch Maze：顺序开门
-    - super_mario_bros   # Beacon Courier：电池锁定出口
-  
+    - space_invaders
+  hard: []
+
+# 这些游戏已经能构建 Prompt 并运行 D1/D3 demo；补齐 D2 recipe 后再移入 games。
+prompt_only:
+  medium:
+    - "2048"
   hard:
-    - roguelike_dungeon  # Rune Vault：双层顺序符文
-    - tower_defense      # Relay Defense：双色护盾克制
+    - carrot_defense
+    - lode_runner_like
+    - farming_lite

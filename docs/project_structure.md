@@ -2,18 +2,17 @@
 
 ## 1. Source of Truth
 
-运行主链路只依赖以下来源：
-
 | Path | Responsibility |
 |---|---|
-| `run_pipeline.py` | 单次完整实验入口：加载配置、读取 prompt、调用模型、评分、写结果 |
-| `config.py` | 根目录、prompt 目录、数据目录和默认权重路径 |
-| `config/games.yaml` | 启用的游戏 ID，按 `easy / medium / hard` 分组 |
-| `config/models.yaml` | 模型名和 provider |
-| `config/weights.yaml` | 四个评分维度的权重 |
-| `prompts/<difficulty>/<game>/prompt.txt` | 发送给模型的完整任务定义 |
+| `prompts/main.md` | 所有游戏共享的 Prompt 骨架与 D1/D3 开发要求 |
+| `prompts/specs/<difficulty>/<game>.md` | 游戏规则、参数和 D2 checkpoint 单一真源 |
+| `prompt_builder.py` | spec 校验、占位符渲染、Prompt 快照和 checkpoint 加载 |
+| `config/games.yaml` | 正式启用游戏与 prompt-only 游戏分组 |
+| `config/models.yaml` | 模型名称和 provider |
+| `config/weights.yaml` | 四个维度的默认权重 |
 
-任务规则只维护在 `prompt.txt`。不再保留空的 `games/standard.py`、空 `baseline.md` 或未接入流水线的重复任务定义。
+最终 Prompt 不作为维护源提交。每次运行都由 `main.md + spec` 重新构建，并在对应
+run 目录保存精确快照。
 
 ## 2. Runtime Flow
 
@@ -21,57 +20,57 @@
 config/games.yaml
         |
         v
-prompts/<difficulty>/<game>/prompt.txt
+prompts/main.md + prompts/specs/<difficulty>/<game>.md
         |
         v
-run_pipeline.py -> llm_clients/*
-        |
-        v
-data/raw/<run_id>/*.py
-        |
-        v
-evaluator/* -> data/scores/<run_id>/*.json
-        |
-        v
-scripts/visualize_results.py -> analysis/figures/<run_id>/*
+prompt_builder.py -> llm_clients/* -> generated game.py
+        |                                  |
+        |                                  v
+        +---------------------------> evaluator D1-D4
+                                           |
+                                           v
+                              data/scores/<run_id>/
 ```
 
-`evaluator/dimension1` 和 `evaluator/dimension4` 自己负责受控子进程执行。旧的根级 `sandbox/runner.py` 没有被调用，已移除。
+正式 D2 必须同时获得生成 Prompt 所用的 spec 路径。评估器从该文件读取 checkpoint id、
+desc 和 weight，再按 id 选择检测 recipe。不存在 profile 或 recipe 时立即失败。
 
 ## 3. Evaluation Layers
 
 | Path | Responsibility |
 |---|---|
-| `evaluator/dimension1/` | 可导入、窗口、事件循环、运行状态 |
-| `evaluator/dimension2_functionality/` | 游戏专用 D2 静态探针和运行时辅助证据 |
-| `evaluator/dimension3/` | 代码结构、命名、复用、复杂度 |
-| `evaluator/dimension4/` | 可视反馈、流畅度、平衡性、动画表现 |
-| `evaluation/rubrics/` | 评分口径说明 |
-| `evaluation/test_specs/per_game/` | D2 游戏端口清单 |
+| `evaluator/dimension1/` | 六级确定性执行流水线与 D1 gate |
+| `evaluator/dimension2_functionality/` | spec 驱动的游戏功能检测端口 |
+| `evaluator/dimension3/` | 六项 AST/静态代码质量指标 |
+| `evaluator/dimension4/` | 用户体验与视觉交互证据 |
+| `evaluator/main_evaluator.py` | D1 gate、D2-D4 调度与总分 |
+| `evaluation/` | 评分口径和检测端口说明 |
 
-当前 D2 仍以静态关键词和通用运行信号为主。严格 prompt 已增加独特机制；若要自动验证每个像素、颜色和独特机制，下一阶段需要增加专用动态测试端口。
+## 4. Demo
 
-## 4. Generated Data
+`D1_D3_demo/run_demo.py` 调用真实模型、启动生成游戏并保存可审计证据；
+`run_calibration.py` 使用受控 fixtures 验证 D1 阶梯和 D3 定向响应。两条路径复用正式
+Prompt builder 与正式 D1/D3 评估器，不维护复制版本。
 
-| Path | Responsibility |
+`D1_D3_demo/docs/`、`build_pdf.ps1` 和 `build_overleaf.ps1` 是报告源码和构建脚本。
+所有 `runs/`、`results/`、`build/`、`rendered/`、`tmp/` 与下载工具均为本地产物。
+
+## 5. Generated Data
+
+| Path | Generated content |
 |---|---|
 | `data/raw/<run_id>/` | 模型生成的 Python 文件 |
-| `data/scores/<run_id>/` | 评分 JSON 和 `summary.json` |
-| `analysis/figures/<run_id>/` | 图表、矩阵和 CSV |
+| `data/scores/<run_id>/` | 单任务评分与 summary |
+| `analysis/figures/<run_id>/` | 图表、矩阵与 CSV |
+| `D1_D3_demo/runs/<run_id>/` | Prompt、响应、代码、评分和 manifest |
+| `D1_D3_demo/results/` | 校准与报告中间表 |
 
-仓库保留已有实验快照用于复现。`.gitignore` 会忽略后续新运行产生的文件，避免源码修改被实验输出淹没。
+这些目录只保留本地数据，不进入 Git；仓库中仅用 `.gitkeep` 保留主流水线输出目录。
 
-## 5. Utility Scripts
+## 6. Validation
 
-| Command | Responsibility |
-|---|---|
-| `python show_results.py` | 展示最新运行的汇总和逐条评分 |
-| `python print_full_results.py --run <run_id>` | 过滤并打印完整评分 |
-| `python scripts/run_repeated.py --times 5 --plot` | 重复执行流水线并生成稳定性分析 |
-| `python scripts/visualize_results.py --run <run_id>` | 生成单次实验图表 |
-| `python scripts/visualize_repeated_results.py --manifest <path>` | 生成重复实验图表 |
-| `python scripts/check_prompt_contracts.py` | 校验启用 prompt 的章节、公共约束、模糊词和固定地图尺寸 |
-
-## 6. Removed Skeletons
-
-本次删除了未接入主链路的空配置、空文档、空脚本、空基准实现、空 notebook、旧日志、临时 API 探针和重复占位目录。历史 `data/` 与 `analysis/figures/` 保留。
+```powershell
+python scripts/check_prompt_contracts.py
+python -m py_compile prompt_builder.py run_pipeline.py D1_D3_demo/run_demo.py
+python D1_D3_demo/run_calibration.py --check --repeat 3 --runtime-sec 3
+```
