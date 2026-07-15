@@ -1,7 +1,9 @@
-"""GameLLM-Benchmark 主流程入口。"""
+"""GameLLM-Benchmark D1-D4 正式流水线。"""
+import argparse
 import json
 from datetime import datetime
 from pathlib import Path
+from typing import Sequence
 
 import yaml
 
@@ -11,6 +13,24 @@ from evaluator.dimension2_functionality import evaluate_dimension2
 from evaluator.dimension3.dimension3_code_quality import evaluate_dimension3_code_quality
 from evaluator.dimension4.dimension4_ux import evaluate_dimension4_ux
 from prompt_builder import MAIN_TEMPLATE, SPECS_DIR, PromptBuildError, build_prompt
+
+
+def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="生成游戏并执行正式 D1-D4 评估。")
+    parser.add_argument(
+        "--game",
+        action="append",
+        dest="games",
+        help="只运行指定游戏；可重复传入。默认运行 config/games.yaml 中全部正式游戏。",
+    )
+    parser.add_argument(
+        "--model",
+        action="append",
+        dest="models",
+        help="只运行指定模型；可重复传入。默认运行 config/models.yaml 中全部模型。",
+    )
+    parser.add_argument("--main", type=Path, default=MAIN_TEMPLATE, help="统一 Prompt 骨架路径。")
+    return parser.parse_args(argv)
 
 
 def load_config(config_file: Path) -> dict:
@@ -238,7 +258,8 @@ def evaluate_code(
     }
 
 
-def main():
+def main(argv: Sequence[str] | None = None) -> int:
+    args = parse_args(argv)
     print("=" * 60)
     print("GameLLM-Benchmark Pipeline 启动")
     print("=" * 60)
@@ -269,8 +290,27 @@ def main():
         for game in game_list:
             all_games.append({"difficulty": difficulty, "name": game})
 
-    print(f"\n共 {len(all_games)} 个游戏，{len(models_config['models'])} 个模型")
-    print(f"总计 {len(all_games) * len(models_config['models'])} 个测试任务\n")
+    selected_games = set(args.games or [])
+    if selected_games:
+        configured_games = {item["name"] for item in all_games}
+        unknown_games = selected_games - configured_games
+        if unknown_games:
+            names = ", ".join(sorted(unknown_games))
+            raise ValueError(f"游戏没有正式 D2 recipe 或未在 config/games.yaml 启用: {names}")
+        all_games = [item for item in all_games if item["name"] in selected_games]
+
+    model_configs = list(models_config["models"])
+    selected_models = set(args.models or [])
+    if selected_models:
+        configured_models = {item["name"] for item in model_configs}
+        unknown_models = selected_models - configured_models
+        if unknown_models:
+            names = ", ".join(sorted(unknown_models))
+            raise ValueError(f"模型未在 config/models.yaml 配置: {names}")
+        model_configs = [item for item in model_configs if item["name"] in selected_models]
+
+    print(f"\n共 {len(all_games)} 个游戏，{len(model_configs)} 个模型")
+    print(f"总计 {len(all_games) * len(model_configs)} 个测试任务\n")
 
     all_results = []
 
@@ -280,7 +320,7 @@ def main():
         spec_path = SPECS_DIR / difficulty / f"{game_name}.md"
 
         try:
-            prompt = build_prompt(MAIN_TEMPLATE, spec_path)
+            prompt = build_prompt(args.main.resolve(), spec_path)
         except PromptBuildError as exc:
             print(f"[SKIP] 跳过 {game_name}，prompt 构建失败: {exc}")
             continue
@@ -289,7 +329,7 @@ def main():
         print(f"游戏: {game_name} ({difficulty})")
         print(f"{'=' * 60}")
 
-        for model_config in models_config["models"]:
+        for model_config in model_configs:
             model_name = model_config["name"]
             provider = model_config["provider"]
 
@@ -366,7 +406,8 @@ def main():
     print(f"  - 评分结果: {scores_dir}")
     print(f"  - 汇总报告: {summary_path}")
     print(f"{'=' * 60}\n")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

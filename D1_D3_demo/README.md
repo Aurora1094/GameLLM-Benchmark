@@ -9,30 +9,25 @@
 
 ## 真实模型入口
 
-先设置 Bedrock 凭据：
-
-```powershell
-$env:AWS_ACCESS_KEY_ID = "<your-access-key-id>"
-$env:AWS_SECRET_ACCESS_KEY = "<your-secret-access-key>"
-$env:AWS_REGION = "us-east-1"
-```
+将 AWS 导出的凭据文件保存为项目根目录的 `aws_credentials.csv`。统一入口会自动加载，
+且该文件不会进入 Git 或运行产物。
 
 默认仍使用 Pong：
 
 ```powershell
-python D1_D3_demo/run_demo.py
+python main.py demo --game pong
 ```
 
 也可以选择任意已补齐的 spec，例如：
 
 ```powershell
-python D1_D3_demo/run_demo.py --spec prompts/specs/easy/snake.md
-python D1_D3_demo/run_demo.py --spec prompts/specs/easy/flappy_bird.md
-python D1_D3_demo/run_demo.py --spec prompts/specs/medium/space_invaders.md
-python D1_D3_demo/run_demo.py --spec prompts/specs/medium/2048.md
-python D1_D3_demo/run_demo.py --spec prompts/specs/hard/carrot_defense.md
-python D1_D3_demo/run_demo.py --spec prompts/specs/hard/lode_runner_like.md
-python D1_D3_demo/run_demo.py --spec prompts/specs/hard/farming_lite.md
+python main.py demo --game snake
+python main.py demo --game flappy_bird
+python main.py demo --game space_invaders
+python main.py demo --game 2048
+python main.py demo --game carrot_defense
+python main.py demo --game lode_runner_like
+python main.py demo --game farming_lite
 ```
 
 默认调用 `qwen.qwen3-coder-next`。没有凭据时，程序会保存最终 Prompt 和失败证据，

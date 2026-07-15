@@ -17,25 +17,31 @@ main.md + game spec
 
 ## 快速开始
 
-建议使用 Python 3.10 或更高版本：
+建议建立独立 Conda 环境：
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+conda create -n gamebench python=3.11 -y
+conda activate gamebench
+python -m pip install -r requirements.txt
 python scripts/check_prompt_contracts.py
 ```
 
-使用 AWS Bedrock 时，通过环境变量提供凭据，不要把密钥写进配置或提交记录：
+将 AWS 导出的 CSV 放在项目根目录并命名为 `aws_credentials.csv`。该文件已被
+`.gitignore` 排除，`main.py` 只在当前进程中读取 `Access key ID` 和
+`Secret access key`，不会把密钥写入运行产物。
+
+统一入口分为两种模式：
 
 ```powershell
-$env:AWS_ACCESS_KEY_ID = "<access-key-id>"
-$env:AWS_SECRET_ACCESS_KEY = "<secret-access-key>"
-$env:AWS_REGION = "us-east-1"
-python run_pipeline.py
+# 单游戏真实生成，只评 D1/D3，默认 Pong + Qwen3 Coder Next
+python main.py demo --game pong
+
+# 正式项目：同一 Pong Prompt，执行 D1-D4
+python main.py benchmark --game pong --model qwen.qwen3-coder-next
 ```
 
-结果会写入 `data/raw/<run_id>/` 和 `data/scores/<run_id>/`，这些目录默认忽略。
+demo 结果写入 `D1_D3_demo/runs/<run_id>/`；正式结果写入 `data/raw/<run_id>/`
+和 `data/scores/<run_id>/`。这些目录均默认忽略。
 
 ## Prompt 架构
 
@@ -73,16 +79,20 @@ D1 同时输出连续能力分 `passed_steps / 6` 和准入闸门 `gate_pass`。
 
 ## D1/D3 Demo
 
-`D1_D3_demo/` 提供两条可复现路径：
+`D1_D3_demo/` 提供真实模型生成和评分器校准两条路径。真实生成优先从统一入口启动：
 
 ```powershell
-# 真实模型：默认 Pong，也可通过 --spec 切换游戏
-python D1_D3_demo/run_demo.py
-python D1_D3_demo/run_demo.py --spec prompts/specs/easy/snake.md
+# 真实模型：两个命令都读取 prompts/main.md，再注入对应 game spec
+python main.py demo --game pong
+python main.py demo --game snake
 
 # 评分器校准：受控 D1 阶梯与 D3 定向退化样例
 python D1_D3_demo/run_calibration.py --check --repeat 3 --runtime-sec 3
 ```
+
+demo 和正式项目共享 D1/D3 实现。D1 顺序固定为语法、pygame 依赖、窗口、事件循环、
+短时稳定和可控退出；D3 顺序固定为复杂度、复用、常量、命名、模块化和注释，与
+`prompts/main.md` 中的要求逐项对应。正式项目仅额外接入 D2 和 D4，并执行 D1 闸门。
 
 真实生成与校准结果分别写入 `D1_D3_demo/runs/` 和 `D1_D3_demo/results/`，均不提交。
 详细证据结构和报告构建方法见 `D1_D3_demo/README.md`。
@@ -91,6 +101,7 @@ python D1_D3_demo/run_calibration.py --check --repeat 3 --runtime-sec 3
 
 | 路径 | 职责 |
 |---|---|
+| `main.py` | demo 与正式 benchmark 的统一命令入口 |
 | `config/` | 正式游戏、模型和评分权重 |
 | `prompts/` | Prompt 总骨架、spec schema 和游戏规格 |
 | `llm_clients/` | Bedrock、OpenAI、Anthropic、Qwen、Gemini 客户端 |
@@ -107,7 +118,8 @@ python D1_D3_demo/run_calibration.py --check --repeat 3 --runtime-sec 3
 
 ```powershell
 python scripts/check_prompt_contracts.py
-python run_pipeline.py
+python main.py demo --game pong
+python main.py benchmark --game pong --model qwen.qwen3-coder-next
 python show_results.py
 python print_full_results.py --run <run_id>
 python scripts/run_repeated.py --times 5 --plot

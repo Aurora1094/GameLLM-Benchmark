@@ -107,7 +107,7 @@ D3 必须同时保存每项原始静态证据，不能只输出总分。
 真实模型生成：
 
 ```powershell
-python D1_D3_demo/run_demo.py
+python main.py demo --game pong
 ```
 
 评分器辅助校准：

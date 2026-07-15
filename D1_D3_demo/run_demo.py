@@ -11,7 +11,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 
 DEMO_ROOT = Path(__file__).resolve().parent
@@ -32,7 +32,7 @@ DEFAULT_RUNS_ROOT = DEMO_ROOT / "runs"
 FENCE_PATTERN = re.compile(r"```(?P<label>[A-Za-z0-9_-]*)\s*\n(?P<code>.*?)```", re.DOTALL)
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Generate a game from a prompt spec with a real LLM, execute it, and report D1/D3."
     )
@@ -55,7 +55,7 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Replay saved model text for plumbing tests; this is never labeled as a live generation.",
     )
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
 def safe_slug(value: str) -> str:
@@ -363,8 +363,8 @@ def evaluate_generated_game(
     summary["status"] = "completed"
 
 
-def main() -> int:
-    args = parse_args()
+def main(argv: Sequence[str] | None = None) -> int:
+    args = parse_args(argv)
     if args.runtime_sec < 3:
         raise ValueError("--runtime-sec must be at least 3")
     if args.max_tokens < 1:

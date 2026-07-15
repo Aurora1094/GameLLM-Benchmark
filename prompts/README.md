@@ -45,8 +45,8 @@ python -c "from prompt_builder import build_prompt; print(build_prompt('easy', '
 让 D1/D3 demo 用指定游戏调用真实模型：
 
 ```powershell
-python D1_D3_demo/run_demo.py --spec prompts/specs/easy/snake.md
-python D1_D3_demo/run_demo.py --spec prompts/specs/medium/2048.md
+python main.py demo --game snake
+python main.py demo --game 2048
 ```
 
 从给定 DOCX 压缩包重新导入七份规格：
