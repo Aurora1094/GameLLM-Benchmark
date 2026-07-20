@@ -1,0 +1,60 @@
+{
+  "gate_pass": false,
+  "indicators": {
+    "dependency_initialization_complete": 1,
+    "event_handling_mechanism": 1,
+    "process_controllability": 0,
+    "python_syntax_correct": 1,
+    "short_runtime_stable": 0,
+    "window_creation": 1
+  },
+  "pipeline_steps_passed": 4,
+  "raw_pass_count": 4,
+  "reason": "5. 短时间运行不稳定，程序崩溃或在检测窗口内提前退出。 | 6. 进程可控性不足，注入 QUIT 后未能在超时内干净退出。",
+  "runtime": {
+    "diagnosis": "crash",
+    "env_notice": "",
+    "file_found": true,
+    "pygame_available": true,
+    "pygame_import_ok": true,
+    "quit_probe": null,
+    "stability_probe": {
+      "event_fetch_seen": false,
+      "mode": "stability",
+      "quit_posted": false,
+      "returncode": 1,
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 72, in <module>\n  File \"<frozen runpy>\", line 291, in run_path\n  File \"<frozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\D1_D3_demo\\runs\\20260720_official_pong_deepseek_03\\generated\\pong__deepseek.v3.2.py\", line 258, in <module>\n    game = Game()\n           ^^^^^^\n  File \"C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\D1_D3_demo\\runs\\20260720_official_pong_deepseek_03\\generated\\pong__deepseek.v3.2.py\", line 98, in __init__\n    self.font = pygame.font.SysFont(None, FONT_SIZE)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\19902\\AppData\\Roaming\\Python\\Python311\\site-packages\\pygame\\sysfont.py\", line 416, in SysFont\n    initsysfonts()\n  File \"C:\\Users\\19902\\AppData\\Roaming\\Python\\Python311\\site-packages\\pygame\\sysfont.py\", line 355, in initsysfonts\n    fonts = initsysfonts_win32()\n            ^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\19902\\AppData\\Roaming\\Python\\Python311\\site-packages\\pygame\\sysfont.py\", line 82, in initsysfonts_win32\n    if splitext(font)[1].lower() not in OpenType_extensions:\n       ^^^^^^^^^^^^^^\n  File \"<frozen ntpath>\", line 232, in splitext\nTypeError: expected str, bytes or os.PathLike object, not int\n",
+      "stdout": "pygame 2.6.1 (SDL 2.28.4, Python 3.11.4)\nHello from the pygame community. https://www.pygame.org/contribute.html\n__D1_WINDOW_CREATED__\n__D1_WINDOW_SURFACE__\n",
+      "surface_returned": true,
+      "timed_out": false,
+      "window_created": true
+    }
+  },
+  "score": 0.6666666666666666,
+  "step_order": [
+    [
+      "python_syntax_correct",
+      "Python 语法正确性"
+    ],
+    [
+      "dependency_initialization_complete",
+      "导入 pygame"
+    ],
+    [
+      "window_creation",
+      "图形窗口创建能力"
+    ],
+    [
+      "event_handling_mechanism",
+      "事件循环处理完整性"
+    ],
+    [
+      "short_runtime_stable",
+      "短时间运行稳定性"
+    ],
+    [
+      "process_controllability",
+      "执行进程可控性"
+    ]
+  ]
+}

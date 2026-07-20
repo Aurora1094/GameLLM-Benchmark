@@ -1,0 +1,27 @@
+{
+  "scores": {
+    "abstraction_and_responsibility": 3,
+    "semantic_readability": 3,
+    "comment_usefulness": 0,
+    "changeability_and_testability": 2
+  },
+  "total": 8,
+  "evidence": {
+    "abstraction_and_resuscitation": {
+      "reason": "Basic encapsulation in Paddle and Ball classes is present, but responsibilities are mixed: AI movement and collision detection are in main(), and the Ball.move() method returns a domain-specific score signal.",
+      "lines": [13, 23, 27, 45, v76, 79, 85]
+    },
+    "semantic_readability": {
+      "reason": "Named constants and simple functions aid readability. Dense logic (collision, scoring, AI movement) combined into one main loop without clear sections reduces flow.",
+      "lines": [8, 11, 81, 85, 90, 93]
+    },
+    "comment_usefulness": {
+      "reason": "No comments exist to explain intent, trade-offs, or non-obvious logic.",
+      "lines": []
+    },
+    "changeability_and_testability": {
+      "reason": "Game constants are centralized, but AI logic, scoring rules, and collision are interwoven; testing single components would require significant mocking.",
+      "lines": [8, 11, 80, 85, 93]
+    }
+  }
+}

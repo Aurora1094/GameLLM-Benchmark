@@ -1,0 +1,64 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "error": {
+        "message": "Judge evidence abstraction_and_responsibility.lines contains invalid line numbers",
+        "type": "ValueError"
+      },
+      "latency_seconds": 12.386262,
+      "prompt_sha256": "02f4ffaca424a104b7f37a8d8ef3a1f3803aaaac0bb83909f9f9d616fdca8888",
+      "raw_response_sha256": "bc0c617c2d03cffe9c5c3d600c88d3cb9a0635fdfc2e6da49fbc9b53bf2f4c5c",
+      "status": "failed"
+    },
+    {
+      "attempt": 2,
+      "latency_seconds": 5.24889,
+      "prompt_sha256": "a16e3afc9a523c45699b710efa9dede7dcac660ae85445d08db9d86e9229024c",
+      "raw_response_sha256": "083e8131fa5796c43fdb8f81ff712757bb04addaa9007030682876abb2a4249b",
+      "status": "completed"
+    }
+  ],
+  "evidence": {
+    "abstraction_and_responsibility": {
+      "lines": [
+        21,
+        38,
+        45,
+        83
+      ],
+      "reason": "The Paddle and Ball classes encapsulate their respective responsibilities well, but the main game logic is tightly coupled within the main function."
+    },
+    "changeability_and_testability": {
+      "lines": [
+        83,
+        94
+      ],
+      "reason": "The game logic is mostly contained within the main function, making it less changeable and testable. Extracting more functions would improve this."
+    },
+    "comment_usefulness": {
+      "lines": [],
+      "reason": "There are no comments in the code, which would be useful for explaining the game logic and flow."
+    },
+    "semantic_readability": {
+      "lines": [
+        59,
+        68,
+        77,
+        83
+      ],
+      "reason": "The code is generally readable with clear variable and function names, though some logic within the main loop could be further clarified."
+    }
+  },
+  "http_status_code": 200,
+  "model": "amazon.nova-pro-v1:0",
+  "request_id": "cf8ca680-5a8e-40cd-8fca-d2660f79b1b1",
+  "scores": {
+    "abstraction_and_responsibility": 3,
+    "changeability_and_testability": 2,
+    "comment_usefulness": 0,
+    "semantic_readability": 3
+  },
+  "status": "completed",
+  "total": 8
+}

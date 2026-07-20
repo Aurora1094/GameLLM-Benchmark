@@ -1,0 +1,67 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "latency_seconds": 11.502851,
+      "prompt_sha256": "425941118012691a86326bbf84e223e57c1a0b4dd4b90701a35b95286ca8fa7f",
+      "raw_response_sha256": "a75ebe37f40f1d09f79bbf85118243d9eeb421d38357b6f638c7e0ad6399b192",
+      "status": "completed"
+    }
+  ],
+  "evidence": {
+    "abstraction_and_responsibility": {
+      "lines": [
+        67,
+        133,
+        184,
+        202,
+        210
+      ],
+      "reason": "The Game class handles events, rendering, game loop, AI logic, win conditions, and reset state—all violating separation of concerns. For example, handle_events() processes input while draw_game_over() contains its own event loop and blocking wait, and update_ai() directly modifies AI paddle position instead of delegating movement control. Lines 67-104, 133-150, 184-200, 202-215"
+    },
+    "changeability_and_testability": {
+      "lines": [
+        47,
+        48,
+        49,
+        108,
+        176
+      ],
+      "reason": "Hard dependency on time.time() and pygame modules prevents mocking or deterministic testing (e.g., Ball.reset() at lines 47-57). Game state is mutable and scattered (self.game_over, self.start_time, self.game_over_message). Methods like draw_game_over() use blocking loops instead of returning control, making unit testing impossible. Lines 47, 48, 49, 108, 176"
+    },
+    "comment_usefulness": {
+      "lines": [
+        26,
+        43,
+        63,
+        104
+      ],
+      "reason": "Most comments are tautological (e.g., Line 43 '边界检查', Line 63 '初始化游戏对象') or generic (Line 26 '游戏方向常量'). The comment on line 63 repeats the code without clarifying design intent. A comment explaining *why* the AI uses random error (line 104 'AI 逻辑：尝试让球拍中心对准球的中心') would be useful but is missing. Lines 26, 43, 63, 104"
+    },
+    "semantic_readability": {
+      "lines": [
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        176
+      ],
+      "reason": "Variable names like speed_multiplier and Ball.reset() usage obscure intent. The reset() method in Ball is non-obvious because it reinitializes speed based on time.time() (lines 47-57), making behavior non-deterministic and hard to follow. Also, draw_game_over() has a busy-wait loop that blocks and obscures control flow. Lines 47-57, 176-196"
+    }
+  },
+  "http_status_code": 200,
+  "model": "qwen.qwen3-coder-next",
+  "request_id": "f011de19-c34f-452e-b415-66b18cce139c",
+  "scores": {
+    "abstraction_and_responsibility": 3,
+    "changeability_and_testability": 2,
+    "comment_usefulness": 1,
+    "semantic_readability": 3
+  },
+  "status": "completed",
+  "total": 9
+}

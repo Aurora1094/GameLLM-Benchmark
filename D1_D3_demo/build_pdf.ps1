@@ -1,5 +1,6 @@
 param(
-    [switch]$SkipDemo
+    [switch]$SkipDemo,
+    [string]$OutputPath
 )
 
 $ErrorActionPreference = "Stop"
@@ -112,11 +113,27 @@ finally {
 }
 
 $BuiltPdf = Join-Path $BuildDir "$DocumentName.pdf"
-$FinalPdf = Join-Path $RepoRoot "$DocumentName.pdf"
+$FinalPdf = if ([string]::IsNullOrWhiteSpace($OutputPath)) {
+    Join-Path $RepoRoot "$DocumentName.pdf"
+}
+elseif ([System.IO.Path]::IsPathRooted($OutputPath)) {
+    [System.IO.Path]::GetFullPath($OutputPath)
+}
+else {
+    [System.IO.Path]::GetFullPath((Join-Path $RepoRoot $OutputPath))
+}
+$FinalPdfParent = Split-Path -Parent $FinalPdf
+New-Item -ItemType Directory -Force $FinalPdfParent | Out-Null
 Copy-Item -LiteralPath $BuiltPdf -Destination $FinalPdf -Force
+$DocumentRelativePath = if ($FinalPdf.StartsWith($RepoRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+    $FinalPdf.Substring($RepoRoot.Length).TrimStart([char[]]'\/').Replace('\', '/')
+}
+else {
+    $FinalPdf.Replace('\', '/')
+}
 $SourceTex = Join-Path (Join-Path $DemoRoot "docs") "$DocumentName.tex"
 $DocumentRecord = [pscustomobject]@{
-    path = "$DocumentName.pdf"
+    path = $DocumentRelativePath
     size_bytes = (Get-Item -LiteralPath $FinalPdf).Length
     sha256 = (Get-FileHash -LiteralPath $FinalPdf -Algorithm SHA256).Hash.ToLowerInvariant()
     source_tex = "D1_D3_demo/docs/$DocumentName.tex"

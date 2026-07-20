@@ -1,0 +1,78 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "error": {
+        "message": "Judge response contains no JSON object",
+        "type": "ValueError"
+      },
+      "latency_seconds": 3.514356,
+      "prompt_sha256": "cd31e58ad7c567266537667cc765aad4ab61730e61800888691dc7346299a74e",
+      "raw_response_sha256": "7d32855848b1b0fcee4d18caecc9c8d6e1c0fbf3b3c44b9f949edb97d3d0c239",
+      "status": "failed"
+    },
+    {
+      "attempt": 2,
+      "error": {
+        "message": "Judge evidence changeability_and_testability.lines contains invalid line numbers",
+        "type": "ValueError"
+      },
+      "latency_seconds": 4.541569,
+      "prompt_sha256": "19ab7d045ff31052af2aa6d446ed193978f72a147e5a0995a00014bcb0a31171",
+      "raw_response_sha256": "d8c8b6635519dc1b0a9bfa000099897ba4a91eb4962817192b2e997a6d8a768f",
+      "status": "failed"
+    },
+    {
+      "attempt": 3,
+      "latency_seconds": 4.182872,
+      "prompt_sha256": "0254627206a2410dc28b532d78811da9320ef2c957e68cbc11205a7fb8b0eaf5",
+      "raw_response_sha256": "90c93c7bcfdf91782a8269c2420def42371422c075ec7cfbdb5ba46662156d3d",
+      "status": "completed"
+    }
+  ],
+  "evidence": {
+    "abstraction_and_responsibility": {
+      "lines": [
+        50,
+        80,
+        110
+      ],
+      "reason": "The code is well-structured with clear separation of concerns. The Paddle, Ball, and Game classes encapsulate their respective responsibilities. However, the Game class handles both game logic and rendering, which could be further separated for better abstraction."
+    },
+    "changeability_and_testability": {
+      "lines": [
+        110,
+        120,
+        130
+      ],
+      "reason": "The code is somewhat changeable and testable, but the tight coupling between game logic and rendering in the Game class makes it less flexible. Separating these concerns would improve testability."
+    },
+    "comment_usefulness": {
+      "lines": [
+        10,
+        20,
+        30
+      ],
+      "reason": "Most comments are not useful as they merely repeat the code. Only a few comments provide additional context or explanation."
+    },
+    "semantic_readability": {
+      "lines": [
+        10,
+        20,
+        30
+      ],
+      "reason": "The code is generally readable with consistent naming conventions and clear method names. However, some comments are redundant and do not add value."
+    }
+  },
+  "http_status_code": 200,
+  "model": "amazon.nova-pro-v1:0",
+  "request_id": "cfb4f534-f5b1-403f-8770-297c24934adf",
+  "scores": {
+    "abstraction_and_responsibility": 4,
+    "changeability_and_testability": 2,
+    "comment_usefulness": 1,
+    "semantic_readability": 3
+  },
+  "status": "completed",
+  "total": 10
+}

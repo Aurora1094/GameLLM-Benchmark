@@ -1,0 +1,11 @@
+{
+  "candidate_identity_in_prompt": false,
+  "created_at_utc": "2026-07-20T14:15:56.129211+00:00",
+  "max_tokens": 2000,
+  "model": "amazon.nova-pro-v1:0",
+  "prompt_path": "prompts/d3_judge.txt",
+  "prompt_sha256": "cd31e58ad7c567266537667cc765aad4ab61730e61800888691dc7346299a74e",
+  "provider": "bedrock",
+  "region": "us-east-1",
+  "temperature": 0.0
+}

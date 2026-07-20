@@ -1,0 +1,282 @@
+```python
+import pygame
+import sys
+import time
+
+# ==================== 常量定义 ====================
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+PADDLE_WIDTH = 15
+PADDLE_HEIGHT = 100
+BALL_SIZE = 20
+PADDLE_SPEED = 7
+AI_SPEED = 5
+BALL_SPEED_INITIAL = 5
+BALL_SPEED_INCREMENT = 0.5
+MAX_BALL_SPEED = 12
+TARGET_SCORE = 5
+GAME_DURATION = 120
+
+# 游戏方向常量
+UP = -1
+DOWN = 1
+
+# ==================== 类定义 ====================
+
+class Paddle:
+    def __init__(self, x, y):
+        self.rect = pygame.Rect(x, y, PADDLE_WIDTH, PADDLE_HEIGHT)
+        self.speed = PADDLE_SPEED
+        self.direction = 0  # -1: up, 0: stopped, 1: down
+
+    def move_up(self):
+        self.direction = UP
+
+    def move_down(self):
+        self.direction = DOWN
+
+    def stop(self):
+        self.direction = 0
+
+    def update(self):
+        if self.direction == UP:
+            self.rect.y -= self.speed
+        elif self.direction == DOWN:
+            self.rect.y += self.speed
+
+        # 边界检查
+        if self.rect.top < 0:
+            self.rect.top = 0
+        if self.rect.bottom > SCREEN_HEIGHT:
+            self.rect.bottom = SCREEN_HEIGHT
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, WHITE, self.rect)
+
+class Ball:
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.rect = pygame.Rect(SCREEN_WIDTH // 2 - BALL_SIZE // 2,
+                               SCREEN_HEIGHT // 2 - BALL_SIZE // 2,
+                               BALL_SIZE, BALL_SIZE)
+        # 随机选择发球方向
+        direction_x = 1 if time.time() % 2 == 0 else -1
+        self.speed_x = BALL_SPEED_INITIAL * direction_x
+        self.speed_y = BALL_SPEED_INITIAL * (2 * (time.time() % 1) - 1)  # 约0左右的y方向
+        # 确保y方向速度不为0
+        if abs(self.speed_y) < 1:
+            self.speed_y = BALL_SPEED_INITIAL * 0.8
+        self.speed_multiplier = 1
+
+    def update(self):
+        # 更新位置
+        self.rect.x += self.speed_x
+        self.rect.y += self.speed_y
+
+        # 上下边界反弹
+        if self.rect.top <= 0 or self.rect.bottom >= SCREEN_HEIGHT:
+            self.speed_y = -self.speed_y
+
+    def increase_speed(self):
+        self.speed_multiplier = min(self.speed_multiplier + BALL_SPEED_INCREMENT, MAX_BALL_SPEED)
+        # 同时增加x和y方向的速度分量
+        self.speed_x = self.speed_x / abs(self.speed_x) * self.speed_multiplier
+        self.speed_y = self.speed_y / abs(self.speed_y) * self.speed_multiplier
+
+    def draw(self, screen):
+        pygame.draw.ellipse(screen, WHITE, self.rect)
+
+
+class Game:
+    def __init__(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        pygame.display.set_caption("Pong Game")
+        self.clock = pygame.time.Clock()
+        self.font = pygame.font.Font(None, 74)
+        self.small_font = pygame.font.Font(None, 36)
+
+        # 初始化游戏对象
+        self.player_paddle = Paddle(10, SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2)
+        self.ai_paddle = Paddle(SCREEN_WIDTH - 25, SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2)
+        self.ball = Ball()
+
+        # 游戏状态
+        self.player_score = 0
+        self.ai_score = 0
+        self.game_over = False
+        self.start_time = time.time()
+        self.game_over_message = ""
+
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.game_over = True
+                return
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP]:
+            self.player_paddle.move_up()
+        elif keys[pygame.K_DOWN]:
+            self.player_paddle.move_down()
+        else:
+            self.player_paddle.stop()
+
+        # 玩家也可以用Esc退出游戏
+        if keys[pygame.K_ESCAPE]:
+            self.game_over = True
+
+    def update_ai(self):
+        # AI 逻辑：尝试让球拍中心对准球的中心
+        paddle_center = self.ai_paddle.rect.centery
+        ball_center = self.ball.rect.centery
+
+        # 如果AI无法及时反应，增加一些随机误差
+        if abs(paddle_center - ball_center) > 10:
+            if paddle_center < ball_center:
+                self.ai_paddle.rect.y += AI_SPEED
+            else:
+                self.ai_paddle.rect.y -= AI_SPEED
+
+        # AI 边界检查
+        if self.ai_paddle.rect.top < 0:
+            self.ai_paddle.rect.top = 0
+        if self.ai_paddle.rect.bottom > SCREEN_HEIGHT:
+            self.ai_paddle.rect.bottom = SCREEN_HEIGHT
+
+    def check_collisions(self):
+        # 球拍与球碰撞检测
+        if (self.ball.rect.colliderect(self.player_paddle.rect) or 
+            self.ball.rect.colliderect(self.ai_paddle.rect)):
+            self.ball.increase_speed()
+            # 反转x方向
+            self.ball.speed_x = -self.ball.speed_x
+
+        # 边界得分检测
+        if self.ball.rect.left <= 0:
+            self.ai_score += 1
+            self.ball.reset()
+        elif self.ball.rect.right >= SCREEN_WIDTH:
+            self.player_score += 1
+            self.ball.reset()
+
+    def check_win_condition(self):
+        # 检查分数
+        if self.player_score >= TARGET_SCORE:
+            self.game_over = True
+            self.game_over_message = "Player Wins!"
+        elif self.ai_score >= TARGET_SCORE:
+            self.game_over = True
+            self.game_over_message = "AI Wins!"
+
+        # 检查时间
+        elapsed_time = int(time.time() - self.start_time)
+        remaining_time = GAME_DURATION - elapsed_time
+        if remaining_time <= 0:
+            self.game_over = True
+            if self.player_score > self.ai_score:
+                self.game_over_message = "Time's up! Player Wins!"
+            elif self.ai_score > self.player_score:
+                self.game_over_message = "Time's up! AI Wins!"
+            else:
+                self.game_over_message = "Time's up! Draw!"
+
+    def draw_score(self):
+        score_text = self.font.render(str(self.player_score), True, WHITE)
+        self.screen.blit(score_text, (SCREEN_WIDTH // 4, 10))
+
+        score_text = self.font.render(str(self.ai_score), True, WHITE)
+        self.screen.blit(score_text, (SCREEN_WIDTH * 3 // 4 - score_text.get_width(), 10))
+
+    def draw_time(self):
+        elapsed_time = int(time.time() - self.start_time)
+        remaining_time = GAME_DURATION - elapsed_time
+        if remaining_time < 0:
+            remaining_time = 0
+        time_text = self.small_font.render(f"Time: {remaining_time}s", True, WHITE)
+        self.screen.blit(time_text, (10, SCREEN_HEIGHT - 40))
+
+    def draw_game_over(self):
+        self.screen.fill(BLACK)
+        game_over_text = self.font.render(self.game_over_message, True, WHITE)
+        text_rect = game_over_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 50))
+        self.screen.blit(game_over_text, text_rect)
+
+        restart_text = self.small_font.render("Press SPACE to restart or Esc to exit", True, WHITE)
+        restart_rect = restart_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50))
+        self.screen.blit(restart_text, restart_rect)
+
+        pygame.display.flip()
+
+        # 等待玩家操作
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_SPACE]:
+                self.reset_game()
+                return
+            elif keys[pygame.K_ESCAPE]:
+                self.game_over = True
+                return
+            self.clock.tick(60)
+
+    def reset_game(self):
+        self.player_score = 0
+        self.ai_score = 0
+        self.ball.reset()
+        self.start_time = time.time()
+        self.game_over = False
+        self.game_over_message = ""
+
+    def run(self):
+        while not self.game_over:
+            self.handle_events()
+            if self.game_over:
+                break
+
+            self.player_paddle.update()
+            self.update_ai()
+            self.ball.update()
+            self.check_collisions()
+            self.check_win_condition()
+
+            # 绘制
+            self.screen.fill(BLACK)
+
+            # 绘制球拍
+            self.player_paddle.draw(self.screen)
+            self.ai_paddle.draw(self.screen)
+
+            # 绘制球
+            self.ball.draw(self.screen)
+
+            # 绘制中线
+            pygame.draw.aaline(self.screen, WHITE, 
+                             (SCREEN_WIDTH // 2, 0), 
+                             (SCREEN_WIDTH // 2, SCREEN_HEIGHT))
+
+            # 绘制分数
+            self.draw_score()
+            self.draw_time()
+
+            pygame.display.flip()
+            self.clock.tick(60)
+
+        # 游戏结束处理
+        while self.game_over:
+            self.draw_game_over()
+
+        pygame.quit()
+        sys.exit()
+
+if __name__ == "__main__":
+    game = Game()
+    game.run()
+```

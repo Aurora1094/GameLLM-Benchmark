@@ -1,0 +1,113 @@
+{
+  "code": {
+    "bytes": 9259,
+    "extraction": {
+      "method": "complete_markdown_fence",
+      "model_text_chars": 8644,
+      "source_chars": 8630
+    },
+    "model_output_path": "responses/model_output.txt",
+    "model_output_sha256": "cfa106b0bea8202f2ddf2dd325bc48cb171d5bcb70486d156e57e3067689df33",
+    "path": "generated/pong__qwen.qwen3-coder-next.py",
+    "sha256": "723000e99006ef15054da61ab1663fa9195facea5c5364f85f103dfdf2324a64",
+    "syntax": {
+      "error": null,
+      "valid": true
+    }
+  },
+  "configuration": {
+    "d3_config": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\D1_D3_demo\\d3_v2\\config.json",
+    "d3_include_judges": true,
+    "d3_schema_version": 2,
+    "max_tokens": 8000,
+    "python": "3.11.4",
+    "runtime_sec": 5,
+    "temperature": 0.2
+  },
+  "error": null,
+  "format_version": 2,
+  "game": {
+    "difficulty": "easy",
+    "id": "pong",
+    "name": "Pong"
+  },
+  "generated_at_utc": "2026-07-20T14:05:47.430504+00:00",
+  "generation": {
+    "credentials": {
+      "access_key_present": true,
+      "secret_key_present": true,
+      "session_token_present": false,
+      "source": "environment"
+    },
+    "http_status_code": 200,
+    "latency_seconds": 53.17285,
+    "model": "qwen.qwen3-coder-next",
+    "model_call_attempted": true,
+    "model_call_succeeded": true,
+    "origin": "llm_api",
+    "provider": "bedrock",
+    "region": "us-east-1",
+    "request_id": "1f9a5451-99fd-4f48-84ba-3d139ec82b33",
+    "requested_origin": "llm_api"
+  },
+  "prompt": {
+    "chars": 1038,
+    "main_sha256": "b00f6a6f2169ab66d9f10af8ba9c9986307280eda571188dc89e92d509ecfbdf",
+    "main_snapshot": "inputs/main.md",
+    "rendered_path": "prompts/pong.txt",
+    "rendered_sha256": "e2048dc87f87a724a0358f58ff6fa6f6c22ebb802da4f25d220f3733749e8253",
+    "spec_sha256": "f8a0463194c7961f53deb2f1bed074d507a14da3ec88b1c9c5d15f39290d7490",
+    "spec_snapshot": "inputs/pong.md"
+  },
+  "run_dir": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\D1_D3_demo\\runs\\20260720_official_pong_qwen_01",
+  "run_id": "20260720_official_pong_qwen_01",
+  "scores": {
+    "d1": {
+      "actual_game_process_started": true,
+      "diagnosis": "quit_controlled",
+      "gate_pass": true,
+      "indicators": {
+        "dependency_initialization_complete": 1,
+        "event_handling_mechanism": 1,
+        "process_controllability": 1,
+        "python_syntax_correct": 1,
+        "short_runtime_stable": 1,
+        "window_creation": 1
+      },
+      "pipeline_steps_passed": 6,
+      "raw_pass_count": 6,
+      "reason": "全部通过：D1 六级流水线均满足，可进入 D2-D4。",
+      "score": 1.0
+    },
+    "d3": {
+      "config_sha256": "3fd8a59f743efd91270dc45bce6d0d97725b787b9d0904acd4d3c89c951e1857",
+      "high_disagreement": false,
+      "indicator_scores": {
+        "conformance": 4.724,
+        "efficiency": 10.0,
+        "llm_review": 8.5,
+        "maintainability": 27.81,
+        "reliability": 20.0,
+        "security": 15.0
+      },
+      "judge_score_range": 1.0,
+      "judge_score_std": 0.707,
+      "judge_status": "panel_degraded",
+      "raw_score_before_cap": 86.034,
+      "reason": "D3-v2 tools and anonymous three-model panel evaluation completed.",
+      "schema_version": 2,
+      "score": 86.034,
+      "score_normalized": 0.86034,
+      "security_cap_applied": false,
+      "status": "panel_degraded",
+      "tool_status": "completed",
+      "tool_versions": {
+        "bandit": "1.9.4",
+        "radon": "6.0.1",
+        "ruff": "0.15.22"
+      },
+      "valid_judge_count": 2
+    }
+  },
+  "status": "completed"
+}

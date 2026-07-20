@@ -1,0 +1,15 @@
+{
+  "scores": {
+    "abstraction_and_responsibility": 3,
+    "semantic_readability": 3,
+    "comment_usefulness": 1,
+    "changeability_and_testability": 2
+  },
+  "total": 9,
+  "evidence": {
+    "abstraction_and_responsibility": {"reason": "The Game class handles events, rendering, game loop, AI logic, win conditions, and reset state—all violating separation of concerns. For example, handle_events() processes input while draw_game_over() contains its own event loop and blocking wait, and update_ai() directly modifies AI paddle position instead of delegating movement control. Lines 67-104, 133-150, 184-200, 202-215", "lines": [67, 133, 184, 202, 210]},
+    "semantic_readability": {"reason": "Variable names like speed_multiplier and Ball.reset() usage obscure intent. The reset() method in Ball is non-obvious because it reinitializes speed based on time.time() (lines 47-57), making behavior non-deterministic and hard to follow. Also, draw_game_over() has a busy-wait loop that blocks and obscures control flow. Lines 47-57, 176-196", "lines": [47, 48, 49, 50, 51, 52, 53, 54, 176]},
+    "comment_usefulness": {"reason": "Most comments are tautological (e.g., Line 43 '边界检查', Line 63 '初始化游戏对象') or generic (Line 26 '游戏方向常量'). The comment on line 63 repeats the code without clarifying design intent. A comment explaining *why* the AI uses random error (line 104 'AI 逻辑：尝试让球拍中心对准球的中心') would be useful but is missing. Lines 26, 43, 63, 104", "lines": [26, 43, 63, 104]},
+    "changeability_and_testability": {"reason": "Hard dependency on time.time() and pygame modules prevents mocking or deterministic testing (e.g., Ball.reset() at lines 47-57). Game state is mutable and scattered (self.game_over, self.start_time, self.game_over_message). Methods like draw_game_over() use blocking loops instead of returning control, making unit testing impossible. Lines 47, 48, 49, 108, 176", "lines": [47, 48, 49, 108, 176]}
+  }
+}

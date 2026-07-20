@@ -1,0 +1,88 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "error": {
+        "message": "Expecting value: line 12 column 260 (char 1071)",
+        "type": "JSONDecodeError"
+      },
+      "latency_seconds": 6.605264,
+      "prompt_sha256": "425941118012691a86326bbf84e223e57c1a0b4dd4b90701a35b95286ca8fa7f",
+      "raw_response_sha256": "2fb751d64cfb413b4f450600057454e570520382f337801445649a9ef0c088e9",
+      "status": "failed"
+    },
+    {
+      "attempt": 2,
+      "error": {
+        "message": "Judge score comment_usefulness must be an integer in 0..3",
+        "type": "ValueError"
+      },
+      "latency_seconds": 5.768976,
+      "prompt_sha256": "7fd8f9a99efe3353b9cac3ba8cc23e681428e192c9bd61ce4d5cd0828dc4a97e",
+      "raw_response_sha256": "4e52b8086610d4816e16de4a04a62cf72ee76d0260e04a959ebf3cc06edae82a",
+      "status": "failed"
+    },
+    {
+      "attempt": 3,
+      "latency_seconds": 9.121381,
+      "prompt_sha256": "15659a14f186b7a6c0baeb7737d5dff849a3d06854e7674ef5fcf60513b51d5a",
+      "raw_response_sha256": "30510d23d04211935efe6695a498c30ff6a73215e0039796f5569c0e598ac62a",
+      "status": "completed"
+    }
+  ],
+  "evidence": {
+    "abstraction_and_responsibility": {
+      "lines": [
+        54,
+        64,
+        94,
+        113,
+        117,
+        139
+      ],
+      "reason": "Game state and objects are encapsulated in classes, but some logic like win condition, AI update, and event handling remain in monolithic Game.run() instead of further abstractions."
+    },
+    "changeability_and_testability": {
+      "lines": [
+        88,
+        89,
+        90,
+        117,
+        124,
+        163
+      ],
+      "reason": "Game logic is spread across a single class, making it hard to test components like collision detection or AI independently without running the full game loop. Ball.speed_multiplier and speed recalculation logic (lines 88-90) is error-prone to changes."
+    },
+    "comment_usefulness": {
+      "lines": [
+        41,
+        82,
+        85,
+        106,
+        134
+      ],
+      "reason": "All comments restate code literally (e.g., '# 边界检查', '# 更新位置') or document obvious logic without adding insight; none explain why or how architectural decisions were made."
+    },
+    "semantic_readability": {
+      "lines": [
+        15,
+        16,
+        31,
+        141,
+        149
+      ],
+      "reason": "Method and variable names are clear, but constants like UP/DOWN direction values are defined separately (lines 15-16) yet used unconnectedly in Paddle.direction (line 31). The win condition logic combines both score and time checks without clear separation, making intent harder to follow."
+    }
+  },
+  "http_status_code": 200,
+  "model": "deepseek.v3.2",
+  "request_id": "b44b8a87-d6f8-4ee9-8780-6c66027ab687",
+  "scores": {
+    "abstraction_and_responsibility": 3,
+    "changeability_and_testability": 2,
+    "comment_usefulness": 0,
+    "semantic_readability": 3
+  },
+  "status": "completed",
+  "total": 8
+}

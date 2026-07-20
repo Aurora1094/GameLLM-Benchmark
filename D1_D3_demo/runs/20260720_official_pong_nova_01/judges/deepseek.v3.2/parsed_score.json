@@ -1,0 +1,86 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "error": {
+        "message": "Expecting value: line 12 column 33 (char 490)",
+        "type": "JSONDecodeError"
+      },
+      "latency_seconds": 14.65539,
+      "prompt_sha256": "02f4ffaca424a104b7f37a8d8ef3a1f3803aaaac0bb83909f9f9d616fdca8888",
+      "raw_response_sha256": "1c465cd6ea7038b79e3ba8f8f0c71c0876b8c6906d5969d1540476e6131bebb0",
+      "status": "failed"
+    },
+    {
+      "attempt": 2,
+      "error": {
+        "message": "Judge evidence abstraction_and_responsibility.lines contains invalid line numbers",
+        "type": "ValueError"
+      },
+      "latency_seconds": 4.619877,
+      "prompt_sha256": "6b13f12a397d1a249f7da37ec887ae15ab876a491128dd1f7d50132047940597",
+      "raw_response_sha256": "61f5c0cd7093a4927df057a42f06dd0b5f306efe1dc7d11b5776ef48abe2bd8c",
+      "status": "failed"
+    },
+    {
+      "attempt": 3,
+      "latency_seconds": 5.685755,
+      "prompt_sha256": "a16e3afc9a523c45699b710efa9dede7dcac660ae85445d08db9d86e9229024c",
+      "raw_response_sha256": "476d7032ca07b90379ead92542741638d4a529eb6f0857c4029558feae06b337",
+      "status": "completed"
+    }
+  ],
+  "evidence": {
+    "abstraction_and_responsibility": {
+      "lines": [
+        30,
+        48,
+        50,
+        54,
+        63,
+        71,
+        78,
+        82,
+        84
+      ],
+      "reason": "Game logic is moderately encapsulated in classes, but key responsibilities like collision detection, AI movement, game state management, and rendering are mixed in main(). The Ball class handles both movement and scoring logic (lines 30-48)."
+    },
+    "changeability_and_testability": {
+      "lines": [
+        63,
+        71,
+        78,
+        82,
+        84
+      ],
+      "reason": "Tight coupling between game objects and pygame-specific code makes unit testing difficult. Game rules (scoring, timing, AI behavior) are embedded directly in main loop without separation of concerns. Modifying game rules would require changing multiple sections."
+    },
+    "comment_usefulness": {
+      "lines": [],
+      "reason": "No comments present in the source code."
+    },
+    "semantic_readability": {
+      "lines": [
+        5,
+        6,
+        12,
+        58,
+        59,
+        78,
+        82
+      ],
+      "reason": "Variable names are generally clear (SCREEN_WIDTH, left_paddle, TARGET_SCORE), though some values like magic numbers in paddle placement (30, 40 in lines 58-59) reduce clarity. Control flow in main loop is straightforward."
+    }
+  },
+  "http_status_code": 200,
+  "model": "deepseek.v3.2",
+  "request_id": "b782cd4d-3ad9-4140-816a-e52991dfc8fa",
+  "scores": {
+    "abstraction_and_responsibility": 2,
+    "changeability_and_testability": 1,
+    "comment_usefulness": 0,
+    "semantic_readability": 3
+  },
+  "status": "completed",
+  "total": 6
+}

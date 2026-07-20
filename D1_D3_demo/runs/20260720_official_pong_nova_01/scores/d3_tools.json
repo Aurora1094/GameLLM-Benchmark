@@ -1,0 +1,216 @@
+{
+  "config_sha256": "3fd8a59f743efd91270dc45bce6d0d97725b787b9d0904acd4d3c89c951e1857",
+  "critical_security_risk": false,
+  "critical_total_cap": 50,
+  "details": {
+    "conformance": {
+      "findings": [
+        {
+          "code": "I001",
+          "column": 1,
+          "line": 1,
+          "message": "Import block is un-sorted or un-formatted",
+          "url": "https://docs.astral.sh/ruff/rules/unsorted-imports",
+          "weight": 0.5
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 33,
+          "message": "Line too long (92 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 80,
+          "message": "Line too long (95 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 97,
+          "message": "Line too long (108 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 99,
+          "message": "Line too long (114 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 101,
+          "message": "Line too long (119 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        }
+      ],
+      "logical_lines": 90,
+      "weighted_finding_count": 5.5,
+      "weighted_findings_per_100_lloc": 6.111
+    },
+    "efficiency": {
+      "hot_loop_calls": [],
+      "hot_loop_deduction": 0.0,
+      "ruff_deduction": 0.0,
+      "ruff_perf_findings": []
+    },
+    "maintainability": {
+      "clone_metrics": {
+        "clone_group_count": 0,
+        "extra_occurrences": 0,
+        "method": "normalized_ast_statement_windows",
+        "window_count": 18,
+        "window_size": 6
+      },
+      "clone_score": 5.0,
+      "cyclomatic_score": 6.533,
+      "has_main_guard": true,
+      "import_probe": {
+        "returncode": 0,
+        "safe": true,
+        "stderr_tail": "",
+        "timed_out": false
+      },
+      "radon": {
+        "complexities": [
+          2,
+          16,
+          3,
+          1,
+          3,
+          3,
+          1,
+          5,
+          1
+        ],
+        "maintainability_index": 32.62058807925413,
+        "max_complexity": 16,
+        "mean_complexity": 3.888888888888889,
+        "ranks": [
+          "A",
+          "C",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A"
+        ],
+        "raw": {
+          "blank": 19,
+          "comments": 0,
+          "lloc": 90,
+          "loc": 109,
+          "sloc": 90
+        }
+      },
+      "structural_findings": [
+        {
+          "code": "C901",
+          "column": 5,
+          "line": 59,
+          "message": "`main` is too complex (12 > 10)",
+          "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+        }
+      ],
+      "structural_score": 6.5,
+      "testability_score": 5.0,
+      "top_level_executable_count": 2
+    },
+    "reliability": {
+      "ast_deduction": 0.0,
+      "broad_exception_handlers": 0,
+      "ruff_deduction": 0.0,
+      "ruff_findings": [],
+      "swallowed_exception_handlers": 0
+    },
+    "ruff_all_findings": [
+      {
+        "code": "I001",
+        "column": 1,
+        "line": 1,
+        "message": "Import block is un-sorted or un-formatted",
+        "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 33,
+        "message": "Line too long (92 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "C901",
+        "column": 5,
+        "line": 59,
+        "message": "`main` is too complex (12 > 10)",
+        "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 80,
+        "message": "Line too long (95 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 97,
+        "message": "Line too long (108 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 99,
+        "message": "Line too long (114 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 101,
+        "message": "Line too long (119 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      }
+    ],
+    "security": {
+      "bandit_deduction": 0,
+      "bandit_findings": [],
+      "critical_risk": false,
+      "external_imports": [],
+      "forbidden_calls": []
+    }
+  },
+  "indicator_scores": {
+    "conformance": 3.889,
+    "efficiency": 10.0,
+    "maintainability": 23.033,
+    "reliability": 20.0,
+    "security": 15.0
+  },
+  "max_score": 85,
+  "method": "iso5055_inspired_tools_plus_anonymous_llm_panel",
+  "reason": "D3-v2 deterministic tool evaluation completed.",
+  "schema_version": 2,
+  "score": 71.922,
+  "score_normalized": 0.8461411764705882,
+  "status": "completed",
+  "tool_versions": {
+    "bandit": "1.9.4",
+    "radon": "6.0.1",
+    "ruff": "0.15.22"
+  }
+}

@@ -20,7 +20,12 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from evaluator.dimension1.dimension1_executable import evaluate_dimension1
-from evaluator.dimension3.dimension3_code_quality import evaluate_dimension3_code_quality
+if __package__:
+    from .d3_v2 import evaluate_d3_v2
+    from .d3_v2.evaluator import CONFIG_PATH as DEFAULT_D3_CONFIG
+else:  # Direct script execution: python D1_D3_demo/run_demo.py
+    from d3_v2 import evaluate_d3_v2
+    from d3_v2.evaluator import CONFIG_PATH as DEFAULT_D3_CONFIG
 from llm_clients.client_bedrock import call_bedrock_detailed, strip_code_fence
 from prompt_builder import MAIN_TEMPLATE, SPECS_DIR, build_prompt, load_spec, write_prompt_snapshot
 
@@ -49,6 +54,17 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--runtime-sec", type=int, default=5)
     parser.add_argument("--max-tokens", type=int, default=8_000)
     parser.add_argument("--temperature", type=float, default=0.2)
+    parser.add_argument(
+        "--d3-config",
+        type=Path,
+        default=DEFAULT_D3_CONFIG,
+        help="Demo-local D3-v2 configuration. The production evaluator is never used.",
+    )
+    parser.add_argument(
+        "--skip-judges",
+        action="store_true",
+        help="Run the deterministic 85-point tool layer only; such runs are excluded from reports.",
+    )
     parser.add_argument(
         "--model-output-file",
         type=Path,
@@ -145,11 +161,23 @@ def compact_d1(result: dict[str, Any]) -> dict[str, Any]:
 
 def compact_d3(result: dict[str, Any]) -> dict[str, Any]:
     return {
-        "status": "completed",
-        "score": result.get("score", 0),
-        "score_normalized": result.get("score_normalized", 0.0),
+        "schema_version": result.get("schema_version"),
+        "status": result.get("status", "unknown"),
+        "score": result.get("score"),
+        "score_normalized": result.get("score_normalized"),
         "indicator_scores": result.get("indicator_scores", {}),
-        "category_scores": result.get("category_scores", {}),
+        "raw_score_before_cap": result.get("raw_score_before_cap"),
+        "security_cap_applied": bool(result.get("security_cap_applied", False)),
+        "tool_status": result.get("tools", {}).get("status"),
+        "tool_versions": result.get("tools", {}).get("tool_versions", {}),
+        "config_sha256": result.get("tools", {}).get("config_sha256"),
+        "judge_status": result.get("judge_panel", {}).get("status"),
+        "valid_judge_count": result.get("judge_panel", {}).get("valid_judge_count", 0),
+        "judge_score_std": result.get("judge_panel", {}).get("score_std"),
+        "judge_score_range": result.get("judge_panel", {}).get("score_range"),
+        "high_disagreement": bool(
+            result.get("judge_panel", {}).get("high_disagreement", False)
+        ),
         "reason": result.get("reason", ""),
     }
 
@@ -170,13 +198,18 @@ def finish_run(run_dir: Path, summary: dict[str, Any]) -> None:
     summary_path = run_dir / "summary.json"
     write_json(summary_path, summary)
     manifest = {
-        "format_version": 1,
+        "format_version": 2,
         "run_id": summary["run_id"],
         "status": summary["status"],
         "generation_origin": summary["generation"]["origin"],
         "artifact_index": build_artifact_index(run_dir),
     }
-    write_json(run_dir / "manifest.json", manifest)
+    manifest_path = run_dir / "manifest.json"
+    write_json(manifest_path, manifest)
+    (run_dir / "manifest.sha256").write_text(
+        f"{sha256_file(manifest_path)}  manifest.json\n",
+        encoding="ascii",
+    )
 
 
 def create_run_dir(args: argparse.Namespace, game_slug: str) -> tuple[str, Path]:
@@ -202,7 +235,7 @@ def base_summary(
     game_slug: str,
 ) -> dict[str, Any]:
     return {
-        "format_version": 1,
+        "format_version": 2,
         "run_id": run_id,
         "run_dir": str(run_dir),
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -228,10 +261,13 @@ def base_summary(
             "max_tokens": args.max_tokens,
             "temperature": args.temperature,
             "python": platform.python_version(),
+            "d3_schema_version": 2,
+            "d3_config": str(args.d3_config.resolve()),
+            "d3_include_judges": not args.skip_judges,
         },
         "prompt": {},
         "code": {},
-        "scores": {"d1": None, "d3": None},
+        "scores": {"d1": None, "d3": None, "d1_gated_final": None},
         "error": None,
     }
 
@@ -349,17 +385,43 @@ def evaluate_generated_game(
     d1_compact = compact_d1(d1_result)
     summary["scores"]["d1"] = d1_compact
 
-    if d1_compact["gate_pass"]:
-        d3_result = evaluate_dimension3_code_quality(code_path)
-        write_json(run_dir / "scores" / "d3.json", d3_result)
-        summary["scores"]["d3"] = compact_d3(d3_result)
+    d3_result, d3_tools = evaluate_d3_v2(
+        code_path=code_path,
+        run_dir=run_dir,
+        region=args.region,
+        config_path=args.d3_config.resolve(),
+        include_judges=not args.skip_judges,
+    )
+    d3_result["d1_context"] = {
+        "pipeline_steps_passed": d1_compact["pipeline_steps_passed"],
+        "gate_pass": d1_compact["gate_pass"],
+        "d3_measurement_independent_of_gate": True,
+    }
+    write_json(run_dir / "scores" / "d3_tools.json", d3_tools)
+    write_json(run_dir / "scores" / "d3.json", d3_result)
+    summary["scores"]["d3"] = compact_d3(d3_result)
+
+    d3_score = d3_result.get("score")
+    if not d1_compact["gate_pass"]:
+        gated_score = 0.0
+        gated_status = "zeroed_by_d1_gate"
+        gated_reason = "D3 was measured for diagnosis, but the D1-gated final score is zero."
+    elif d3_score is None:
+        gated_score = None
+        gated_status = "d3_incomplete"
+        gated_reason = "D1 passed, but D3 did not produce a valid total score."
     else:
-        skipped = {
-            "status": "skipped_d1_gate",
-            "reason": "D3 is gated because the generated game did not pass all six D1 steps.",
-        }
-        write_json(run_dir / "scores" / "d3.json", skipped)
-        summary["scores"]["d3"] = skipped
+        gated_score = d3_score
+        gated_status = "completed"
+        gated_reason = "D1 passed, so the measured D3 score is retained after the gate."
+    summary["scores"]["d1_gated_final"] = {
+        "status": gated_status,
+        "score": gated_score,
+        "max_score": 100,
+        "d3_diagnostic_score": d3_score,
+        "d1_gate_pass": d1_compact["gate_pass"],
+        "reason": gated_reason,
+    }
     summary["status"] = "completed"
 
 
@@ -402,10 +464,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"Origin: {summary['generation']['origin']}")
     print(f"Generated code: {run_dir / summary['code']['path']}")
     print(f"D1: {d1['pipeline_steps_passed']}/6, gate={d1['gate_pass']}")
-    if d3["status"] == "completed":
+    if d3["status"] in {"completed", "panel_degraded"}:
         print(f"D3: {d3['score']}/100")
+        if d3["high_disagreement"]:
+            print("D3 judge panel: high_disagreement")
+    elif d3["status"] == "tools_only":
+        print(f"D3 tools: {d3['score']}/85 (judges not run; report-ineligible)")
     else:
-        print("D3: skipped by D1 gate")
+        print(f"D3: {d3['status']} (no valid total score)")
+    gated = summary["scores"]["d1_gated_final"]
+    print(f"D1-gated final: {gated['score']}/100 ({gated['status']})")
     print(f"Summary: {run_dir / 'summary.json'}")
     return 0
 

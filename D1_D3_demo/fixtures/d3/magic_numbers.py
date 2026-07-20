@@ -185,6 +185,11 @@ def main() -> None:
     running = True
 
     while running:
+        pygame.font.Font(None, 24)
+        pygame.font.Font(None, 25)
+        pygame.font.Font(None, 26)
+        pygame.font.Font(None, 27)
+        pygame.font.Font(None, 28)
         running = handle_events()
         compute_unlabeled_tuning_values()
         update_player_input(player)

@@ -1,0 +1,261 @@
+```python
+import sys
+import pygame
+import random
+
+# 初始化 Pygame
+pygame.init()
+
+# 常量定义
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+TARGET_SCORE = 5
+MAX_GAME_TIME = 120  # 秒
+BACKGROUND_COLOR = (0, 0, 0)
+PADDLE_COLOR = (255, 255, 255)
+BALL_COLOR = (255, 255, 255)
+TEXT_COLOR = (255, 255, 255)
+BORDER_COLOR = (64, 64, 64)
+
+PADDLE_WIDTH = 15
+PADDLE_HEIGHT = 100
+PADDLE_SPEED = 8
+AI_PADDLE_SPEED = 5
+BALL_SIZE = 15
+BALL_INITIAL_SPEED_X = 6
+BALL_INITIAL_SPEED_Y = 4
+BALL_SPEED_INCREMENT = 0.2
+
+FONT_SIZE = 32
+SCORE_OFFSET_Y = 20
+SCORE_OFFSET_X = 50
+FPS = 60
+
+class Paddle:
+    def __init__(self, x, y, width, height, speed, color):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.speed = speed
+        self.color = color
+        self.score = 0
+    
+    def move_up(self):
+        self.rect.y = max(0, self.rect.y - self.speed)
+    
+    def move_down(self):
+        self.rect.y = min(SCREEN_HEIGHT - self.rect.height, self.rect.y + self.speed)
+    
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color, self.rect)
+    
+    def reset_position(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
+
+class Ball:
+    def __init__(self, x, y, size, color):
+        self.rect = pygame.Rect(x, y, size, size)
+        self.color = color
+        self.speed_x = BALL_INITIAL_SPEED_X * random.choice([-1, 1])
+        self.speed_y = BALL_INITIAL_SPEED_Y * random.choice([-1, 1])
+        self.size = size
+    
+    def update(self):
+        self.rect.x += self.speed_x
+        self.rect.y += self.speed_y
+        
+        # 上下边界反弹
+        if self.rect.top <= 0 or self.rect.bottom >= SCREEN_HEIGHT:
+            self.speed_y *= -1
+        
+        # 限制在屏幕内
+        self.rect.top = max(0, self.rect.top)
+        self.rect.bottom = min(SCREEN_HEIGHT, self.rect.bottom)
+    
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color, self.rect)
+    
+    def reset(self):
+        self.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        self.speed_x = BALL_INITIAL_SPEED_X * random.choice([-1, 1])
+        self.speed_y = BALL_INITIAL_SPEED_Y * random.choice([-1, 1])
+    
+    def increase_speed(self):
+        # 稍微增加速度以增加难度
+        if self.speed_x > 0:
+            self.speed_x += BALL_SPEED_INCREMENT
+        else:
+            self.speed_x -= BALL_SPEED_INCREMENT
+        
+        if self.speed_y > 0:
+            self.speed_y += BALL_SPEED_INCREMENT
+        else:
+            self.speed_y -= BALL_SPEED_INCREMENT
+
+class Game:
+    def __init__(self):
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        pygame.display.set_caption("Pong Game")
+        self.clock = pygame.time.Clock()
+        self.font = pygame.font.SysFont(None, FONT_SIZE)
+        self.start_time = pygame.time.get_ticks()
+        self.game_over = False
+        self.winner = None
+        self.running = True
+        
+        # 创建球拍
+        paddle_y = (SCREEN_HEIGHT - PADDLE_HEIGHT) // 2
+        self.player = Paddle(30, paddle_y, PADDLE_WIDTH, PADDLE_HEIGHT, PADDLE_SPEED, PADDLE_COLOR)
+        self.ai = Paddle(SCREEN_WIDTH - 30 - PADDLE_WIDTH, paddle_y, PADDLE_WIDTH, PADDLE_HEIGHT, AI_PADDLE_SPEED, PADDLE_COLOR)
+        
+        # 创建球
+        self.ball = Ball(SCREEN_WIDTH // 2 - BALL_SIZE // 2, SCREEN_HEIGHT // 2 - BALL_SIZE // 2, BALL_SIZE, BALL_COLOR)
+    
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.running = False
+                elif event.key == pygame.K_SPACE and self.game_over:
+                    self.reset_game()
+    
+    def update_player(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP]:
+            self.player.move_up()
+        if keys[pygame.K_DOWN]:
+            self.player.move_down()
+    
+    def update_ai(self):
+        # AI 追踪球的位置
+        if self.ai.rect.centery < self.ball.rect.centery:
+            self.ai.move_down()
+        elif self.ai.rect.centery > self.ball.rect.centery:
+            self.ai.move_up()
+    
+    def check_collisions(self):
+        # 与球拍碰撞
+        if self.ball.rect.colliderect(self.player.rect):
+            if abs(self.ball.rect.left - self.player.rect.right) < 10:
+                self.ball.speed_x = abs(self.ball.speed_x)
+                self.ball.increase_speed()
+        
+        if self.ball.rect.colliderect(self.ai.rect):
+            if abs(self.ball.rect.right - self.ai.rect.left) < 10:
+                self.ball.speed_x = -abs(self.ball.speed_x)
+                self.ball.increase_speed()
+    
+    def check_scoring(self):
+        # 球出左右边界
+        if self.ball.rect.left <= 0:
+            self.ai.score += 1
+            self.ball.reset()
+            self.check_winner()
+        
+        if self.ball.rect.right >= SCREEN_WIDTH:
+            self.player.score += 1
+            self.ball.reset()
+            self.check_winner()
+    
+    def check_winner(self):
+        if self.player.score >= TARGET_SCORE:
+            self.game_over = True
+            self.winner = "Player"
+        elif self.ai.score >= TARGET_SCORE:
+            self.game_over = True
+            self.winner = "AI"
+        
+        # 检查时间
+        elapsed_time = (pygame.time.get_ticks() - self.start_time) / 1000
+        if elapsed_time >= MAX_GAME_TIME and not self.game_over:
+            self.game_over = True
+            if self.player.score > self.ai.score:
+                self.winner = "Player"
+            elif self.ai.score > self.player.score:
+                self.winner = "AI"
+            else:
+                self.winner = "Tie"
+    
+    def reset_game(self):
+        self.player.score = 0
+        self.ai.score = 0
+        self.player.reset_position(30, (SCREEN_HEIGHT - PADDLE_HEIGHT) // 2)
+        self.ai.reset_position(SCREEN_WIDTH - 30 - PADDLE_WIDTH, (SCREEN_HEIGHT - PADDLE_HEIGHT) // 2)
+        self.ball.reset()
+        self.start_time = pygame.time.get_ticks()
+        self.game_over = False
+        self.winner = None
+    
+    def draw_borders(self):
+        # 绘制上下边界
+        pygame.draw.line(self.screen, BORDER_COLOR, (0, 0), (SCREEN_WIDTH, 0), 2)
+        pygame.draw.line(self.screen, BORDER_COLOR, (0, SCREEN_HEIGHT), (SCREEN_WIDTH, SCREEN_HEIGHT), 2)
+        
+        # 绘制中场线
+        for i in range(0, SCREEN_HEIGHT, 20):
+            pygame.draw.line(self.screen, BORDER_COLOR, (SCREEN_WIDTH // 2, i), (SCREEN_WIDTH // 2, i + 10), 1)
+    
+    def draw_scores(self):
+        player_score_text = self.font.render(f"Player: {self.player.score}", True, TEXT_COLOR)
+        ai_score_text = self.font.render(f"AI: {self.ai.score}", True, TEXT_COLOR)
+        
+        self.screen.blit(player_score_text, (SCORE_OFFSET_X, SCORE_OFFSET_Y))
+        self.screen.blit(ai_score_text, (SCREEN_WIDTH - SCORE_OFFSET_X - ai_score_text.get_width(), SCORE_OFFSET_Y))
+    
+    def draw_time(self):
+        elapsed_time = (pygame.time.get_ticks() - self.start_time) / 1000
+        time_text = self.font.render(f"Time: {int(MAX_GAME_TIME - elapsed_time)}s", True, TEXT_COLOR)
+        self.screen.blit(time_text, (SCREEN_WIDTH // 2 - time_text.get_width() // 2, SCORE_OFFSET_Y))
+    
+    def draw_game_over(self):
+        if not self.game_over:
+            return
+        
+        overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 180))
+        self.screen.blit(overlay, (0, 0))
+        
+        if self.winner == "Tie":
+            result_text = "Game Over - It's a Tie!"
+        else:
+            result_text = f"Game Over - {self.winner} Wins!"
+        
+        result_surface = self.font.render(result_text, True, TEXT_COLOR)
+        restart_text = self.font.render("Press SPACE to restart or ESC to quit", True, TEXT_COLOR)
+        
+        self.screen.blit(result_surface, (SCREEN_WIDTH // 2 - result_surface.get_width() // 2, SCREEN_HEIGHT // 2 - 50))
+        self.screen.blit(restart_text, (SCREEN_WIDTH // 2 - restart_text.get_width() // 2, SCREEN_HEIGHT // 2 + 20))
+    
+    def run(self):
+        while self.running:
+            self.handle_events()
+            
+            if not self.game_over:
+                self.update_player()
+                self.update_ai()
+                self.ball.update()
+                self.check_collisions()
+                self.check_scoring()
+                self.check_winner()
+            
+            # 绘制
+            self.screen.fill(BACKGROUND_COLOR)
+            self.draw_borders()
+            self.player.draw(self.screen)
+            self.ai.draw(self.screen)
+            self.ball.draw(self.screen)
+            self.draw_scores()
+            self.draw_time()
+            self.draw_game_over()
+            
+            pygame.display.flip()
+            self.clock.tick(FPS)
+        
+        pygame.quit()
+        sys.exit()
+
+if __name__ == "__main__":
+    game = Game()
+    game.run()
+```

@@ -1,0 +1,1021 @@
+{
+  "config_sha256": "3fd8a59f743efd91270dc45bce6d0d97725b787b9d0904acd4d3c89c951e1857",
+  "critical_security_risk": false,
+  "critical_total_cap": 50,
+  "details": {
+    "conformance": {
+      "findings": [
+        {
+          "code": "I001",
+          "column": 1,
+          "line": 1,
+          "message": "Import block is un-sorted or un-formatted",
+          "url": "https://docs.astral.sh/ruff/rules/unsorted-imports",
+          "weight": 0.5
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 39,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 42,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 45,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 48,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 60,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 64,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 68,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 72,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 75,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 80,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 87,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 103,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 106,
+          "message": "Line too long (99 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 107,
+          "message": "Line too long (128 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 108,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 110,
+          "message": "Line too long (120 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 111,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 121,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 128,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 135,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "SIM102",
+          "column": 9,
+          "line": 138,
+          "message": "Use a single `if` statement instead of nested `if` statements",
+          "url": "https://docs.astral.sh/ruff/rules/collapsible-if",
+          "weight": 0.5
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 142,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "SIM102",
+          "column": 9,
+          "line": 143,
+          "message": "Use a single `if` statement instead of nested `if` statements",
+          "url": "https://docs.astral.sh/ruff/rules/collapsible-if",
+          "weight": 0.5
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 147,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 154,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 159,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 167,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 178,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 183,
+          "message": "Line too long (102 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 188,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 192,
+          "message": "Line too long (105 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 193,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 196,
+          "message": "Line too long (111 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 197,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 199,
+          "message": "Line too long (94 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 201,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 203,
+          "message": "Line too long (116 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 204,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 207,
+          "message": "Line too long (101 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 208,
+          "message": "Line too long (101 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 209,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 213,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 217,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 222,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 224,
+          "message": "Line too long (98 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 225,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 226,
+          "message": "Line too long (120 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 227,
+          "message": "Line too long (116 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 228,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 232,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 240,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 250,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        },
+        {
+          "code": "W293",
+          "column": 1,
+          "line": 253,
+          "message": "Blank line contains whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace",
+          "weight": 1.0
+        }
+      ],
+      "logical_lines": 199,
+      "weighted_finding_count": 52.5,
+      "weighted_findings_per_100_lloc": 26.382
+    },
+    "efficiency": {
+      "hot_loop_calls": [],
+      "hot_loop_deduction": 0.0,
+      "ruff_deduction": 0.0,
+      "ruff_perf_findings": []
+    },
+    "maintainability": {
+      "clone_metrics": {
+        "clone_group_count": 0,
+        "extra_occurrences": 0,
+        "method": "normalized_ast_statement_windows",
+        "window_count": 46,
+        "window_size": 6
+      },
+      "clone_score": 5.0,
+      "cyclomatic_score": 9.822,
+      "has_main_guard": true,
+      "import_probe": {
+        "returncode": 0,
+        "safe": true,
+        "stderr_tail": "",
+        "timed_out": false
+      },
+      "radon": {
+        "complexities": [
+          2,
+          1,
+          1,
+          1,
+          1,
+          1,
+          3,
+          1,
+          3,
+          1,
+          1,
+          3,
+          4,
+          1,
+          7,
+          3,
+          3,
+          5,
+          3,
+          7,
+          1,
+          2,
+          1,
+          1,
+          3,
+          3
+        ],
+        "maintainability_index": 35.10414357299947,
+        "max_complexity": 7,
+        "mean_complexity": 2.423076923076923,
+        "ranks": [
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "B",
+          "A",
+          "A",
+          "A",
+          "A",
+          "B",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A"
+        ],
+        "raw": {
+          "blank": 46,
+          "comments": 15,
+          "lloc": 199,
+          "loc": 259,
+          "sloc": 199
+        }
+      },
+      "structural_findings": [
+        {
+          "code": "PLR0913",
+          "column": 9,
+          "line": 34,
+          "message": "Too many arguments in function definition (6 > 5)",
+          "url": "https://docs.astral.sh/ruff/rules/too-many-arguments"
+        }
+      ],
+      "structural_score": 6.5,
+      "testability_score": 5.0,
+      "top_level_executable_count": 1
+    },
+    "reliability": {
+      "ast_deduction": 0.0,
+      "broad_exception_handlers": 0,
+      "ruff_deduction": 0.0,
+      "ruff_findings": [],
+      "swallowed_exception_handlers": 0
+    },
+    "ruff_all_findings": [
+      {
+        "code": "I001",
+        "column": 1,
+        "line": 1,
+        "message": "Import block is un-sorted or un-formatted",
+        "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+      },
+      {
+        "code": "PLR0913",
+        "column": 9,
+        "line": 34,
+        "message": "Too many arguments in function definition (6 > 5)",
+        "url": "https://docs.astral.sh/ruff/rules/too-many-arguments"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 39,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 42,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 45,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 48,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 60,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 64,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 68,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 72,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 75,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 80,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 87,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 103,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 106,
+        "message": "Line too long (99 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 107,
+        "message": "Line too long (128 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 108,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 110,
+        "message": "Line too long (120 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 111,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 121,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 128,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 135,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "SIM102",
+        "column": 9,
+        "line": 138,
+        "message": "Use a single `if` statement instead of nested `if` statements",
+        "url": "https://docs.astral.sh/ruff/rules/collapsible-if"
+      },
+      {
+        "code": "PLR2004",
+        "column": 68,
+        "line": 139,
+        "message": "Magic value used in comparison, consider replacing `10` with a constant variable",
+        "url": "https://docs.astral.sh/ruff/rules/magic-value-comparison"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 142,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "SIM102",
+        "column": 9,
+        "line": 143,
+        "message": "Use a single `if` statement instead of nested `if` statements",
+        "url": "https://docs.astral.sh/ruff/rules/collapsible-if"
+      },
+      {
+        "code": "PLR2004",
+        "column": 64,
+        "line": 144,
+        "message": "Magic value used in comparison, consider replacing `10` with a constant variable",
+        "url": "https://docs.astral.sh/ruff/rules/magic-value-comparison"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 147,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 154,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 159,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 167,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 178,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 183,
+        "message": "Line too long (102 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 188,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 192,
+        "message": "Line too long (105 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 193,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 196,
+        "message": "Line too long (111 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 197,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 199,
+        "message": "Line too long (94 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 201,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 203,
+        "message": "Line too long (116 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 204,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 207,
+        "message": "Line too long (101 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 208,
+        "message": "Line too long (101 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 209,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 213,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 217,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 222,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 224,
+        "message": "Line too long (98 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 225,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 226,
+        "message": "Line too long (120 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "E501",
+        "column": 89,
+        "line": 227,
+        "message": "Line too long (116 > 88)",
+        "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 228,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 232,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 240,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 250,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      },
+      {
+        "code": "W293",
+        "column": 1,
+        "line": 253,
+        "message": "Blank line contains whitespace",
+        "url": "https://docs.astral.sh/ruff/rules/blank-line-with-whitespace"
+      }
+    ],
+    "security": {
+      "bandit_deduction": 4.0,
+      "bandit_findings": [
+        {
+          "confidence": "HIGH",
+          "deduction": 1.0,
+          "line": 57,
+          "message": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+          "severity": "LOW",
+          "test_id": "B311",
+          "test_name": "blacklist"
+        },
+        {
+          "confidence": "HIGH",
+          "deduction": 1.0,
+          "line": 58,
+          "message": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+          "severity": "LOW",
+          "test_id": "B311",
+          "test_name": "blacklist"
+        },
+        {
+          "confidence": "HIGH",
+          "deduction": 1.0,
+          "line": 78,
+          "message": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+          "severity": "LOW",
+          "test_id": "B311",
+          "test_name": "blacklist"
+        },
+        {
+          "confidence": "HIGH",
+          "deduction": 1.0,
+          "line": 79,
+          "message": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+          "severity": "LOW",
+          "test_id": "B311",
+          "test_name": "blacklist"
+        }
+      ],
+      "critical_risk": false,
+      "external_imports": [],
+      "forbidden_calls": []
+    }
+  },
+  "indicator_scores": {
+    "conformance": 0.0,
+    "efficiency": 10.0,
+    "maintainability": 26.322,
+    "reliability": 20.0,
+    "security": 11.0
+  },
+  "max_score": 85,
+  "method": "iso5055_inspired_tools_plus_anonymous_llm_panel",
+  "reason": "D3-v2 deterministic tool evaluation completed.",
+  "schema_version": 2,
+  "score": 67.322,
+  "score_normalized": 0.7920235294117648,
+  "status": "completed",
+  "tool_versions": {
+    "bandit": "1.9.4",
+    "radon": "6.0.1",
+    "ruff": "0.15.22"
+  }
+}

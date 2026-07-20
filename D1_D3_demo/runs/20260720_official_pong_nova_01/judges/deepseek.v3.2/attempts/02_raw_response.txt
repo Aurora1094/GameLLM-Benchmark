@@ -1,0 +1,15 @@
+{
+  "scores": {
+    "abstraction_and_responsibility": 4,
+    "semantic_readability": 3,
+    "comment_usefulness": 0,
+    "changeability_and_testability": 2
+  },
+  "total": 9,
+  "evidence": {
+    "abstraction_and_responsibility": {"reason": "Game objects (Paddle, Ball) are cleanly encapsulated, but game rule logic (scoring, win condition, AI) is embedded in the main loop, reducing single-responsibility.", "lines": [73, 76, 82, 87, -1]},
+    "semantic_readability": {"reason": "Variable names are clear (e.g., left_paddle, TARGET_SCORE) and control flow is straightforward. However, 'score' variable (line 67) returning 1/-1 for side scores is slightly non-obvious.", "lines": [67, 73, 76, 80]},
+    "comment_usefulness": {"reason": "There are no comments in the code.", "lines": []},
+    "changeability_and_testability": {"reason": "Constants are extracted, but core game rules are fused within main loop, making isolated changes (e.g., new scoring rules) difficult. No clear separation for testing game phases.", "lines": [68, 73, 82, 85]}
+  }
+}

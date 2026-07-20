@@ -1,0 +1,178 @@
+{
+  "artifact_index": [
+    {
+      "path": "generated/__pycache__/pong__qwen.qwen3-coder-next.cpython-311.pyc",
+      "sha256": "3de3c29882fd69c9f043859f7ecac80513c3c574af683e642c26ec53101b705b",
+      "size_bytes": 15860
+    },
+    {
+      "path": "generated/pong__qwen.qwen3-coder-next.py",
+      "sha256": "723000e99006ef15054da61ab1663fa9195facea5c5364f85f103dfdf2324a64",
+      "size_bytes": 9259
+    },
+    {
+      "path": "inputs/main.md",
+      "sha256": "b00f6a6f2169ab66d9f10af8ba9c9986307280eda571188dc89e92d509ecfbdf",
+      "size_bytes": 3185
+    },
+    {
+      "path": "inputs/pong.md",
+      "sha256": "f8a0463194c7961f53deb2f1bed074d507a14da3ec88b1c9c5d15f39290d7490",
+      "size_bytes": 957
+    },
+    {
+      "path": "judges/amazon.nova-pro-v1_0/attempts/01_prompt.txt",
+      "sha256": "57d7e50a763ca64a6e1ed1e343c4772fa77c29f4addf22d096f28d0a9ad2aadb",
+      "size_bytes": 10954
+    },
+    {
+      "path": "judges/amazon.nova-pro-v1_0/attempts/02_prompt.txt",
+      "sha256": "dc19fe4d3507e16684ab87f5c96af12639b268c9128f48a2f10a1b918aee259f",
+      "size_bytes": 11376
+    },
+    {
+      "path": "judges/amazon.nova-pro-v1_0/attempts/03_prompt.txt",
+      "sha256": "dc19fe4d3507e16684ab87f5c96af12639b268c9128f48a2f10a1b918aee259f",
+      "size_bytes": 11376
+    },
+    {
+      "path": "judges/amazon.nova-pro-v1_0/attempts/03_raw_response.txt",
+      "sha256": "b5cc8ff0751d58fcae3cc41a28f1a8333a3d44c2691d2e7e8b343bd0195d37ea",
+      "size_bytes": 1400
+    },
+    {
+      "path": "judges/amazon.nova-pro-v1_0/parsed_score.json",
+      "sha256": "93dcf7479e0b802668ef9cfbaefbd2e77c5f615ddd837282d6cb3f50b79db9f1",
+      "size_bytes": 1618
+    },
+    {
+      "path": "judges/amazon.nova-pro-v1_0/raw_response.txt",
+      "sha256": "b5cc8ff0751d58fcae3cc41a28f1a8333a3d44c2691d2e7e8b343bd0195d37ea",
+      "size_bytes": 1400
+    },
+    {
+      "path": "judges/amazon.nova-pro-v1_0/request.json",
+      "sha256": "d7f999aa5008f45788423dfbdeb3f890b1dde7bc25814db2e5257914d7010113",
+      "size_bytes": 368
+    },
+    {
+      "path": "judges/deepseek.v3.2/attempts/01_prompt.txt",
+      "sha256": "57d7e50a763ca64a6e1ed1e343c4772fa77c29f4addf22d096f28d0a9ad2aadb",
+      "size_bytes": 10954
+    },
+    {
+      "path": "judges/deepseek.v3.2/attempts/01_raw_response.txt",
+      "sha256": "701e1d5e51942f01459b669a8afef36c63a216698c5552949befd56e550d6d3c",
+      "size_bytes": 1424
+    },
+    {
+      "path": "judges/deepseek.v3.2/attempts/02_prompt.txt",
+      "sha256": "e8d36cf8f39e3a9019c22eafa29f163bad87da9d50876183cd40f87002636a1a",
+      "size_bytes": 11269
+    },
+    {
+      "path": "judges/deepseek.v3.2/attempts/02_raw_response.txt",
+      "sha256": "3f0909a485c208f258e00512102d80876669c0433c4d97365b8b6d4d58e5cbb5",
+      "size_bytes": 1435
+    },
+    {
+      "path": "judges/deepseek.v3.2/attempts/03_prompt.txt",
+      "sha256": "54b9c310297e79cc115a463d444d37d7f3ec3a85fd100fbdd8b61e527741a237",
+      "size_bytes": 11274
+    },
+    {
+      "path": "judges/deepseek.v3.2/attempts/03_raw_response.txt",
+      "sha256": "b882780734cee738648cecc09579bdf40189039717dbcd71fd856152d67ebc6e",
+      "size_bytes": 1656
+    },
+    {
+      "path": "judges/deepseek.v3.2/parsed_score.json",
+      "sha256": "15cb65f0ea1c8752412fd78b41681537566f65ba67d4ba152cb15343543356e5",
+      "size_bytes": 3074
+    },
+    {
+      "path": "judges/deepseek.v3.2/raw_response.txt",
+      "sha256": "b882780734cee738648cecc09579bdf40189039717dbcd71fd856152d67ebc6e",
+      "size_bytes": 1656
+    },
+    {
+      "path": "judges/deepseek.v3.2/request.json",
+      "sha256": "39597db660a60c19949ca44425d81536742df170f475f570594df2c1b0c32355",
+      "size_bytes": 361
+    },
+    {
+      "path": "judges/qwen.qwen3-coder-next/attempts/01_prompt.txt",
+      "sha256": "57d7e50a763ca64a6e1ed1e343c4772fa77c29f4addf22d096f28d0a9ad2aadb",
+      "size_bytes": 10954
+    },
+    {
+      "path": "judges/qwen.qwen3-coder-next/attempts/01_raw_response.txt",
+      "sha256": "d994d3b3dd0ff8841d8df60f13881043d76ff84edcdb48e16054cc8a1cb2d5cc",
+      "size_bytes": 2013
+    },
+    {
+      "path": "judges/qwen.qwen3-coder-next/parsed_score.json",
+      "sha256": "a60d1c56a5c59e8e4dc950e3c96648e706f9a79e9f24b644490e6a070e55febc",
+      "size_bytes": 2804
+    },
+    {
+      "path": "judges/qwen.qwen3-coder-next/raw_response.txt",
+      "sha256": "d994d3b3dd0ff8841d8df60f13881043d76ff84edcdb48e16054cc8a1cb2d5cc",
+      "size_bytes": 2013
+    },
+    {
+      "path": "judges/qwen.qwen3-coder-next/request.json",
+      "sha256": "9939ee4e93a4b2c14c0feded6db814194406da358672d70cbb494fa1f827385f",
+      "size_bytes": 369
+    },
+    {
+      "path": "prompts/d3_judge.txt",
+      "sha256": "57d7e50a763ca64a6e1ed1e343c4772fa77c29f4addf22d096f28d0a9ad2aadb",
+      "size_bytes": 10954
+    },
+    {
+      "path": "prompts/pong.txt",
+      "sha256": "e2048dc87f87a724a0358f58ff6fa6f6c22ebb802da4f25d220f3733749e8253",
+      "size_bytes": 2770
+    },
+    {
+      "path": "request.json",
+      "sha256": "30caf3cd186d92d7e7304f7f938732039819aa088d86e9375023defaabdc0737",
+      "size_bytes": 297
+    },
+    {
+      "path": "responses/bedrock_response.json",
+      "sha256": "bb6e5dce1a447fdf7fb0fa825f7020996c61be314b77ff45f7224ca232ecab3c",
+      "size_bytes": 19361
+    },
+    {
+      "path": "responses/model_output.txt",
+      "sha256": "cfa106b0bea8202f2ddf2dd325bc48cb171d5bcb70486d156e57e3067689df33",
+      "size_bytes": 9273
+    },
+    {
+      "path": "scores/d1.json",
+      "sha256": "b61d21b68714afc05f71eb1b31162e0192448cad9abdb3525731776178d1d69a",
+      "size_bytes": 2018
+    },
+    {
+      "path": "scores/d3.json",
+      "sha256": "10b4cd96880bff63baf409f44aae0f818482fd5c1b1cfbbd2535adad13149ca2",
+      "size_bytes": 20522
+    },
+    {
+      "path": "scores/d3_tools.json",
+      "sha256": "87b5f53864a60d21bbe2ba58d920819fa7d6afa122a230f0d390ccb986de7d99",
+      "size_bytes": 10071
+    },
+    {
+      "path": "summary.json",
+      "sha256": "9856c6f238309d1deead1a3f854d8b0bceaeca9d8cb96fd3c6effc34441320d1",
+      "size_bytes": 3690
+    }
+  ],
+  "format_version": 2,
+  "generation_origin": "llm_api",
+  "run_id": "20260720_official_pong_qwen_01",
+  "status": "completed"
+}

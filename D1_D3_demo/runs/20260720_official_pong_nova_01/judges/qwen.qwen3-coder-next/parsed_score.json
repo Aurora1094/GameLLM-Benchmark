@@ -1,0 +1,121 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "latency_seconds": 6.848184,
+      "prompt_sha256": "02f4ffaca424a104b7f37a8d8ef3a1f3803aaaac0bb83909f9f9d616fdca8888",
+      "raw_response_sha256": "7c2d76f93af642a52cdc95c685c1e391f3bddfb91e862b75ed54cd3259422408",
+      "status": "completed"
+    }
+  ],
+  "evidence": {
+    "abstraction_and_responsibility": {
+      "lines": [
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76
+      ],
+      "reason": "The Paddle and Ball classes encapsulate state and movement logic, but the main loop handles game state (scores, timing, winner determination) without dedicated responsibility classes. Ball.move returns game state (score change), which is acceptable, but collision and AI logic are embedded directly in the main loop rather than being delegated to objects. Lines 14-22 and 25-38 show reasonable encapsulation, but lines 60-76 violate single responsibility by mixing input, AI, collision, scoring, and rendering in one flow."
+    },
+    "changeability_and_testability": {
+      "lines": [
+        8,
+        9,
+        10,
+        11,
+        56,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86
+      ],
+      "reason": "Hard-coded globals (SCREEN_WIDTH, PADDLE_HEIGHT, etc.) and direct screen time calls make unit testing difficult. The main loop integrates IO (rendering, events) tightly with game logic, so mocking requires pytest-pygame or similar. Ball.reset() uses global SCREEN_WIDTH, and paddle speed is fixed at instantiation, limiting configurability. Extracting game loop steps into separate functions would improve testability."
+    },
+    "comment_usefulness": {
+      "lines": [],
+      "reason": "No informative comments are present. The code contains no comments at all, so trivially all comment lines (zero) lack useful information. While some self-documenting names exist, there are no comments to justify non-obvious decisions (e.g., why TARGET_SCORE=5, GAME_DURATION=120), and no explanation for behavior at boundary conditions."
+    },
+    "semantic_readability": {
+      "lines": [
+        64,
+        70,
+        71,
+        81,
+        82,
+        83
+      ],
+      "reason": "Naming is generally clear (Paddle, Ball, move, draw_objects), and control flow is linear. However, the ball collision check uses logical OR without extracting into a helper, and the AI logic is expressed with redundant centery comparisons. Score display logic duplicates font rendering without helper functions. The else branch in winner determination (line 81) lacks explicit handling of ties, which could confuse readers about expected behavior at equal scores."
+    }
+  },
+  "http_status_code": 200,
+  "model": "qwen.qwen3-coder-next",
+  "request_id": "b4376849-0fea-45f5-b896-11bf2eb3375e",
+  "scores": {
+    "abstraction_and_responsibility": 4,
+    "changeability_and_testability": 2,
+    "comment_usefulness": 1,
+    "semantic_readability": 3
+  },
+  "status": "completed",
+  "total": 10
+}

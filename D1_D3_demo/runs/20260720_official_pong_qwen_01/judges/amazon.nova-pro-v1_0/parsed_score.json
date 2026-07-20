@@ -1,0 +1,43 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "error": {
+        "message": "SSL validation failed for https://bedrock-runtime.us-east-1.amazonaws.com/model/amazon.nova-pro-v1%3A0/invoke EOF occurred in violation of protocol (_ssl.c:1002)",
+        "type": "SSLError"
+      },
+      "latency_seconds": 24.993309,
+      "prompt_sha256": "425941118012691a86326bbf84e223e57c1a0b4dd4b90701a35b95286ca8fa7f",
+      "raw_response_sha256": null,
+      "status": "failed"
+    },
+    {
+      "attempt": 2,
+      "error": {
+        "message": "SSL validation failed for https://bedrock-runtime.us-east-1.amazonaws.com/model/amazon.nova-pro-v1%3A0/invoke EOF occurred in violation of protocol (_ssl.c:1002)",
+        "type": "SSLError"
+      },
+      "latency_seconds": 21.883399,
+      "prompt_sha256": "b58e8edf5ce886a6c11c7117490b96d3d28d9676cb9074ccbfa0e14b8a2d3e81",
+      "raw_response_sha256": null,
+      "status": "failed"
+    },
+    {
+      "attempt": 3,
+      "error": {
+        "message": "Judge evidence changeability_and_testability.lines contains invalid line numbers",
+        "type": "ValueError"
+      },
+      "latency_seconds": 9.152012,
+      "prompt_sha256": "b58e8edf5ce886a6c11c7117490b96d3d28d9676cb9074ccbfa0e14b8a2d3e81",
+      "raw_response_sha256": "09d28788689b68d148d6b65ed9e73534d451e209d6bc115339a3349f369cdcc0",
+      "status": "failed"
+    }
+  ],
+  "error": {
+    "message": "Judge evidence changeability_and_testability.lines contains invalid line numbers",
+    "type": "ValueError"
+  },
+  "model": "amazon.nova-pro-v1:0",
+  "status": "failed"
+}

@@ -1,18 +1,20 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import csv
 import hashlib
 import importlib.metadata
 import json
-import math
+import os
 import platform
+import shutil
+import statistics
 import subprocess
 import sys
-import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 
 DEMO_ROOT = Path(__file__).resolve().parent
@@ -20,30 +22,41 @@ REPO_ROOT = DEMO_ROOT.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+from d3_v2 import evaluate_d3_tools, run_judge_panel
+from d3_v2.evaluator import CONFIG_PATH as DEFAULT_D3_CONFIG
 from evaluator.dimension1.dimension1_executable import INDICATOR_ORDER, evaluate_dimension1
-from evaluator.dimension3.dimension3_code_quality import evaluate_dimension3_code_quality
 
 
-D3_LABELS = {
-    "complexity": "复杂度控制",
-    "reuse": "代码复用",
-    "constants": "常量使用",
-    "naming": "命名规范",
-    "modularity": "模块划分",
-    "comments": "注释质量",
-}
 D1_STEP_ORDER = [key for key, _ in INDICATOR_ORDER]
-D1_EVALUATOR = REPO_ROOT / "evaluator" / "dimension1" / "dimension1_executable.py"
-D3_EVALUATOR = REPO_ROOT / "evaluator" / "dimension3" / "dimension3_code_quality.py"
+TOOL_INDICATORS = (
+    "maintainability",
+    "reliability",
+    "security",
+    "efficiency",
+    "conformance",
+)
+ALL_INDICATORS = (*TOOL_INDICATORS, "llm_review")
+D3_LABELS = {
+    "maintainability": "可维护性与结构",
+    "reliability": "可靠性与缺陷风险",
+    "security": "安全与任务约束",
+    "efficiency": "效率与资源纪律",
+    "conformance": "Python 规范与可读性",
+    "llm_review": "三模型语义评审",
+}
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Validate the deterministic D1/D3 scoring contract.")
-    parser.add_argument("--check", action="store_true", help="Exit non-zero when an expectation fails.")
-    parser.add_argument("--repeat", type=int, default=1, help="Number of complete repeated evaluations.")
-    parser.add_argument("--runtime-sec", type=int, default=3, help="D1 subprocess timeout per probe.")
-    parser.add_argument("--output", type=Path, default=DEMO_ROOT / "results", help="Result directory.")
-    return parser.parse_args()
+def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Calibrate the Demo-local D1 and D3-v2 contracts.")
+    parser.add_argument("--check", action="store_true", help="Exit non-zero on any assertion failure.")
+    parser.add_argument("--repeat", type=int, default=3, help="Repeated deterministic tool runs.")
+    parser.add_argument("--runtime-sec", type=int, default=3, help="D1 runtime probe duration.")
+    parser.add_argument("--output", type=Path, default=DEMO_ROOT / "results")
+    parser.add_argument("--expectations", type=Path, default=DEMO_ROOT / "expectations.json")
+    parser.add_argument("--d3-config", type=Path, default=DEFAULT_D3_CONFIG)
+    parser.add_argument("--include-judges", action="store_true", help="Run paid three-model calibration.")
+    parser.add_argument("--region", default="us-east-1")
+    return parser.parse_args(argv)
 
 
 def file_sha256(path: Path) -> str:
@@ -59,22 +72,32 @@ def value_sha256(value: Any) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
-def relative_path(path: Path, root: Path = REPO_ROOT) -> str:
-    try:
-        return path.resolve().relative_to(root.resolve()).as_posix()
-    except ValueError:
-        return str(path.resolve())
+def write_json(path: Path, value: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True, default=str) + "\n",
+        encoding="utf-8",
+    )
+
+
+def reset_generated_dir(path: Path, output_dir: Path) -> None:
+    target = path.resolve()
+    root = output_dir.resolve()
+    if target == root or not target.is_relative_to(root):
+        raise ValueError(f"Refusing to reset directory outside calibration output: {target}")
+    if target.exists():
+        shutil.rmtree(target)
 
 
 def package_version(name: str) -> str:
     try:
         return importlib.metadata.version(name)
     except importlib.metadata.PackageNotFoundError:
-        return "not installed"
+        return "not_installed"
 
 
 def git_commit() -> str:
-    result = subprocess.run(
+    completed = subprocess.run(
         ["git", "rev-parse", "HEAD"],
         cwd=REPO_ROOT,
         stdout=subprocess.PIPE,
@@ -82,890 +105,668 @@ def git_commit() -> str:
         text=True,
         timeout=10,
     )
-    return result.stdout.strip() if result.returncode == 0 else "unavailable"
-
-
-def validate_case_ids(cases: list[dict[str, Any]], section: str) -> None:
-    ids = [case.get("id") for case in cases]
-    files = [case.get("file") for case in cases]
-    if any(not isinstance(value, str) or not value for value in ids + files):
-        raise ValueError(f"{section} cases require non-empty string id and file fields")
-    if len(ids) != len(set(ids)):
-        raise ValueError(f"{section} contains duplicate case ids")
-    if len(files) != len(set(files)):
-        raise ValueError(f"{section} contains duplicate fixture files")
+    return completed.stdout.strip() if completed.returncode == 0 else "unavailable"
 
 
 def fixture_path(section: str, filename: str) -> Path:
-    path = (DEMO_ROOT / "fixtures" / section / filename).resolve()
-    fixture_root = (DEMO_ROOT / "fixtures" / section).resolve()
-    if not path.is_relative_to(fixture_root):
-        raise ValueError(f"Fixture escapes {fixture_root}: {filename}")
+    root = (DEMO_ROOT / "fixtures" / section).resolve()
+    path = (root / filename).resolve()
+    if not path.is_relative_to(root):
+        raise ValueError(f"Fixture escapes {root}: {filename}")
     if not path.is_file():
-        raise FileNotFoundError(f"Missing fixture: {path}")
+        raise FileNotFoundError(path)
     return path
 
 
-def load_expectations() -> dict[str, Any]:
-    path = DEMO_ROOT / "expectations.json"
+def load_expectations(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
-    if value.get("schema_version") != 2:
-        raise ValueError("expectations.json schema_version must be 2")
+    if value.get("schema_version") != 3:
+        raise ValueError("expectations.json schema_version must be 3")
     if value.get("calibration_method") != "known_groups":
         raise ValueError("calibration_method must be known_groups")
-
-    d1 = value.get("d1", {})
-    d1_cases = d1.get("cases")
-    if not isinstance(d1_cases, list) or not d1_cases:
-        raise ValueError("d1.cases must be a non-empty list")
-    validate_case_ids(d1_cases, "d1")
-    if d1.get("step_order") != D1_STEP_ORDER:
-        raise ValueError("D1 expectation order does not match the production evaluator")
-    expected_levels = []
+    if value.get("d1", {}).get("step_order") != D1_STEP_ORDER:
+        raise ValueError("D1 step order differs from the production D1 evaluator")
+    d1_cases = value.get("d1", {}).get("cases", [])
+    if [case.get("expected_pipeline_steps") for case in d1_cases] != list(range(7)):
+        raise ValueError("D1 cases must preregister the unchanged 0..6 staircase")
+    d3_cases = value.get("d3", {}).get("cases", [])
+    ids = [case.get("id") for case in d3_cases]
+    if len(ids) != len(set(ids)) or value.get("d3", {}).get("baseline") not in ids:
+        raise ValueError("D3 cases require unique ids and one baseline")
     for case in d1_cases:
-        expected = case.get("expected_pipeline_steps")
-        signature = case.get("expected_indicators")
-        if not isinstance(expected, int) or not 0 <= expected <= len(D1_STEP_ORDER):
-            raise ValueError(f"Invalid D1 expected level for {case['id']}")
-        if not isinstance(signature, list) or len(signature) != len(D1_STEP_ORDER):
-            raise ValueError(f"Invalid D1 indicator signature for {case['id']}")
-        if any(value not in (0, 1) for value in signature):
-            raise ValueError(f"D1 indicator signatures must be binary: {case['id']}")
-        if not isinstance(case.get("expected_diagnosis"), str):
-            raise ValueError(f"Missing D1 diagnosis for {case['id']}")
         fixture_path("d1", case["file"])
-        expected_levels.append(expected)
-    if expected_levels != list(range(len(D1_STEP_ORDER) + 1)):
-        raise ValueError("D1 cases must preregister the ordered levels 0 through 6")
-
-    d3 = value.get("d3", {})
-    d3_cases = d3.get("cases")
-    if not isinstance(d3_cases, list) or not d3_cases:
-        raise ValueError("d3.cases must be a non-empty list")
-    validate_case_ids(d3_cases, "d3")
-    baseline_id = d3.get("baseline")
-    by_id = {case["id"]: case for case in d3_cases}
-    if baseline_id not in by_id or by_id[baseline_id].get("target_indicator") is not None:
-        raise ValueError("D3 baseline must exist and have a null target_indicator")
-    targets = []
     for case in d3_cases:
-        target = case.get("target_indicator")
-        if case["id"] != baseline_id:
-            if target not in D3_LABELS:
-                raise ValueError(f"Invalid D3 target for {case['id']}: {target}")
-            targets.append(target)
         fixture_path("d3", case["file"])
-    if set(targets) != set(D3_LABELS) or len(targets) != len(D3_LABELS):
-        raise ValueError("D3 cases must contain exactly one targeted defect per indicator")
+        target = case.get("target_indicator")
+        if target is not None and target not in ALL_INDICATORS:
+            raise ValueError(f"Unknown target indicator: {target}")
     return value
 
 
-def preflight_pygame() -> None:
-    result = subprocess.run(
-        [sys.executable, "-c", "import pygame"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        timeout=15,
-    )
-    if result.returncode != 0:
-        raise RuntimeError(f"pygame preflight failed: {result.stderr.strip()}")
-
-
-def compact_d1(result: dict[str, Any]) -> dict[str, Any]:
-    runtime = result.get("runtime", {})
-    stability = runtime.get("stability_probe") or {}
-    quit_probe = runtime.get("quit_probe") or {}
+def compact_d1(raw: dict[str, Any]) -> dict[str, Any]:
+    runtime = raw.get("runtime", {})
     return {
-        "score": result.get("score", 0.0),
-        "raw_pass_count": result.get("raw_pass_count", 0),
-        "pipeline_steps_passed": result.get("pipeline_steps_passed", 0),
-        "gate_pass": bool(result.get("gate_pass", False)),
-        "indicators": result.get("indicators", {}),
+        "pipeline_steps_passed": int(raw.get("pipeline_steps_passed", 0)),
+        "raw_pass_count": int(raw.get("raw_pass_count", 0)),
+        "gate_pass": bool(raw.get("gate_pass", False)),
         "diagnosis": runtime.get("diagnosis", "not_run"),
-        "reason": result.get("reason", ""),
-        "evidence": {
-            "pygame_import_ok": bool(runtime.get("pygame_import_ok", False)),
-            "window_created": bool(stability.get("window_created", False)),
-            "surface_returned": bool(stability.get("surface_returned", False)),
-            "event_fetch_seen": bool(stability.get("event_fetch_seen", False)),
-            "stability_timed_out": bool(stability.get("timed_out", False)),
-            "quit_posted": bool(quit_probe.get("quit_posted", False)),
-            "quit_returncode": quit_probe.get("returncode"),
-            "quit_timed_out": bool(quit_probe.get("timed_out", False)),
-        },
+        "indicators": raw.get("indicators", {}),
+        "reason": raw.get("reason", ""),
     }
 
 
-def compact_d3(result: dict[str, Any]) -> dict[str, Any]:
-    details = result.get("details", {})
-    return {
-        "score": result.get("score", 0),
-        "score_normalized": result.get("score_normalized", 0.0),
-        "reason": result.get("reason", ""),
-        "indicator_scores": result.get("indicator_scores", {}),
-        "category_scores": result.get("category_scores", {}),
-        "evidence": {
-            "complexity": details.get("indicator_1_complexity", {}),
-            "reuse": details.get("indicator_2_reuse", {}),
-            "constants": details.get("indicator_3_constants", {}),
-            "naming": details.get("indicator_4_naming", {}),
-            "modularity": details.get("indicator_5_modularity", {}),
-            "comments": details.get("indicator_6_comments", {}),
-        },
-    }
-
-
-def evaluate_once(runtime_sec: int, expectations: dict[str, Any]) -> dict[str, Any]:
-    compact: dict[str, dict[str, Any]] = {"d1": {}, "d3": {}}
-    raw: dict[str, dict[str, Any]] = {"d1": {}, "d3": {}}
-
+def run_d1_cases(expectations: dict[str, Any], runtime_sec: int) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
     for case in expectations["d1"]["cases"]:
-        result = evaluate_dimension1(fixture_path("d1", case["file"]), runtime_sec=runtime_sec)
-        compact["d1"][case["id"]] = compact_d1(result)
-        raw["d1"][case["id"]] = result
+        path = fixture_path("d1", case["file"])
+        actual = compact_d1(evaluate_dimension1(path, runtime_sec=runtime_sec))
+        expected_vector = dict(zip(D1_STEP_ORDER, case["expected_indicators"], strict=True))
+        passed = (
+            actual["pipeline_steps_passed"] == case["expected_pipeline_steps"]
+            and actual["diagnosis"] == case["expected_diagnosis"]
+            and actual["indicators"] == expected_vector
+        )
+        records.append(
+            {
+                "id": case["id"],
+                "file": case["file"],
+                "expected_pipeline_steps": case["expected_pipeline_steps"],
+                "expected_diagnosis": case["expected_diagnosis"],
+                "expected_indicators": expected_vector,
+                "actual": actual,
+                "pass": passed,
+                "fixture_sha256": file_sha256(path),
+            }
+        )
+    return records
 
+
+def evaluate_d3_fixture_gate(path: Path, runtime_sec: int) -> dict[str, Any]:
+    """Confirm the D1 prerequisite while retaining transient probe evidence."""
+    attempts: list[dict[str, Any]] = []
+    selected: dict[str, Any] | None = None
+    for _ in range(3):
+        current = compact_d1(evaluate_dimension1(path, runtime_sec=runtime_sec))
+        attempts.append(current)
+        selected = current
+        if current["gate_pass"]:
+            break
+    assert selected is not None
+    return {**selected, "attempt_count": len(attempts), "attempts": attempts}
+
+
+def run_d3_cases(
+    expectations: dict[str, Any],
+    repeat: int,
+    runtime_sec: int,
+    config_path: Path,
+    output_dir: Path,
+    include_judges: bool,
+    region: str,
+) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
     for case in expectations["d3"]["cases"]:
         path = fixture_path("d3", case["file"])
-        d1_result = evaluate_dimension1(path, runtime_sec=runtime_sec)
-        d3_result = evaluate_dimension3_code_quality(path)
-        compact["d3"][case["id"]] = {
-            "d1": compact_d1(d1_result),
-            "d3": compact_d3(d3_result),
-        }
-        raw["d3"][case["id"]] = {"d1": d1_result, "d3": d3_result}
-    return {"compact": compact, "raw": raw}
+        d1 = evaluate_d3_fixture_gate(path, runtime_sec=runtime_sec)
+        repeated = [evaluate_d3_tools(path, config_path=config_path) for _ in range(repeat)]
+        hashes = [value_sha256(item) for item in repeated]
+        first = repeated[0]
+        case_dir = output_dir / "cases" / "d3" / case["id"]
+        reset_generated_dir(case_dir, output_dir)
+        write_json(case_dir / "d1_gate.json", d1)
+        write_json(case_dir / "d3_tools.json", first)
+        judge_panel: dict[str, Any] = {"status": "not_run"}
+        if include_judges and first.get("status") == "completed" and d1["gate_pass"]:
+            judge_panel = run_judge_panel(path, case_dir, region=region, config_path=config_path)
+            write_json(case_dir / "judge_panel.json", judge_panel)
+        records.append(
+            {
+                "id": case["id"],
+                "file": case["file"],
+                "target_indicator": case.get("target_indicator"),
+                "intervention": case.get("intervention", ""),
+                "d1_gate": d1,
+                "tool_result": first,
+                "repeat_hashes": hashes,
+                "deterministic": len(set(hashes)) == 1,
+                "judge_panel": judge_panel,
+                "fixture_sha256": file_sha256(path),
+            }
+        )
+    return records
 
 
-def add_assertion(assertions: list[dict[str, Any]], name: str, passed: bool, detail: str) -> None:
-    assertions.append({"name": name, "passed": bool(passed), "detail": detail})
+def build_derived_checks(
+    baseline_path: Path,
+    config_path: Path,
+    output_dir: Path,
+) -> dict[str, Any]:
+    derived = output_dir / "derived_fixtures"
+    reset_generated_dir(derived, output_dir)
+    source = baseline_path.read_text(encoding="utf-8")
+
+    comments_many = derived / "comments_many.py"
+    comments_few = derived / "comments_few.py"
+    comments_many.parent.mkdir(parents=True, exist_ok=True)
+    comments_many.write_text(source + "\n" + "\n".join(f"# explanatory note {n}" for n in range(80)) + "\n", encoding="utf-8")
+    comments_few.write_text(source + "\n# one explanatory note\n", encoding="utf-8")
+    many_result = evaluate_d3_tools(comments_many, config_path=config_path)
+    few_result = evaluate_d3_tools(comments_few, config_path=config_path)
+
+    numbers_path = derived / "ordinary_numbers.py"
+    numbers_path.write_text(
+        source
+        + "\n\ndef ordinary_numbers_probe(value: int) -> tuple[int, ...]:\n"
+        + "    return (value + 7, value + 11, value + 13, value + 17)\n",
+        encoding="utf-8",
+    )
+    baseline_result = evaluate_d3_tools(baseline_path, config_path=config_path)
+    numbers_result = evaluate_d3_tools(numbers_path, config_path=config_path)
+
+    base_config = json.loads(config_path.read_text(encoding="utf-8"))
+    changed_config = copy.deepcopy(base_config)
+    changed_config["judge"]["high_disagreement_range"] = 4.5
+    changed_path = derived / "changed_config.json"
+    write_json(changed_path, changed_config)
+    changed_result = evaluate_d3_tools(baseline_path, config_path=changed_path)
+
+    version_config = copy.deepcopy(base_config)
+    version_config["required_tools"]["ruff"] = "0.0.0-calibration"
+    version_path = derived / "changed_tool_version.json"
+    write_json(version_path, version_config)
+    version_result = evaluate_d3_tools(baseline_path, config_path=version_path)
+
+    checks = {
+        "comment_quantity_no_cliff": {
+            "pass": many_result.get("indicator_scores") == few_result.get("indicator_scores"),
+            "many": many_result.get("indicator_scores"),
+            "few": few_result.get("indicator_scores"),
+        },
+        "ordinary_numbers_no_cliff": {
+            "pass": all(
+                float(numbers_result.get("indicator_scores", {}).get(key, -999))
+                >= float(baseline_result.get("indicator_scores", {}).get(key, 0)) - 1.0
+                for key in TOOL_INDICATORS
+            ),
+            "baseline": baseline_result.get("indicator_scores"),
+            "ordinary_numbers": numbers_result.get("indicator_scores"),
+        },
+        "config_change_changes_hash": {
+            "pass": baseline_result.get("config_sha256") != changed_result.get("config_sha256"),
+            "baseline_hash": baseline_result.get("config_sha256"),
+            "changed_hash": changed_result.get("config_sha256"),
+        },
+        "tool_version_change_changes_hash_and_stops": {
+            "pass": (
+                baseline_result.get("config_sha256") != version_result.get("config_sha256")
+                and version_result.get("status") == "incomplete_tooling"
+            ),
+            "baseline_hash": baseline_result.get("config_sha256"),
+            "changed_hash": version_result.get("config_sha256"),
+            "changed_status": version_result.get("status"),
+        },
+    }
+    for name, result in {
+        "comments_many": many_result,
+        "comments_few": few_result,
+        "ordinary_numbers": numbers_result,
+        "changed_config": changed_result,
+        "changed_tool_version": version_result,
+    }.items():
+        write_json(derived / f"{name}_result.json", result)
+    return checks
 
 
-def validate_results(
-    first_run: dict[str, Any],
-    compact_runs: list[dict[str, Any]],
-    expectations: dict[str, Any],
-    evaluator_hashes_before: dict[str, str],
-    evaluator_hashes_after: dict[str, str],
-) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any]]:
+def analyze_d3(
+    records: list[dict[str, Any]],
+    baseline_id: str,
+    include_judges: bool,
+    derived_checks: dict[str, Any],
+) -> dict[str, Any]:
+    by_id = {record["id"]: record for record in records}
+    baseline = by_id[baseline_id]
+    baseline_scores = dict(baseline["tool_result"].get("indicator_scores", {}))
+    if include_judges and baseline["judge_panel"].get("score") is not None:
+        baseline_scores["llm_review"] = baseline["judge_panel"]["score"]
+    sensitivity: list[dict[str, Any]] = []
     assertions: list[dict[str, Any]] = []
-    d1_cases = expectations["d1"]["cases"]
 
-    for case in d1_cases:
-        actual = first_run["d1"][case["id"]]
-        expected_steps = case["expected_pipeline_steps"]
-        expected_score = expected_steps / len(D1_STEP_ORDER)
-        expected_gate = expected_steps == len(D1_STEP_ORDER)
-        level_passed = (
-            actual["pipeline_steps_passed"] == expected_steps
-            and math.isclose(actual["score"], expected_score)
-            and actual["gate_pass"] == expected_gate
+    for record in records:
+        assertions.append(
+            {
+                "id": f"{record['id']}:d1_gate",
+                "pass": record["d1_gate"]["gate_pass"],
+                "detail": f"D1={record['d1_gate']['pipeline_steps_passed']}/6",
+            }
         )
-        add_assertion(
-            assertions,
-            f"D1 {case['id']} ordered level",
-            level_passed,
-            f"expected steps={expected_steps}, score={expected_score:.3f}, gate={expected_gate}; "
-            f"actual steps={actual['pipeline_steps_passed']}, score={actual['score']:.3f}, gate={actual['gate_pass']}",
+        assertions.append(
+            {
+                "id": f"{record['id']}:tool_complete",
+                "pass": record["tool_result"].get("status") == "completed",
+                "detail": record["tool_result"].get("status"),
+            }
         )
-        expected_indicators = dict(zip(D1_STEP_ORDER, case["expected_indicators"], strict=True))
-        signature_passed = (
-            actual["indicators"] == expected_indicators
-            and actual["diagnosis"] == case["expected_diagnosis"]
+        assertions.append(
+            {
+                "id": f"{record['id']}:deterministic",
+                "pass": record["deterministic"],
+                "detail": record["repeat_hashes"],
+            }
         )
-        add_assertion(
-            assertions,
-            f"D1 {case['id']} evidence signature",
-            signature_passed,
-            f"expected indicators={case['expected_indicators']}, diagnosis={case['expected_diagnosis']}; "
-            f"actual indicators={[actual['indicators'][key] for key in D1_STEP_ORDER]}, diagnosis={actual['diagnosis']}",
-        )
-
-    d3_cases = expectations["d3"]["cases"]
-    baseline_id = expectations["d3"]["baseline"]
-    baseline = first_run["d3"][baseline_id]["d3"]
-    baseline_scores = baseline["indicator_scores"]
-    sensitivity: dict[str, Any] = {}
-    target_drops: list[float] = []
-    non_target_abs_drops: list[float] = []
-    target_hits = 0
-
-    for case in d3_cases:
-        target = case["target_indicator"]
+        target = record["target_indicator"]
         if target is None:
             continue
-        variant_result = first_run["d3"][case["id"]]
-        scores = variant_result["d3"]["indicator_scores"]
-        drops = {key: baseline_scores[key] - scores[key] for key in D3_LABELS}
-        target_drop = drops[target]
-        max_drop = max(drops.values())
-        non_target = [abs(drop) for key, drop in drops.items() if key != target]
-        total_drop = baseline["score"] - variant_result["d3"]["score"]
-        passed = (
-            variant_result["d1"]["gate_pass"]
-            and target_drop > 0
-            and total_drop > 0
-            and target_drop == max_drop
-        )
-        if passed:
-            target_hits += 1
-        target_drops.append(target_drop)
-        non_target_abs_drops.extend(non_target)
-        sensitivity[case["id"]] = {
-            "target": target,
-            "target_drop": target_drop,
-            "total_drop": total_drop,
-            "indicator_drops": drops,
-            "mean_non_target_absolute_drop": sum(non_target) / len(non_target),
-            "target_to_non_target_ratio": (
-                target_drop / (sum(non_target) / len(non_target)) if sum(non_target) else None
-            ),
-            "passed": passed,
+        current_scores = dict(record["tool_result"].get("indicator_scores", {}))
+        if include_judges and record["judge_panel"].get("score") is not None:
+            current_scores["llm_review"] = record["judge_panel"]["score"]
+        compared = ALL_INDICATORS if include_judges else TOOL_INDICATORS
+        drops = {
+            key: round(float(baseline_scores.get(key, 0)) - float(current_scores.get(key, 0)), 3)
+            for key in compared
         }
-        add_assertion(
-            assertions,
-            f"D3 {case['id']} -> {target}",
-            passed,
-            f"D1 gate={variant_result['d1']['gate_pass']}; target drop={target_drop}; "
-            f"max drop={max_drop}; total drop={total_drop}; non-target absolute drift={sum(non_target)}",
-        )
-
-    all_d3_gate = all(result["d1"]["gate_pass"] for result in first_run["d3"].values())
-    add_assertion(assertions, "D3 fixtures preserve D1 gate", all_d3_gate, f"all_gate_pass={all_d3_gate}")
-
-    d1_gate_count = sum(result["gate_pass"] for result in first_run["d1"].values())
-    complete_case_id = next(
-        case["id"]
-        for case in d1_cases
-        if case["expected_pipeline_steps"] == len(D1_STEP_ORDER)
-    )
-    add_assertion(
-        assertions,
-        "D1 gate opens only for the complete reference case",
-        d1_gate_count == 1 and first_run["d1"][complete_case_id]["gate_pass"],
-        f"gate_open_case_count={d1_gate_count}; expected_case={complete_case_id}",
-    )
-
-    defect_scores = [
-        first_run["d3"][case["id"]]["d3"]["score"]
-        for case in d3_cases
-        if case["target_indicator"] is not None
-    ]
-    known_group_separation = bool(defect_scores) and baseline["score"] > max(defect_scores)
-    add_assertion(
-        assertions,
-        "D3 baseline separates from all targeted defects",
-        known_group_separation,
-        f"baseline={baseline['score']}; highest_targeted_defect={max(defect_scores)}",
-    )
-
-    run_digests = [value_sha256(run) for run in compact_runs]
-    deterministic = len(set(run_digests)) == 1
-    add_assertion(
-        assertions,
-        "Repeated evaluations are deterministic",
-        deterministic,
-        f"repeat_count={len(compact_runs)}; full_compact_result_digests_identical={deterministic}",
-    )
-
-    evaluator_unchanged = evaluator_hashes_before == evaluator_hashes_after
-    add_assertion(
-        assertions,
-        "Production evaluators remain unchanged during calibration",
-        evaluator_unchanged,
-        f"hashes_before={evaluator_hashes_before}; hashes_after={evaluator_hashes_after}",
-    )
-
-    target_mean = sum(target_drops) / len(target_drops)
-    non_target_mean = sum(non_target_abs_drops) / len(non_target_abs_drops)
-    discriminant_signal = target_mean > non_target_mean
-    add_assertion(
-        assertions,
-        "D3 target signal exceeds non-target drift",
-        discriminant_signal,
-        f"mean_target_drop={target_mean:.3f}; mean_non_target_absolute_drop={non_target_mean:.3f}",
-    )
-    calibration = {
-        "method": "known_groups",
-        "d1_staircase_exact": all(
-            first_run["d1"][case["id"]]["pipeline_steps_passed"] == case["expected_pipeline_steps"]
-            for case in d1_cases
-        ),
-        "d1_gate_open_case_count": sum(result["gate_pass"] for result in first_run["d1"].values()),
-        "d3_target_case_count": len(target_drops),
-        "d3_target_hits": target_hits,
-        "d3_target_hit_rate": target_hits / len(target_drops),
-        "d3_baseline_score": baseline["score"],
-        "d3_highest_defect_score": max(defect_scores),
-        "d3_known_group_margin": baseline["score"] - max(defect_scores),
-        "d3_mean_target_drop": target_mean,
-        "d3_mean_non_target_absolute_drop": non_target_mean,
-        "d3_target_to_non_target_signal_ratio": target_mean / non_target_mean if non_target_mean else None,
-        "repeat_result_sha256": run_digests,
-        "repeat_results_identical": deterministic,
-    }
-    return assertions, sensitivity, calibration
-
-
-def build_provenance(expectations: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
-    evaluator_files = {"d1": D1_EVALUATOR, "d3": D3_EVALUATOR}
-    fixture_files = {
-        f"d1/{case['id']}": fixture_path("d1", case["file"])
-        for case in expectations["d1"]["cases"]
-    }
-    fixture_files.update(
-        {
-            f"d3/{case['id']}": fixture_path("d3", case["file"])
-            for case in expectations["d3"]["cases"]
+        target_drop = drops.get(target)
+        evaluable = target in drops
+        largest_drop = max(drops.values(), default=0.0)
+        target_is_largest = bool(evaluable and target_drop is not None and target_drop > 0 and target_drop >= largest_drop)
+        non_target_changes = {
+            key: value for key, value in drops.items() if key != target and abs(value) > 0.001
         }
-    )
-    reference_name = expectations.get("reference", {}).get("archive", "")
-    reference_path = REPO_ROOT / reference_name if reference_name else None
-    reference = {
-        "archive": reference_name,
-        "exists": bool(reference_path and reference_path.is_file()),
-        "sha256": file_sha256(reference_path) if reference_path and reference_path.is_file() else None,
-        "size_bytes": reference_path.stat().st_size if reference_path and reference_path.is_file() else None,
-        "adopted_patterns": expectations.get("reference", {}).get("adopted_patterns", []),
-        "code_imported": bool(expectations.get("reference", {}).get("code_imported", False)),
-    }
-    return {
-        "git_commit": git_commit(),
-        "command": [sys.executable, *sys.argv],
-        "environment": {
-            "python": platform.python_version(),
-            "python_implementation": platform.python_implementation(),
-            "platform": platform.platform(),
-            "pygame": package_version("pygame"),
-            "radon": package_version("radon"),
-        },
-        "configuration": {
-            "repeat": args.repeat,
-            "runtime_sec": args.runtime_sec,
-            "sdl_video_driver": "dummy (set by D1 subprocess harness)",
-        },
-        "evaluator_files": {
-            name: {"path": relative_path(path), "sha256": file_sha256(path)}
-            for name, path in evaluator_files.items()
-        },
-        "fixture_files": {
-            name: {"path": relative_path(path), "sha256": file_sha256(path)}
-            for name, path in fixture_files.items()
-        },
-        "expectations": {
-            "path": relative_path(DEMO_ROOT / "expectations.json"),
-            "sha256": file_sha256(DEMO_ROOT / "expectations.json"),
-            "schema_version": expectations["schema_version"],
-        },
-        "design_reference": reference,
-        "llm": {"used": False, "model_calls": 0, "estimated_api_cost": 0},
-    }
-
-
-def write_case_evidence(
-    output_dir: Path,
-    expectations: dict[str, Any],
-    compact: dict[str, Any],
-    raw: dict[str, Any],
-    provenance: dict[str, Any],
-) -> list[str]:
-    written: list[str] = []
-    for section in ("d1", "d3"):
-        case_dir = output_dir / "cases" / section
-        case_dir.mkdir(parents=True, exist_ok=True)
-        evaluator_key = section
-        for case in expectations[section]["cases"]:
-            path = fixture_path(section, case["file"])
-            record = {
-                "format_version": 1,
-                "calibration_method": expectations["calibration_method"],
-                "case": case,
-                "fixture": {"path": relative_path(path), "sha256": file_sha256(path)},
-                "evaluator": provenance["evaluator_files"][evaluator_key],
-                "compact_result": compact[section][case["id"]],
-                "raw_result": raw[section][case["id"]],
+        sensitivity.append(
+            {
+                "id": record["id"],
+                "target_indicator": target,
+                "drops": drops,
+                "target_drop": target_drop,
+                "target_is_largest_drop": target_is_largest if evaluable else None,
+                "non_target_changes": non_target_changes,
             }
-            destination = case_dir / f"{case['id']}.json"
-            destination.write_text(
-                json.dumps(record, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-                encoding="utf-8",
-            )
-            written.append(destination.relative_to(output_dir).as_posix())
-    return written
-
-
-def write_d1_csv(path: Path, results: dict[str, Any], expectations: dict[str, Any]) -> None:
-    fields = [
-        "case_id",
-        "fixture",
-        "expected_steps",
-        "actual_steps",
-        "raw_pass_count",
-        "score",
-        "gate_pass",
-        "diagnosis",
-        "indicator_signature",
-    ]
-    with path.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields)
-        writer.writeheader()
-        for case in expectations["d1"]["cases"]:
-            result = results[case["id"]]
-            writer.writerow(
+        )
+        if evaluable:
+            assertions.append(
                 {
-                    "case_id": case["id"],
-                    "fixture": case["file"],
-                    "expected_steps": case["expected_pipeline_steps"],
-                    "actual_steps": result["pipeline_steps_passed"],
-                    "raw_pass_count": result["raw_pass_count"],
-                    "score": f"{result['score']:.6f}",
-                    "gate_pass": result["gate_pass"],
-                    "diagnosis": result["diagnosis"],
-                    "indicator_signature": "".join(str(result["indicators"][key]) for key in D1_STEP_ORDER),
+                    "id": f"{record['id']}:target_largest_drop",
+                    "pass": target_is_largest,
+                    "detail": drops,
                 }
             )
 
+    security = by_id.get("security_risks", {}).get("tool_result", {})
+    security_capped_total = min(
+        float(security.get("score") or 0) + 15.0,
+        float(security.get("critical_total_cap") or 50),
+    )
+    assertions.extend(
+        [
+            {
+                "id": "security_risks:security_zero",
+                "pass": security.get("indicator_scores", {}).get("security") == 0,
+                "detail": security.get("indicator_scores", {}).get("security"),
+            },
+            {
+                "id": "security_risks:critical_cap",
+                "pass": bool(security.get("critical_security_risk")) and security_capped_total <= 50,
+                "detail": security_capped_total,
+            },
+        ]
+    )
+    for key, item in derived_checks.items():
+        assertions.append({"id": key, "pass": bool(item["pass"]), "detail": item})
 
-def write_d3_csv(
-    path: Path,
-    results: dict[str, Any],
-    expectations: dict[str, Any],
-    sensitivity: dict[str, Any],
-) -> None:
-    fields = [
-        "case_id",
-        "fixture",
-        "target",
-        "d1_steps",
-        "d1_gate",
-        "total",
-        *D3_LABELS,
-        "target_drop",
-        "mean_non_target_absolute_drop",
-    ]
-    with path.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields)
-        writer.writeheader()
-        for case in expectations["d3"]["cases"]:
-            result = results[case["id"]]
-            target = case["target_indicator"]
-            row = {
-                "case_id": case["id"],
-                "fixture": case["file"],
-                "target": target or "baseline",
-                "d1_steps": result["d1"]["pipeline_steps_passed"],
-                "d1_gate": result["d1"]["gate_pass"],
-                "total": result["d3"]["score"],
-                "target_drop": sensitivity.get(case["id"], {}).get("target_drop", ""),
-                "mean_non_target_absolute_drop": sensitivity.get(case["id"], {}).get(
-                    "mean_non_target_absolute_drop", ""
+    judge_matrix: list[dict[str, Any]] = []
+    fixture_statistics: list[dict[str, Any]] = []
+    if include_judges:
+        for record in records:
+            panel = record["judge_panel"]
+            fixture_statistics.append(
+                {
+                    "fixture": record["id"],
+                    "mean": panel.get("score"),
+                    "standard_deviation": panel.get("score_std"),
+                    "range": panel.get("score_range"),
+                    "high_disagreement": panel.get("high_disagreement"),
+                }
+            )
+            assertions.append(
+                {
+                    "id": f"{record['id']}:judge_panel",
+                    "pass": panel.get("status") in {"completed", "panel_degraded"},
+                    "detail": panel.get("status"),
+                }
+            )
+            for judge in panel.get("judge_results", []):
+                judge_matrix.append(
+                    {
+                        "fixture": record["id"],
+                        "judge_model": judge["model"],
+                        "status": judge["status"],
+                        "score": judge.get("total"),
+                    }
+                )
+    judge_statistics = []
+    for model in sorted({item["judge_model"] for item in judge_matrix}):
+        scores = [
+            float(item["score"])
+            for item in judge_matrix
+            if item["judge_model"] == model and item["score"] is not None
+        ]
+        judge_statistics.append(
+            {
+                "judge_model": model,
+                "valid_fixture_count": len(scores),
+                "mean": round(statistics.mean(scores), 3) if scores else None,
+                "standard_deviation": (
+                    round(statistics.stdev(scores), 3) if len(scores) > 1 else 0.0 if scores else None
                 ),
+                "range": round(max(scores) - min(scores), 3) if scores else None,
             }
-            row.update(result["d3"]["indicator_scores"])
-            writer.writerow(row)
+        )
+    all_pass = all(item["pass"] for item in assertions)
+    return {
+        "pass": all_pass,
+        "assertions": assertions,
+        "sensitivity": sensitivity,
+        "derived_checks": derived_checks,
+        "security_best_case_total_after_cap": security_capped_total,
+        "judge_calibration": {
+            "included": include_judges,
+            "matrix": judge_matrix,
+            "fixture_statistics": fixture_statistics,
+            "judge_statistics": judge_statistics,
+            "same_family_self_evaluation": "not_applicable_to_anonymous_fixtures",
+        },
+    }
 
 
-def latex_escape(value: str) -> str:
+def latex_escape(value: Any) -> str:
+    text = str(value)
     replacements = {
         "\\": r"\textbackslash{}",
-        "_": r"\_",
-        "%": r"\%",
         "&": r"\&",
+        "%": r"\%",
+        "$": r"\$",
         "#": r"\#",
+        "_": r"\_",
         "{": r"\{",
         "}": r"\}",
     }
-    return "".join(replacements.get(char, char) for char in value)
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    return text
 
 
-def write_tex_tables(
+def write_csv_outputs(output_dir: Path, d1: list[dict[str, Any]], d3: list[dict[str, Any]]) -> None:
+    with (output_dir / "d1_results.csv").open("w", newline="", encoding="utf-8-sig") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["case", "expected_level", "actual_level", "diagnosis", "pass"])
+        for row in d1:
+            writer.writerow(
+                [row["id"], row["expected_pipeline_steps"], row["actual"]["pipeline_steps_passed"], row["actual"]["diagnosis"], row["pass"]]
+            )
+    with (output_dir / "d3_results.csv").open("w", newline="", encoding="utf-8-sig") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["case", *TOOL_INDICATORS, "tools_total", "judge", "status"])
+        for row in d3:
+            result = row["tool_result"]
+            scores = result.get("indicator_scores", {})
+            writer.writerow(
+                [row["id"], *(scores.get(key) for key in TOOL_INDICATORS), result.get("score"), row["judge_panel"].get("score"), result.get("status")]
+            )
+
+
+def write_tex_outputs(
     output_dir: Path,
-    first_run: dict[str, Any],
-    expectations: dict[str, Any],
-    sensitivity: dict[str, Any],
-    calibration: dict[str, Any],
-    provenance: dict[str, Any],
+    d1: list[dict[str, Any]],
+    d3: list[dict[str, Any]],
+    analysis: dict[str, Any],
 ) -> None:
     generated = output_dir / "generated"
     generated.mkdir(parents=True, exist_ok=True)
-
-    ratio = calibration["d3_target_to_non_target_signal_ratio"]
-    metric_commands = "\n".join(
-        [
-            rf"\newcommand{{\DThreeTargetMean}}{{{calibration['d3_mean_target_drop']:.3f}}}",
-            rf"\newcommand{{\DThreeNonTargetMean}}{{{calibration['d3_mean_non_target_absolute_drop']:.3f}}}",
-            rf"\newcommand{{\DThreeSignalRatio}}{{{ratio:.2f}}}",
-            rf"\newcommand{{\DThreeBaselineScore}}{{{calibration['d3_baseline_score']:g}}}",
-            rf"\newcommand{{\DThreeHighestDefectScore}}{{{calibration['d3_highest_defect_score']:g}}}",
-            "",
-        ]
-    )
-    (generated / "calibration_metrics.tex").write_text(metric_commands, encoding="utf-8")
-
-    d1_lines = []
-    for case in expectations["d1"]["cases"]:
-        result = first_run["d1"][case["id"]]
-        d1_lines.append(
-            f"{latex_escape(case['file'])} & {case['expected_pipeline_steps']} & "
-            f"{result['pipeline_steps_passed']} & {result['raw_pass_count']} & "
-            f"{result['score']:.3f} & {'通过' if result['gate_pass'] else '关闭'} \\\\"
-        )
-    d1_table = "\n".join(
-        [
-            r"\begin{table}[htbp]",
-            r"\centering",
-            r"\caption{D1 0--6 级受控样例结果}",
-            r"\small",
-            r"\begin{tabular}{L{5.4cm} C{1.2cm} C{1.2cm} C{1.35cm} C{1.4cm} C{1.2cm}}",
-            r"\toprule",
-            r"样例 & 预期级 & 实际级 & 原始通过 & D1 分数 & 闸门 \\",
-            r"\midrule",
-            *d1_lines,
-            r"\bottomrule",
-            r"\end{tabular}",
-            r"\end{table}",
-            "",
-        ]
-    )
-    (generated / "d1_table.tex").write_text(d1_table, encoding="utf-8")
-
-    design_lines = []
-    for case in expectations["d3"]["cases"]:
-        target = case["target_indicator"]
-        design_lines.append(
-            f"{latex_escape(case['id'])} & {latex_escape(D3_LABELS.get(target, '参考组'))} & "
-            f"{latex_escape(case['intervention'])} \\\\"
-        )
-    design_table = "\n".join(
-        [
-            r"\begin{table}[htbp]",
-            r"\centering",
-            r"\caption{D3 known-groups 校准样例设计}",
-            r"\small",
-            r"\begin{tabularx}{\textwidth}{L{3.5cm} L{2.6cm} X}",
-            r"\toprule",
-            r"样例 & 预注册目标 & 受控干预 \\",
-            r"\midrule",
-            *design_lines,
-            r"\bottomrule",
-            r"\end{tabularx}",
-            r"\end{table}",
-            "",
-        ]
-    )
-    (generated / "d3_design_table.tex").write_text(design_table, encoding="utf-8")
-
-    d3_lines = []
-    for case in expectations["d3"]["cases"]:
-        result = first_run["d3"][case["id"]]
-        scores = result["d3"]["indicator_scores"]
-        target = case["target_indicator"]
-        d3_lines.append(
-            f"{latex_escape(case['id'])} & {latex_escape(D3_LABELS.get(target, '基线'))} & "
-            f"{scores['complexity']} & {scores['reuse']} & {scores['constants']} & "
-            f"{scores['naming']} & {scores['modularity']} & {scores['comments']} & "
-            f"{result['d3']['score']} \\\\"
-        )
-    d3_table = "\n".join(
-        [
-            r"\begin{table}[htbp]",
-            r"\centering",
-            r"\caption{Pong 基线与六类受控退化的 D3 分数}",
-            r"\scriptsize",
-            r"\resizebox{\textwidth}{!}{%",
-            r"\begin{tabular}{l l c c c c c c c}",
-            r"\toprule",
-            r"样例 & 目标 & 复杂度 & 复用 & 常量 & 命名 & 模块 & 注释 & 总分 \\",
-            r"\midrule",
-            *d3_lines,
-            r"\bottomrule",
-            r"\end{tabular}}",
-            r"\end{table}",
-            "",
-        ]
-    )
-    (generated / "d3_table.tex").write_text(d3_table, encoding="utf-8")
-
-    delta_lines = []
-    for case in expectations["d3"]["cases"]:
-        target = case["target_indicator"]
-        if target is None:
-            continue
-        item = sensitivity[case["id"]]
-        cells = []
-        for indicator in D3_LABELS:
-            value = item["indicator_drops"][indicator]
-            rendered = f"{value:g}"
-            cells.append(rf"\textbf{{{rendered}}}" if indicator == target else rendered)
-        delta_lines.append(
-            f"{latex_escape(case['id'])} & {latex_escape(D3_LABELS[target])} & "
-            + " & ".join(cells)
-            + f" & {item['mean_non_target_absolute_drop']:.2f} \\\\"
-        )
-    delta_table = "\n".join(
-        [
-            r"\begin{table}[htbp]",
-            r"\centering",
-            r"\caption{相对基线的 D3 降分矩阵（粗体为预注册目标）}",
-            r"\scriptsize",
-            r"\resizebox{\textwidth}{!}{%",
-            r"\begin{tabular}{l l c c c c c c c}",
-            r"\toprule",
-            r"样例 & 目标 & 复杂度 & 复用 & 常量 & 命名 & 模块 & 注释 & 非目标均值 \\",
-            r"\midrule",
-            *delta_lines,
-            r"\bottomrule",
-            r"\end{tabular}}",
-            r"\end{table}",
-            "",
-        ]
-    )
-    (generated / "d3_delta_table.tex").write_text(delta_table, encoding="utf-8")
-
-    audit_table = "\n".join(
-        [
-            r"\begin{table}[htbp]",
-            r"\centering",
-            r"\caption{校准汇总与复现环境}",
-            r"\small",
-            r"\begin{tabularx}{\textwidth}{L{4.4cm} X}",
-            r"\toprule",
-            r"字段 & 记录值 \\",
-            r"\midrule",
-            r"校准方法 & known-groups calibration \\",
-            f"D3 目标命中率 & {calibration['d3_target_hits']}/{calibration['d3_target_case_count']} "
-            rf"({calibration['d3_target_hit_rate'] * 100:.1f}\%) \\",
-            f"目标平均降分 / 非目标单元平均绝对漂移 & "
-            f"{calibration['d3_mean_target_drop']:.3f} / "
-            f"{calibration['d3_mean_non_target_absolute_drop']:.3f} \\\\ ",
-            f"目标/非目标信号比 & {ratio:.2f} \\\\ ",
-            f"Python / pygame / radon & {latex_escape(provenance['environment']['python'])} / "
-            f"{latex_escape(provenance['environment']['pygame'])} / "
-            f"{latex_escape(provenance['environment']['radon'])} \\\\ ",
-            f"D1 / D3 evaluator SHA256（前 12 位） & "
-            rf"\texttt{{{provenance['evaluator_files']['d1']['sha256'][:12]}}} / "
-            rf"\texttt{{{provenance['evaluator_files']['d3']['sha256'][:12]}}} \\",
-            f"D4 参考归档 SHA256（前 12 位） & "
-            rf"\texttt{{{(provenance['design_reference']['sha256'] or 'not-found')[:12]}}} \\",
-            r"LLM 调用 / API 成本 & 0 / 0 \\",
-            r"\bottomrule",
-            r"\end{tabularx}",
-            r"\end{table}",
-            "",
-        ]
-    )
-    (generated / "audit_table.tex").write_text(audit_table, encoding="utf-8")
-
-
-def write_markdown_report(
-    path: Path,
-    summary: dict[str, Any],
-    expectations: dict[str, Any],
-) -> None:
-    first_run = summary["results"]
-    calibration = summary["calibration"]
-    lines = [
-        "# GameBench D1/D3 校准实验总结",
-        "",
-        "本实验采用 known-groups calibration：D1 使用 0--6 级已知能力组，D3 使用一个参考 Pong 和六个单指标定向缺陷组。",
-        "",
-        f"- 总体状态：{'通过' if summary['overall_pass'] else '失败'}",
-        f"- 重复次数：{summary['repeat_count']}",
-        f"- 完整评分结果 SHA256 一致：{calibration['repeat_results_identical']}",
-        f"- 实际墙钟时间：{summary['elapsed_seconds']:.3f} 秒",
-        "- LLM 调用：0；API 成本：0",
-        "",
-        "## D1 阶梯结果",
-        "",
-        "| 样例 | 设计干预 | 预期级别 | 实际级别 | 原始通过数 | 指标签名 | D1 分数 | 闸门 |",
-        "|---|---|---:|---:|---:|---|---:|---|",
+    target_drops = [
+        item["target_drop"]
+        for item in analysis["sensitivity"]
+        if isinstance(item.get("target_drop"), (int, float))
     ]
-    for case in expectations["d1"]["cases"]:
-        result = first_run["d1"][case["id"]]
-        signature = "".join(str(result["indicators"][key]) for key in D1_STEP_ORDER)
-        lines.append(
-            f"| `{case['file']}` | {case['intervention']} | {case['expected_pipeline_steps']} | "
-            f"{result['pipeline_steps_passed']} | {result['raw_pass_count']} | `{signature}` | "
-            f"{result['score']:.3f} | {'通过' if result['gate_pass'] else '关闭'} |"
+    target_mean = statistics.mean(target_drops) if target_drops else 0.0
+    (generated / "calibration_metrics.tex").write_text(
+        "\n".join(
+            [
+                f"\\newcommand{{\\DThreeTargetMean}}{{{target_mean:.2f}}}",
+                f"\\newcommand{{\\DThreeSchemaVersion}}{{2}}",
+                f"\\newcommand{{\\DThreeToolRepeatCount}}{{{len(d3[0]['repeat_hashes']) if d3 else 0}}}",
+            ]
         )
-
-    lines.extend(
-        [
-            "",
-            "## D3 受控退化结果",
-            "",
-            "| 样例 | 预注册目标 | D1 | 复杂度 | 复用 | 常量 | 命名 | 模块 | 注释 | 总分 |",
-            "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|",
-        ]
+        + "\n",
+        encoding="utf-8",
     )
-    for case in expectations["d3"]["cases"]:
-        result = first_run["d3"][case["id"]]
-        scores = result["d3"]["indicator_scores"]
-        target = case["target_indicator"]
-        lines.append(
-            f"| `{case['id']}` | {D3_LABELS.get(target, '基线')} | "
-            f"{result['d1']['pipeline_steps_passed']}/6 | {scores['complexity']} | {scores['reuse']} | "
-            f"{scores['constants']} | {scores['naming']} | {scores['modularity']} | "
-            f"{scores['comments']} | {result['d3']['score']} |"
+
+    d1_rows = [
+        f"{latex_escape(row['id'])} & {row['expected_pipeline_steps']} & {row['actual']['pipeline_steps_passed']} & {latex_escape(row['actual']['diagnosis'])} & {'通过' if row['pass'] else '失败'} \\\\"
+        for row in d1
+    ]
+    (generated / "d1_table.tex").write_text(
+        "\\begin{longtable}{lrrrr}\n案例 & 预期级别 & 实际级别 & 诊断 & 结论 \\\\ \\hline\n"
+        + "\n".join(d1_rows)
+        + "\n\\end{longtable}\n",
+        encoding="utf-8",
+    )
+
+    design_rows = [
+        f"{latex_escape(row['id'])} & {latex_escape(D3_LABELS.get(row['target_indicator'], '基线'))} & {latex_escape(row['intervention'])} \\\\"
+        for row in d3
+    ]
+    (generated / "d3_design_table.tex").write_text(
+        "\\begin{longtable}{p{0.20\\linewidth}p{0.22\\linewidth}p{0.48\\linewidth}}\n案例 & 定向子项 & 干预 \\\\ \\hline\n"
+        + "\n".join(design_rows)
+        + "\n\\end{longtable}\n",
+        encoding="utf-8",
+    )
+
+    score_rows = []
+    for row in d3:
+        score = row["tool_result"].get("indicator_scores", {})
+        judge = row["judge_panel"].get("score")
+        score_rows.append(
+            f"{latex_escape(row['id'])} & "
+            + " & ".join(f"{float(score.get(key, 0)):.1f}" for key in TOOL_INDICATORS)
+            + f" & {float(row['tool_result'].get('score') or 0):.1f} & {float(judge):.1f}" if judge is not None else
+            f"{latex_escape(row['id'])} & "
+            + " & ".join(f"{float(score.get(key, 0)):.1f}" for key in TOOL_INDICATORS)
+            + f" & {float(row['tool_result'].get('score') or 0):.1f} & --"
         )
-
-    lines.extend(
-        [
-            "",
-            "## 缺陷识别能力",
-            "",
-            "| 缺陷组 | 目标 | 目标降分 | 非目标平均绝对漂移 | 总分降幅 |",
-            "|---|---|---:|---:|---:|",
-        ]
+        score_rows[-1] += " \\\\"
+    (generated / "d3_table.tex").write_text(
+        "\\begin{longtable}{lrrrrrrr}\n案例 & 维护 & 可靠 & 安全 & 效率 & 规范 & 工具/85 & Judge/15 \\\\ \\hline\n"
+        + "\n".join(score_rows)
+        + "\n\\end{longtable}\n",
+        encoding="utf-8",
     )
-    for case in expectations["d3"]["cases"]:
-        target = case["target_indicator"]
-        if target is None:
-            continue
-        item = summary["sensitivity"][case["id"]]
-        lines.append(
-            f"| `{case['id']}` | {D3_LABELS[target]} | {item['target_drop']} | "
-            f"{item['mean_non_target_absolute_drop']:.3f} | {item['total_drop']} |"
+
+    delta_rows = []
+    short_labels = {
+        "maintainability": "维护",
+        "reliability": "可靠",
+        "security": "安全",
+        "efficiency": "效率",
+        "conformance": "规范",
+        "llm_review": "Judge",
+    }
+    for row in analysis["sensitivity"]:
+        target_drop = row.get("target_drop")
+        target_drop_text = "--" if target_drop is None else f"{float(target_drop):.1f}"
+        largest_text = "--" if row.get("target_is_largest_drop") is None else (
+            "是" if row["target_is_largest_drop"] else "否"
         )
-    lines.extend(
-        [
-            "",
-            f"目标指标命中率为 **{calibration['d3_target_hits']}/{calibration['d3_target_case_count']}**；"
-            f"目标平均降分为 **{calibration['d3_mean_target_drop']:.3f}**，"
-            f"非目标单元平均绝对漂移为 **{calibration['d3_mean_non_target_absolute_drop']:.3f}**，"
-            f"信号比为 **{calibration['d3_target_to_non_target_signal_ratio']:.2f}**。",
-            "参考组总分高于所有缺陷组，但不同干预强度并不等价，因此不能用降幅直接比较六个指标的重要性。",
-            "",
-            "## 自动断言",
-            "",
-        ]
+        non_target = row.get("non_target_changes", {})
+        non_target_text = "无" if not non_target else "，".join(
+            f"{short_labels.get(key, key)} {float(value):+.1f}"
+            for key, value in non_target.items()
+        )
+        delta_rows.append(
+            f"{latex_escape(row['id'])} & {latex_escape(short_labels.get(row['target_indicator'], row['target_indicator']))} & "
+            f"{target_drop_text} & {largest_text} & {latex_escape(non_target_text)} \\\\"
+        )
+    (generated / "d3_delta_table.tex").write_text(
+        "\\begin{longtable}{p{0.22\\linewidth}p{0.14\\linewidth}ccp{0.30\\linewidth}}\n案例 & 目标 & 目标降分 & 是否最大 & 非目标变化（公开） \\\\ \\hline\n"
+        + "\n".join(delta_rows)
+        + "\n\\end{longtable}\n",
+        encoding="utf-8",
     )
-    for assertion in summary["assertions"]:
-        mark = "PASS" if assertion["passed"] else "FAIL"
-        lines.append(f"- **{mark}** `{assertion['name']}`：{assertion['detail']}")
 
-    provenance = summary["provenance"]
+    first_tools = d3[0]["tool_result"] if d3 else {}
+    tool_rows = [
+        f"{latex_escape(name)} & {latex_escape(version)} \\\\"
+        for name, version in first_tools.get("tool_versions", {}).items()
+    ]
+    issue_rows = []
+    for row in d3:
+        details = row["tool_result"].get("details", {})
+        counts = {
+            "维护": len(details.get("maintainability", {}).get("structural_findings", [])),
+            "可靠": len(details.get("reliability", {}).get("ruff_findings", [])),
+            "安全": len(details.get("security", {}).get("bandit_findings", []))
+            + len(details.get("security", {}).get("forbidden_calls", [])),
+            "效率": len(details.get("efficiency", {}).get("hot_loop_calls", [])),
+            "规范": len(details.get("conformance", {}).get("findings", [])),
+        }
+        issue_rows.append(
+            f"{latex_escape(row['id'])} & " + " & ".join(str(value) for value in counts.values()) + " \\\\"
+        )
+    judge_rows = []
+    for row in d3:
+        panel = row["judge_panel"]
+        judge_rows.append(
+            f"{latex_escape(row['id'])} & {latex_escape(panel.get('status'))} & {latex_escape(panel.get('score', '--'))} & {latex_escape(panel.get('score_std', '--'))} & {latex_escape(panel.get('score_range', '--'))} & {latex_escape(panel.get('high_disagreement', '--'))} \\\\"
+        )
+    audit = (
+        "\\paragraph{固定工具版本。}\n\\begin{tabular}{ll}\n工具 & 版本 \\\\ \\hline\n"
+        + "\n".join(tool_rows)
+        + "\n\\end{tabular}\n"
+        + "\\paragraph{静态问题分类计数。}\n\\begin{longtable}{lrrrrr}\n案例 & 维护 & 可靠 & 安全 & 效率 & 规范 \\\\ \\hline\n"
+        + "\n".join(issue_rows)
+        + "\n\\end{longtable}\n"
+        + "\\paragraph{Judge 分歧。}\n\\begin{longtable}{lrrrrr}\n案例 & 状态 & 均值 & 标准差 & 极差 & 高分歧 \\\\ \\hline\n"
+        + "\n".join(judge_rows)
+        + "\n\\end{longtable}\n"
+        + f"\\paragraph{{安全封顶。}}高危样例按最佳 Judge 得分计算后为 {analysis['security_best_case_total_after_cap']:.1f}/100，且不得超过 50 分。\n"
+    )
+    (generated / "audit_table.tex").write_text(audit, encoding="utf-8")
+
+
+def write_markdown_report(path: Path, summary: dict[str, Any]) -> None:
+    lines = [
+        "# D1 / D3-v2 校准报告",
+        "",
+        f"- 总体结论：{'通过' if summary['overall_pass'] else '失败'}",
+        f"- D3 schema：{summary['d3_schema_version']}",
+        f"- 工具重复轮数：{summary['repeat']}",
+        f"- Judge 校准：{'已运行' if summary['include_judges'] else '未运行（默认无 API 费用）'}",
+        "",
+        "## 断言",
+        "",
+    ]
+    for item in summary["d3_analysis"]["assertions"]:
+        lines.append(f"- [{'x' if item['pass'] else ' '}] `{item['id']}`")
     lines.extend(
         [
             "",
-            "## 审计链",
+            "## 边界",
             "",
-            f"- 正式 D1 evaluator SHA256：`{provenance['evaluator_files']['d1']['sha256']}`",
-            f"- 正式 D3 evaluator SHA256：`{provenance['evaluator_files']['d3']['sha256']}`",
-            f"- D4 参考归档 SHA256：`{provenance['design_reference']['sha256']}`",
-            "- 每个样例的预注册说明、fixture 哈希、完整原始输出和紧凑结果均位于 `results/cases/`。",
-            "- `manifest.json` 汇总环境、配置、输入和产物哈希；报告表格不维护第二份手工分数。",
-            "",
-            "## 结论边界",
-            "",
-            "本报告支持评分器在这些受控样例上的内部一致性、已知组分离、方向敏感性和可复现性。",
-            "它不证明 D3 与大规模人工评分的相关性，不证明阈值和权重唯一最优，也不证明对其他游戏类型或多文件工程具有外部有效性。",
-            "",
+            "D3-v2 仅用于 Demo 方法验证；不得与正式流水线旧 D3 混排。Radon MI 仅记录，不计分。",
         ]
     )
-    path.write_text("\n".join(lines), encoding="utf-8")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def build_artifact_index(output_dir: Path) -> list[dict[str, Any]]:
-    artifacts = []
-    for path in sorted(output_dir.rglob("*")):
-        if path.is_file() and path.name != "manifest.json":
-            artifacts.append(
-                {
-                    "path": path.relative_to(output_dir).as_posix(),
-                    "size_bytes": path.stat().st_size,
-                    "sha256": file_sha256(path),
-                }
-            )
-    return artifacts
+    return [
+        {
+            "path": path.relative_to(output_dir).as_posix(),
+            "size_bytes": path.stat().st_size,
+            "sha256": file_sha256(path),
+        }
+        for path in sorted(output_dir.rglob("*"))
+        if path.is_file() and path.name not in {"manifest.json", "manifest.sha256"}
+    ]
 
 
-def main() -> int:
-    args = parse_args()
+def main(argv: Sequence[str] | None = None) -> int:
+    args = parse_args(argv)
     if args.repeat < 1:
-        raise ValueError("--repeat must be at least 1")
+        raise ValueError("--repeat must be positive")
     if args.runtime_sec < 3:
-        raise ValueError("--runtime-sec must be at least 3 for the delayed QUIT probe")
-
+        raise ValueError("--runtime-sec must be at least 3")
+    if args.include_judges and not (
+        os.getenv("AWS_ACCESS_KEY_ID") and os.getenv("AWS_SECRET_ACCESS_KEY")
+    ):
+        print(
+            "Judge calibration not started: AWS_ACCESS_KEY_ID and "
+            "AWS_SECRET_ACCESS_KEY must be set in this process.",
+            file=sys.stderr,
+        )
+        print("Existing calibration artifacts were left unchanged.", file=sys.stderr)
+        return 2
     output_dir = args.output.resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
-    expectations = load_expectations()
-    preflight_pygame()
-    provenance = build_provenance(expectations, args)
-    evaluator_hashes_before = {
-        name: item["sha256"] for name, item in provenance["evaluator_files"].items()
-    }
-
-    started = time.perf_counter()
-    evaluated_runs = [evaluate_once(args.runtime_sec, expectations) for _ in range(args.repeat)]
-    elapsed_seconds = time.perf_counter() - started
-    compact_runs = [run["compact"] for run in evaluated_runs]
-    first_run = compact_runs[0]
-    evaluator_hashes_after = {"d1": file_sha256(D1_EVALUATOR), "d3": file_sha256(D3_EVALUATOR)}
-    assertions, sensitivity, calibration = validate_results(
-        first_run,
-        compact_runs,
+    reset_generated_dir(output_dir / "cases" / "d3", output_dir)
+    expectations = load_expectations(args.expectations.resolve())
+    d1 = run_d1_cases(expectations, args.runtime_sec)
+    d3 = run_d3_cases(
         expectations,
-        evaluator_hashes_before,
-        evaluator_hashes_after,
-    )
-    overall_pass = all(item["passed"] for item in assertions)
-    case_artifacts = write_case_evidence(
+        args.repeat,
+        args.runtime_sec,
+        args.d3_config.resolve(),
         output_dir,
-        expectations,
-        first_run,
-        evaluated_runs[0]["raw"],
-        provenance,
+        args.include_judges,
+        args.region,
     )
+    baseline_case = next(case for case in expectations["d3"]["cases"] if case["id"] == expectations["d3"]["baseline"])
+    derived_checks = build_derived_checks(
+        fixture_path("d3", baseline_case["file"]),
+        args.d3_config.resolve(),
+        output_dir,
+    )
+    d3_analysis = analyze_d3(d3, expectations["d3"]["baseline"], args.include_judges, derived_checks)
+    d1_pass = all(item["pass"] for item in d1)
+    overall_pass = d1_pass and d3_analysis["pass"]
     summary = {
-        "schema_version": 2,
+        "schema_version": 3,
+        "d3_schema_version": 2,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "overall_pass": overall_pass,
-        "repeat_count": args.repeat,
-        "runtime_sec": args.runtime_sec,
-        "elapsed_seconds": round(elapsed_seconds, 6),
-        "llm_used": False,
-        "scoring_source": {
-            "d1": "evaluator.dimension1.dimension1_executable.evaluate_dimension1",
-            "d3": "evaluator.dimension3.dimension3_code_quality.evaluate_dimension3_code_quality",
+        "check_requested": args.check,
+        "repeat": args.repeat,
+        "include_judges": args.include_judges,
+        "d1_pass": d1_pass,
+        "d1": d1,
+        "d3": d3,
+        "d3_analysis": d3_analysis,
+        "provenance": {
+            "python": platform.python_version(),
+            "platform": platform.platform(),
+            "git_commit": git_commit(),
+            "expectations_sha256": file_sha256(args.expectations.resolve()),
+            "d3_config_sha256": file_sha256(args.d3_config.resolve()),
+            "packages": {name: package_version(name) for name in ("pygame", "ruff", "radon", "bandit")},
         },
-        "assertions": assertions,
-        "calibration": calibration,
-        "sensitivity": sensitivity,
-        "provenance": provenance,
-        "artifacts": {"manifest": "manifest.json", "case_evidence": case_artifacts},
-        "results": first_run,
     }
-
-    (output_dir / "summary.json").write_text(
-        json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
-    write_d1_csv(output_dir / "d1_results.csv", first_run["d1"], expectations)
-    write_d3_csv(output_dir / "d3_results.csv", first_run["d3"], expectations, sensitivity)
-    write_tex_tables(output_dir, first_run, expectations, sensitivity, calibration, provenance)
-    write_markdown_report(output_dir / "report.md", summary, expectations)
-
+    write_json(output_dir / "summary.json", summary)
+    write_csv_outputs(output_dir, d1, d3)
+    write_tex_outputs(output_dir, d1, d3, d3_analysis)
+    write_markdown_report(output_dir / "report.md", summary)
     manifest = {
-        "format_version": 1,
-        "generated_at_utc": summary["generated_at_utc"],
-        "calibration_method": expectations["calibration_method"],
+        "format_version": 2,
         "overall_pass": overall_pass,
-        "provenance": provenance,
+        "d3_schema_version": 2,
+        "generated_at_utc": summary["generated_at_utc"],
         "artifact_index": build_artifact_index(output_dir),
     }
-    (output_dir / "manifest.json").write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
-
-    print(f"D1/D3 demo: {'PASS' if overall_pass else 'FAIL'}")
-    print(
-        f"Known-groups: D1 staircase={calibration['d1_staircase_exact']}; "
-        f"D3 target hits={calibration['d3_target_hits']}/{calibration['d3_target_case_count']}"
-    )
+    manifest_path = output_dir / "manifest.json"
+    write_json(manifest_path, manifest)
+    (output_dir / "manifest.sha256").write_text(file_sha256(manifest_path) + "  manifest.json\n", encoding="ascii")
+    print(f"D1 staircase: {'PASS' if d1_pass else 'FAIL'}")
+    print(f"D3-v2 deterministic calibration: {'PASS' if d3_analysis['pass'] else 'FAIL'}")
+    print(f"Judge API calls: {'enabled' if args.include_judges else 'disabled'}")
     print(f"Summary: {output_dir / 'summary.json'}")
-    print(f"Manifest: {output_dir / 'manifest.json'}")
     if args.check and not overall_pass:
         return 1
     return 0

@@ -1,0 +1,11 @@
+{
+  "candidate_identity_in_prompt": false,
+  "created_at_utc": "2026-07-20T14:04:35.493645+00:00",
+  "max_tokens": 2000,
+  "model": "qwen.qwen3-coder-next",
+  "prompt_path": "prompts/d3_judge.txt",
+  "prompt_sha256": "02f4ffaca424a104b7f37a8d8ef3a1f3803aaaac0bb83909f9f9d616fdca8888",
+  "provider": "bedrock",
+  "region": "us-east-1",
+  "temperature": 0.0
+}
