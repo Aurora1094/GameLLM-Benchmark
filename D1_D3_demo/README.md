@@ -24,33 +24,146 @@ python -m pip install -r D1_D3_demo/requirements-d3-v2.txt
 版本固定为 Ruff 0.15.22、Radon 6.0.1、Bandit 1.9.4。缺失或版本不一致时返回
 `incomplete_tooling`，不会使用 AST fallback 伪造分数。
 
-## D3-v2 分数
+## 维度内容与评分准则
 
-完整评分公式、Judge 当前证据状态与参考文献对应关系见
-[`docs/D3_V2_SCORING.md`](docs/D3_V2_SCORING.md)。
+### D1：可执行性六级流水线
 
-| 子项 | 分值 |
+D1 复用正式评估器，回答“生成的 pygame 程序能否被实际启动、维持运行并受控退出”。
+六级检查存在先后依赖，不是六个可任意相加的特征：前一级失败时，后续依赖步骤不能被
+视为已通过。
+
+| 级别 | 检查内容 | 判定方式 |
+|---:|---|---|
+| 1 | Python 语法正确 | 解析源码，确认不存在 `SyntaxError` |
+| 2 | 依赖初始化完成 | 在评测环境中成功导入并初始化 pygame |
+| 3 | 创建显示窗口 | 检测 `pygame.display.set_mode` 返回有效 Surface |
+| 4 | 存在事件处理 | 检测 `pygame.event.get/poll` 等事件读取结构 |
+| 5 | 短时运行稳定 | 在 dummy SDL 子进程中运行指定时间，无崩溃或提前退出 |
+| 6 | 进程可控退出 | 注入 QUIT 事件后在超时内干净退出 |
+
+D1 输出 `pipeline_steps_passed`（0--6）和 `gate_pass`。只有达到 6/6 才打开最终得分闸门；
+但 D1 失败不会阻止 D3 诊断测量。
+
+### D3-v2：源码内部质量
+
+D3-v2 诊断分由 85 分确定性工具层和 15 分匿名语义层组成：
+
+$$
+S_{D3}=S_M+S_R+S_S+S_E+S_P+S_J.
+$$
+
+| 子项 | 符号 | 分值 | 主要证据 |
+|---|---:|---:|---|
+| 可维护性与结构 | `S_M` | 30 | Radon 圈复杂度、Ruff 结构规则、AST 重复、导入安全 |
+| 可靠性与缺陷风险 | `S_R` | 20 | Ruff 缺陷规则、宽泛异常和异常吞噬 |
+| 安全与任务约束 | `S_S` | 15 | Bandit、禁用调用、任务外部依赖 |
+| 效率与资源纪律 | `S_E` | 10 | Ruff PERF、循环内文件和 pygame 资源加载 |
+| Python 规范与可读性 | `S_P` | 10 | Ruff 规范问题密度 |
+| 三模型语义评审 | `S_J` | 15 | 匿名 Nova、DeepSeek、Qwen Judge |
+
+完整公式、Judge 当前证据状态和参考文献对应关系另见
+[`docs/D3_V2_SCORING.md`](docs/D3_V2_SCORING.md)。以下是代码中实际执行的评分合同。
+
+#### 1. 可维护性与结构：30分
+
+由圈复杂度 12 分、结构问题 8 分、重复结构 5 分和可测试性 5 分组成。
+
+- 圈复杂度：Radon 等级映射为 A=1、B=0.8、C=0.5、D=0.25、E/F=0。若各函数映射值
+  为 `r_i`，则 `S_CC = 12 × [0.1 × mean(r_i) + 0.9 × min(r_i)]`。最复杂函数占
+  90% 权重，避免大量简单 helper 稀释一个复杂主循环。
+- 结构问题：`C901`、`PLR0904`、`PLR0911`--`PLR0917` 每条扣 1.5 分，最低 0 分。
+- 重复结构：在模块、函数和类体内比较连续 6 条规范化 AST 语句；每个重复窗口除首次外
+  每次扣 1 分，最低 0 分。
+- 可测试性：存在 `if __name__ == "__main__"` 得 2 分；dummy SDL 下可安全 import
+  得 2 分；模块顶层可执行语句不超过 3 条得 1 分。
+
+Radon Maintainability Index 只记录，不计分。函数数量、魔法数字、注释数量和注释密度
+不再直接参与评分。
+
+#### 2. 可靠性与缺陷风险：20分
+
+从 20 分向下扣：
+
+- `F821/F822/F823/B012` 每条扣 5 分；
+- `B006/B008/B023/BLE001/E722/TRY201/TRY203` 每条扣 2 分；
+- 其他选中的 `B/BLE/PLE/PLW/TRY` 问题每条扣 1 分；
+- 裸 `except` 或捕获 `Exception/BaseException` 每个扣 1 分；若处理器仅包含
+  `pass/continue`，每个再扣 2 分；AST 异常处理扣分合计最多 4 分。
+
+最终为 `max(0, 20 - Ruff扣分 - AST异常扣分)`。
+
+#### 3. 安全与任务约束：15分
+
+Bandit 每条问题的扣分为“严重度权重 × 置信度系数”：
+
+- 严重度：HIGH=6、MEDIUM=3、LOW=1；
+- 置信度：HIGH=1、MEDIUM=0.75、LOW=0.5。
+
+出现任一禁用调用类别额外扣 15 分；出现非标准库且非 pygame 的任务外部依赖再扣
+15 分。禁用调用包括 `eval`、`exec`、`compile`、`os.system`、`os.popen`、
+`subprocess`、`socket`、`requests` 和 `urllib.request`。
+
+禁用调用、任务外部依赖或 Bandit HIGH+HIGH 问题都会设置
+`critical_security_risk=true`，并将整个 D3 诊断分封顶为 50。Bandit HIGH+HIGH 本身
+不一定单独把安全子项扣到 0。
+
+#### 4. 效率与资源纪律：10分
+
+- Ruff `PERF` 问题每条扣 1 分，最多扣 4 分；
+- `for/while` 循环内每个唯一“调用名+行号”的资源加载扣 2 分，最多扣 6 分；
+- 检查 `open`、字体、图片、声音加载和上述安全禁用调用。
+
+该项只检测单文件 pygame 中常见的逐帧 I/O 和重复资源加载，不替代真实 FPS、运行时间、
+内存峰值或算法复杂度 benchmark。
+
+#### 5. Python规范与可读性：10分
+
+计入 Ruff 的 `E/W/I/N/UP/SIM` 以及 `F401/F841`。`I/UP/SIM` 每条权重 0.5，其他
+每条权重 1。以 Radon 逻辑代码行 `LLOC` 归一化：
+
+```text
+density = 100 × 加权问题数 / max(1, LLOC)
+S_P = 10 × max(0, 1 - density / 10)
+```
+
+即每 100 个逻辑行达到 10 个加权问题时，该项为 0。
+
+#### 6. 三模型匿名Judge：15分
+
+固定 Judge 为 `amazon.nova-pro-v1:0`、`deepseek.v3.2`、
+`qwen.qwen3-coder-next`，温度为 0。三者只看到匿名源码，看不到候选模型名称、D1、工具
+分数或其他 Judge 输出。
+
+| Judge 子项 | 分值 |
 |---|---:|
-| 可维护性与结构 | 30 |
-| 可靠性与缺陷风险 | 20 |
-| 安全与任务约束 | 15 |
-| 效率与资源纪律 | 10 |
-| Python 规范与可读性 | 10 |
-| 三模型语义评审 | 15 |
+| 职责与抽象 | 5 |
+| 语义可读性 | 4 |
+| 注释有效性 | 3 |
+| 可修改/可测试性 | 3 |
 
-Radon Maintainability Index 只记录，不计分。旧版独立的魔法数字、函数数量和注释密度
-分数已删除。禁用调用或任务外部依赖会令安全分归零；它们以及 Bandit 的高危高置信问题
-都会将最终 D3 总分封顶为 50。Bandit 高危高置信问题本身不一定单独把安全子项扣到 0。
+Judge 必须返回严格 JSON，并为每项提供非空理由和有效源码行号。单个 Judge 最多重试
+2 次；至少 2 个 Judge 有效才计分，`S_J` 为有效总分的等权平均。极差大于 4 分标记
+`high_disagreement`；只有 2 个 Judge 有效时状态为 `panel_degraded`，但仍可形成总分。
 
-Judge 固定为 `amazon.nova-pro-v1:0`、`deepseek.v3.2`、
-`qwen.qwen3-coder-next`，温度为 0、等权平均。Judge 看不到候选模型名称、D1 分数、
-工具分数或其他 Judge 结果。至少两个 Judge 的严格 JSON 输出有效才形成总分；极差超过
-4 分会记录 `high_disagreement`。
+### D1闸门与结果状态
 
-D1 与 D3 的“测量”相互独立：D1 未达到 6/6 时仍照常运行 D3 工具和 Judge，并保存
-完整 D3-v2 诊断分。D1 只在最后应用总分公式；闸门关闭时
-`scores.d1_gated_final.score` 为 0，原始 D3 诊断分不会被覆盖或丢失。语法本身无法解析
-或工具不完整时，D3 仍会执行并明确返回 `invalid_input` 或 `incomplete_tooling`。
+D3 诊断分和门控最终分必须同时报告：
+
+```text
+D1 = 6/6  → d1_gated_final = D3诊断分
+D1 < 6/6  → d1_gated_final = 0，但D3诊断分仍保留
+```
+
+| 状态 | 含义 |
+|---|---|
+| `completed` | 工具完整且三个 Judge 均有效 |
+| `panel_degraded` | 工具完整，只有两个 Judge 有效，仍形成 D3 分数 |
+| `incomplete_judge` | 有效 Judge 少于两个，不形成 100 分制总分 |
+| `tools_only` | 只完成 85 分工具层，仅用于调试，不进入正式报告 |
+| `incomplete_tooling` | 工具缺失、失败或版本不符，不允许 AST fallback |
+| `invalid_input` | 文件不存在或语法无法解析 |
+
+正式排行只使用 `origin=llm_api`、D3 schema v2、工具完整且至少两个 Judge 有效的 run。
 
 ## 真实生成
 
