@@ -3,6 +3,34 @@
 import pygame
 
 
+def lookup_missing_player() -> int:
+    return missing_player_score
+
+
+def lookup_missing_opponent() -> int:
+    return missing_opponent_score
+
+
+def lookup_missing_ball() -> int:
+    return missing_ball_speed
+
+
+def lookup_missing_round() -> int:
+    return missing_round_number
+
+
+def append_history(value: int, history: list[int] = []) -> list[int]:
+    history.append(value)
+    return history
+
+
+def swallow_failure(callback: object) -> None:
+    try:
+        callback()
+    except Exception:
+        pass
+
+
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 FRAME_RATE = 60

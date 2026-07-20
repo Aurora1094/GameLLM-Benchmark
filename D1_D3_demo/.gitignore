@@ -4,5 +4,6 @@ rendered/
 tmp/
 runs/
 results/
+output/
 __pycache__/
 *.pyc

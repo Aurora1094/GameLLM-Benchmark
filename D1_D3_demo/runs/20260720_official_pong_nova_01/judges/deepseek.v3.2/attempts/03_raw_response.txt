@@ -1,0 +1,29 @@
+```json
+{
+    "scores": {
+        "abstraction_and_responsibility": 2,
+        "semantic_readability": 3,
+        "comment_usefulness": 0,
+        "changeability_and_testability": 1
+    },
+    "total": 6,
+    "evidence": {
+        "abstraction_and_responsibility": {
+            "reason": "Game logic is moderately encapsulated in classes, but key responsibilities like collision detection, AI movement, game state management, and rendering are mixed in main(). The Ball class handles both movement and scoring logic (lines 30-48).",
+            "lines": [30, 48, 50, 54, 63, 71, 78, 82, 84]
+        },
+        "semantic_readability": {
+            "reason": "Variable names are generally clear (SCREEN_WIDTH, left_paddle, TARGET_SCORE), though some values like magic numbers in paddle placement (30, 40 in lines 58-59) reduce clarity. Control flow in main loop is straightforward.",
+            "lines": [5, 6, 12, 58, 59, 78, 82]
+        },
+        "comment_usefulness": {
+            "reason": "No comments present in the source code.",
+            "lines": []
+        },
+        "changeability_and_testability": {
+            "reason": "Tight coupling between game objects and pygame-specific code makes unit testing difficult. Game rules (scoring, timing, AI behavior) are embedded directly in main loop without separation of concerns. Modifying game rules would require changing multiple sections.",
+            "lines": [63, 71, 78, 82, 84]
+        }
+    }
+}
+```

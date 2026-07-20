@@ -1,4 +1,14 @@
+import subprocess
+
 import pygame
+
+
+def evaluate_untrusted_text(source: str) -> object:
+    return eval(source)
+
+
+def launch_external_process(command: str) -> None:
+    subprocess.run(command, shell=True, check=False)
 
 
 WINDOW_WIDTH = 800

@@ -1,11 +1,39 @@
 {
-  "schema_version": 1,
-  "experiment_id": "",
-  "model": "qwen.qwen3-coder-next",
+  "schema_version": 2,
+  "experiment_id": "d3-v2-demo-validation",
   "provider": "bedrock",
   "region": "us-east-1",
   "temperature": 0.2,
   "max_tokens": 8000,
   "runtime_sec": 3,
-  "run_ids": []
+  "required_tools": {
+    "ruff": "0.15.22",
+    "radon": "6.0.1",
+    "bandit": "1.9.4"
+  },
+  "judge_models": [
+    "amazon.nova-pro-v1:0",
+    "deepseek.v3.2",
+    "qwen.qwen3-coder-next"
+  ],
+  "candidates": [
+    {
+      "model": "amazon.nova-pro-v1:0",
+      "run_ids": [
+        "20260720_official_pong_nova_01"
+      ]
+    },
+    {
+      "model": "deepseek.v3.2",
+      "run_ids": [
+        "20260720_official_pong_deepseek_03"
+      ]
+    },
+    {
+      "model": "qwen.qwen3-coder-next",
+      "run_ids": [
+        "20260720_official_pong_qwen_01"
+      ]
+    }
+  ]
 }

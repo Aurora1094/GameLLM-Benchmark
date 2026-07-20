@@ -1,0 +1,597 @@
+{
+  "indicator_scores": {
+    "conformance": 4.724,
+    "efficiency": 10.0,
+    "llm_review": 8.5,
+    "maintainability": 27.81,
+    "reliability": 20.0,
+    "security": 15.0
+  },
+  "judge_panel": {
+    "configured_judge_count": 3,
+    "criterion_means": {
+      "abstraction_and_responsibility": 3.0,
+      "changeability_and_testability": 2.0,
+      "comment_usefulness": 0.5,
+      "semantic_readability": 3.0
+    },
+    "high_disagreement": false,
+    "judge_results": [
+      {
+        "attempts": [
+          {
+            "attempt": 1,
+            "error": {
+              "message": "SSL validation failed for https://bedrock-runtime.us-east-1.amazonaws.com/model/amazon.nova-pro-v1%3A0/invoke EOF occurred in violation of protocol (_ssl.c:1002)",
+              "type": "SSLError"
+            },
+            "latency_seconds": 24.993309,
+            "prompt_sha256": "425941118012691a86326bbf84e223e57c1a0b4dd4b90701a35b95286ca8fa7f",
+            "raw_response_sha256": null,
+            "status": "failed"
+          },
+          {
+            "attempt": 2,
+            "error": {
+              "message": "SSL validation failed for https://bedrock-runtime.us-east-1.amazonaws.com/model/amazon.nova-pro-v1%3A0/invoke EOF occurred in violation of protocol (_ssl.c:1002)",
+              "type": "SSLError"
+            },
+            "latency_seconds": 21.883399,
+            "prompt_sha256": "b58e8edf5ce886a6c11c7117490b96d3d28d9676cb9074ccbfa0e14b8a2d3e81",
+            "raw_response_sha256": null,
+            "status": "failed"
+          },
+          {
+            "attempt": 3,
+            "error": {
+              "message": "Judge evidence changeability_and_testability.lines contains invalid line numbers",
+              "type": "ValueError"
+            },
+            "latency_seconds": 9.152012,
+            "prompt_sha256": "b58e8edf5ce886a6c11c7117490b96d3d28d9676cb9074ccbfa0e14b8a2d3e81",
+            "raw_response_sha256": "09d28788689b68d148d6b65ed9e73534d451e209d6bc115339a3349f369cdcc0",
+            "status": "failed"
+          }
+        ],
+        "error": {
+          "message": "Judge evidence changeability_and_testability.lines contains invalid line numbers",
+          "type": "ValueError"
+        },
+        "model": "amazon.nova-pro-v1:0",
+        "status": "failed"
+      },
+      {
+        "attempts": [
+          {
+            "attempt": 1,
+            "error": {
+              "message": "Expecting value: line 12 column 260 (char 1071)",
+              "type": "JSONDecodeError"
+            },
+            "latency_seconds": 6.605264,
+            "prompt_sha256": "425941118012691a86326bbf84e223e57c1a0b4dd4b90701a35b95286ca8fa7f",
+            "raw_response_sha256": "2fb751d64cfb413b4f450600057454e570520382f337801445649a9ef0c088e9",
+            "status": "failed"
+          },
+          {
+            "attempt": 2,
+            "error": {
+              "message": "Judge score comment_usefulness must be an integer in 0..3",
+              "type": "ValueError"
+            },
+            "latency_seconds": 5.768976,
+            "prompt_sha256": "7fd8f9a99efe3353b9cac3ba8cc23e681428e192c9bd61ce4d5cd0828dc4a97e",
+            "raw_response_sha256": "4e52b8086610d4816e16de4a04a62cf72ee76d0260e04a959ebf3cc06edae82a",
+            "status": "failed"
+          },
+          {
+            "attempt": 3,
+            "latency_seconds": 9.121381,
+            "prompt_sha256": "15659a14f186b7a6c0baeb7737d5dff849a3d06854e7674ef5fcf60513b51d5a",
+            "raw_response_sha256": "30510d23d04211935efe6695a498c30ff6a73215e0039796f5569c0e598ac62a",
+            "status": "completed"
+          }
+        ],
+        "evidence": {
+          "abstraction_and_responsibility": {
+            "lines": [
+              54,
+              64,
+              94,
+              113,
+              117,
+              139
+            ],
+            "reason": "Game state and objects are encapsulated in classes, but some logic like win condition, AI update, and event handling remain in monolithic Game.run() instead of further abstractions."
+          },
+          "changeability_and_testability": {
+            "lines": [
+              88,
+              89,
+              90,
+              117,
+              124,
+              163
+            ],
+            "reason": "Game logic is spread across a single class, making it hard to test components like collision detection or AI independently without running the full game loop. Ball.speed_multiplier and speed recalculation logic (lines 88-90) is error-prone to changes."
+          },
+          "comment_usefulness": {
+            "lines": [
+              41,
+              82,
+              85,
+              106,
+              134
+            ],
+            "reason": "All comments restate code literally (e.g., '# 边界检查', '# 更新位置') or document obvious logic without adding insight; none explain why or how architectural decisions were made."
+          },
+          "semantic_readability": {
+            "lines": [
+              15,
+              16,
+              31,
+              141,
+              149
+            ],
+            "reason": "Method and variable names are clear, but constants like UP/DOWN direction values are defined separately (lines 15-16) yet used unconnectedly in Paddle.direction (line 31). The win condition logic combines both score and time checks without clear separation, making intent harder to follow."
+          }
+        },
+        "http_status_code": 200,
+        "model": "deepseek.v3.2",
+        "request_id": "b44b8a87-d6f8-4ee9-8780-6c66027ab687",
+        "scores": {
+          "abstraction_and_responsibility": 3,
+          "changeability_and_testability": 2,
+          "comment_usefulness": 0,
+          "semantic_readability": 3
+        },
+        "status": "completed",
+        "total": 8
+      },
+      {
+        "attempts": [
+          {
+            "attempt": 1,
+            "latency_seconds": 11.502851,
+            "prompt_sha256": "425941118012691a86326bbf84e223e57c1a0b4dd4b90701a35b95286ca8fa7f",
+            "raw_response_sha256": "a75ebe37f40f1d09f79bbf85118243d9eeb421d38357b6f638c7e0ad6399b192",
+            "status": "completed"
+          }
+        ],
+        "evidence": {
+          "abstraction_and_responsibility": {
+            "lines": [
+              67,
+              133,
+              184,
+              202,
+              210
+            ],
+            "reason": "The Game class handles events, rendering, game loop, AI logic, win conditions, and reset state—all violating separation of concerns. For example, handle_events() processes input while draw_game_over() contains its own event loop and blocking wait, and update_ai() directly modifies AI paddle position instead of delegating movement control. Lines 67-104, 133-150, 184-200, 202-215"
+          },
+          "changeability_and_testability": {
+            "lines": [
+              47,
+              48,
+              49,
+              108,
+              176
+            ],
+            "reason": "Hard dependency on time.time() and pygame modules prevents mocking or deterministic testing (e.g., Ball.reset() at lines 47-57). Game state is mutable and scattered (self.game_over, self.start_time, self.game_over_message). Methods like draw_game_over() use blocking loops instead of returning control, making unit testing impossible. Lines 47, 48, 49, 108, 176"
+          },
+          "comment_usefulness": {
+            "lines": [
+              26,
+              43,
+              63,
+              104
+            ],
+            "reason": "Most comments are tautological (e.g., Line 43 '边界检查', Line 63 '初始化游戏对象') or generic (Line 26 '游戏方向常量'). The comment on line 63 repeats the code without clarifying design intent. A comment explaining *why* the AI uses random error (line 104 'AI 逻辑：尝试让球拍中心对准球的中心') would be useful but is missing. Lines 26, 43, 63, 104"
+          },
+          "semantic_readability": {
+            "lines": [
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              176
+            ],
+            "reason": "Variable names like speed_multiplier and Ball.reset() usage obscure intent. The reset() method in Ball is non-obvious because it reinitializes speed based on time.time() (lines 47-57), making behavior non-deterministic and hard to follow. Also, draw_game_over() has a busy-wait loop that blocks and obscures control flow. Lines 47-57, 176-196"
+          }
+        },
+        "http_status_code": 200,
+        "model": "qwen.qwen3-coder-next",
+        "request_id": "f011de19-c34f-452e-b415-66b18cce139c",
+        "scores": {
+          "abstraction_and_responsibility": 3,
+          "changeability_and_testability": 2,
+          "comment_usefulness": 1,
+          "semantic_readability": 3
+        },
+        "status": "completed",
+        "total": 9
+      }
+    ],
+    "max_score": 15,
+    "prompt_sha256": "425941118012691a86326bbf84e223e57c1a0b4dd4b90701a35b95286ca8fa7f",
+    "score": 8.5,
+    "score_range": 1.0,
+    "score_std": 0.707,
+    "status": "panel_degraded",
+    "valid_judge_count": 2
+  },
+  "max_score": 100,
+  "raw_score_before_cap": 86.034,
+  "reason": "D3-v2 tools and anonymous three-model panel evaluation completed.",
+  "schema_version": 2,
+  "score": 86.034,
+  "score_normalized": 0.86034,
+  "security_cap_applied": false,
+  "status": "panel_degraded",
+  "tools": {
+    "config_sha256": "3fd8a59f743efd91270dc45bce6d0d97725b787b9d0904acd4d3c89c951e1857",
+    "critical_security_risk": false,
+    "critical_total_cap": 50,
+    "details": {
+      "conformance": {
+        "findings": [
+          {
+            "code": "I001",
+            "column": 1,
+            "line": 1,
+            "message": "Import block is un-sorted or un-formatted",
+            "url": "https://docs.astral.sh/ruff/rules/unsorted-imports",
+            "weight": 0.5
+          },
+          {
+            "code": "E501",
+            "column": 84,
+            "line": 68,
+            "message": "Line too long (89 > 88)",
+            "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+            "weight": 1.0
+          },
+          {
+            "code": "E501",
+            "column": 89,
+            "line": 84,
+            "message": "Line too long (97 > 88)",
+            "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+            "weight": 1.0
+          },
+          {
+            "code": "E501",
+            "column": 89,
+            "line": 104,
+            "message": "Line too long (91 > 88)",
+            "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+            "weight": 1.0
+          },
+          {
+            "code": "W291",
+            "column": 67,
+            "line": 152,
+            "message": "Trailing whitespace",
+            "url": "https://docs.astral.sh/ruff/rules/trailing-whitespace",
+            "weight": 1.0
+          },
+          {
+            "code": "E501",
+            "column": 89,
+            "line": 192,
+            "message": "Line too long (90 > 88)",
+            "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+            "weight": 1.0
+          },
+          {
+            "code": "E501",
+            "column": 89,
+            "line": 205,
+            "message": "Line too long (96 > 88)",
+            "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+            "weight": 1.0
+          },
+          {
+            "code": "E501",
+            "column": 89,
+            "line": 208,
+            "message": "Line too long (99 > 88)",
+            "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+            "weight": 1.0
+          },
+          {
+            "code": "E501",
+            "column": 89,
+            "line": 209,
+            "message": "Line too long (97 > 88)",
+            "url": "https://docs.astral.sh/ruff/rules/line-too-long",
+            "weight": 1.0
+          },
+          {
+            "code": "W291",
+            "column": 51,
+            "line": 260,
+            "message": "Trailing whitespace",
+            "url": "https://docs.astral.sh/ruff/rules/trailing-whitespace",
+            "weight": 1.0
+          },
+          {
+            "code": "W291",
+            "column": 53,
+            "line": 261,
+            "message": "Trailing whitespace",
+            "url": "https://docs.astral.sh/ruff/rules/trailing-whitespace",
+            "weight": 1.0
+          }
+        ],
+        "logical_lines": 199,
+        "weighted_finding_count": 10.5,
+        "weighted_findings_per_100_lloc": 5.276
+      },
+      "efficiency": {
+        "hot_loop_calls": [],
+        "hot_loop_deduction": 0.0,
+        "ruff_deduction": 0.0,
+        "ruff_perf_findings": []
+      },
+      "maintainability": {
+        "clone_metrics": {
+          "clone_group_count": 0,
+          "extra_occurrences": 0,
+          "method": "normalized_ast_statement_windows",
+          "window_count": 39,
+          "window_size": 6
+        },
+        "clone_score": 5.0,
+        "cyclomatic_score": 9.81,
+        "has_main_guard": true,
+        "import_probe": {
+          "returncode": 0,
+          "safe": true,
+          "stderr_tail": "",
+          "timed_out": false
+        },
+        "radon": {
+          "complexities": [
+            2,
+            1,
+            1,
+            1,
+            1,
+            5,
+            1,
+            3,
+            1,
+            3,
+            3,
+            1,
+            1,
+            4,
+            1,
+            6,
+            5,
+            5,
+            6,
+            1,
+            2,
+            6,
+            1,
+            4
+          ],
+          "maintainability_index": 40.10318265933705,
+          "max_complexity": 6,
+          "mean_complexity": 2.7083333333333335,
+          "ranks": [
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "B",
+            "A",
+            "A",
+            "B",
+            "A",
+            "A",
+            "B",
+            "A",
+            "A"
+          ],
+          "raw": {
+            "blank": 49,
+            "comments": 29,
+            "lloc": 199,
+            "loc": 280,
+            "sloc": 204
+          }
+        },
+        "structural_findings": [],
+        "structural_score": 8.0,
+        "testability_score": 5.0,
+        "top_level_executable_count": 0
+      },
+      "reliability": {
+        "ast_deduction": 0.0,
+        "broad_exception_handlers": 0,
+        "ruff_deduction": 0.0,
+        "ruff_findings": [],
+        "swallowed_exception_handlers": 0
+      },
+      "ruff_all_findings": [
+        {
+          "code": "I001",
+          "column": 1,
+          "line": 1,
+          "message": "Import block is un-sorted or un-formatted",
+          "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+        },
+        {
+          "code": "PLR1730",
+          "column": 9,
+          "line": 49,
+          "message": "Replace `if` statement with `self.rect.top = max(self.rect.top, 0)`",
+          "url": "https://docs.astral.sh/ruff/rules/if-stmt-min-max"
+        },
+        {
+          "code": "PLR1730",
+          "column": 9,
+          "line": 51,
+          "message": "Replace `if` statement with `min` call",
+          "url": "https://docs.astral.sh/ruff/rules/if-stmt-min-max"
+        },
+        {
+          "code": "E501",
+          "column": 84,
+          "line": 68,
+          "message": "Line too long (89 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 84,
+          "message": "Line too long (97 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 104,
+          "message": "Line too long (91 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+        },
+        {
+          "code": "RUF003",
+          "column": 16,
+          "line": 133,
+          "message": "Comment contains ambiguous `：` (FULLWIDTH COLON). Did you mean `:` (COLON)?",
+          "url": "https://docs.astral.sh/ruff/rules/ambiguous-unicode-character-comment"
+        },
+        {
+          "code": "RUF003",
+          "column": 21,
+          "line": 137,
+          "message": "Comment contains ambiguous `，` (FULLWIDTH COMMA). Did you mean `,` (COMMA)?",
+          "url": "https://docs.astral.sh/ruff/rules/ambiguous-unicode-character-comment"
+        },
+        {
+          "code": "PLR2004",
+          "column": 47,
+          "line": 138,
+          "message": "Magic value used in comparison, consider replacing `10` with a constant variable",
+          "url": "https://docs.astral.sh/ruff/rules/magic-value-comparison"
+        },
+        {
+          "code": "PLR1730",
+          "column": 9,
+          "line": 145,
+          "message": "Replace `if` statement with `max` call",
+          "url": "https://docs.astral.sh/ruff/rules/if-stmt-min-max"
+        },
+        {
+          "code": "PLR1730",
+          "column": 9,
+          "line": 147,
+          "message": "Replace `if` statement with `min` call",
+          "url": "https://docs.astral.sh/ruff/rules/if-stmt-min-max"
+        },
+        {
+          "code": "W291",
+          "column": 67,
+          "line": 152,
+          "message": "Trailing whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/trailing-whitespace"
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 192,
+          "message": "Line too long (90 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+        },
+        {
+          "code": "PLR1730",
+          "column": 9,
+          "line": 197,
+          "message": "Replace `if` statement with `remaining_time = max(remaining_time, 0)`",
+          "url": "https://docs.astral.sh/ruff/rules/if-stmt-min-max"
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 205,
+          "message": "Line too long (96 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 208,
+          "message": "Line too long (99 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+        },
+        {
+          "code": "E501",
+          "column": 89,
+          "line": 209,
+          "message": "Line too long (97 > 88)",
+          "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+        },
+        {
+          "code": "W291",
+          "column": 51,
+          "line": 260,
+          "message": "Trailing whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/trailing-whitespace"
+        },
+        {
+          "code": "W291",
+          "column": 53,
+          "line": 261,
+          "message": "Trailing whitespace",
+          "url": "https://docs.astral.sh/ruff/rules/trailing-whitespace"
+        }
+      ],
+      "security": {
+        "bandit_deduction": 0,
+        "bandit_findings": [],
+        "critical_risk": false,
+        "external_imports": [],
+        "forbidden_calls": []
+      }
+    },
+    "indicator_scores": {
+      "conformance": 4.724,
+      "efficiency": 10.0,
+      "maintainability": 27.81,
+      "reliability": 20.0,
+      "security": 15.0
+    },
+    "max_score": 85,
+    "method": "iso5055_inspired_tools_plus_anonymous_llm_panel",
+    "reason": "D3-v2 deterministic tool evaluation completed.",
+    "schema_version": 2,
+    "score": 77.534,
+    "score_normalized": 0.912164705882353,
+    "status": "completed",
+    "tool_versions": {
+      "bandit": "1.9.4",
+      "radon": "6.0.1",
+      "ruff": "0.15.22"
+    }
+  }
+}

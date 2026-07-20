@@ -1,0 +1,70 @@
+{
+  "gate_pass": true,
+  "indicators": {
+    "dependency_initialization_complete": 1,
+    "event_handling_mechanism": 1,
+    "process_controllability": 1,
+    "python_syntax_correct": 1,
+    "short_runtime_stable": 1,
+    "window_creation": 1
+  },
+  "pipeline_steps_passed": 6,
+  "raw_pass_count": 6,
+  "reason": "全部通过：D1 六级流水线均满足，可进入 D2-D4。",
+  "runtime": {
+    "diagnosis": "quit_controlled",
+    "env_notice": "",
+    "file_found": true,
+    "pygame_available": true,
+    "pygame_import_ok": true,
+    "quit_probe": {
+      "event_fetch_seen": true,
+      "mode": "quit",
+      "quit_posted": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "pygame 2.6.1 (SDL 2.28.4, Python 3.11.4)\nHello from the pygame community. https://www.pygame.org/contribute.html\n__D1_WINDOW_CREATED__\n__D1_WINDOW_SURFACE__\n__D1_EVENT_FETCH__\n__D1_QUIT_POSTED__\n",
+      "surface_returned": true,
+      "timed_out": false,
+      "window_created": true
+    },
+    "stability_probe": {
+      "event_fetch_seen": true,
+      "mode": "stability",
+      "quit_posted": false,
+      "returncode": 1,
+      "stderr": "",
+      "stdout": "pygame 2.6.1 (SDL 2.28.4, Python 3.11.4)\nHello from the pygame community. https://www.pygame.org/contribute.html\n__D1_WINDOW_CREATED__\n__D1_WINDOW_SURFACE__\n__D1_EVENT_FETCH__\n",
+      "surface_returned": true,
+      "timed_out": true,
+      "window_created": true
+    }
+  },
+  "score": 1.0,
+  "step_order": [
+    [
+      "python_syntax_correct",
+      "Python 语法正确性"
+    ],
+    [
+      "dependency_initialization_complete",
+      "导入 pygame"
+    ],
+    [
+      "window_creation",
+      "图形窗口创建能力"
+    ],
+    [
+      "event_handling_mechanism",
+      "事件循环处理完整性"
+    ],
+    [
+      "short_runtime_stable",
+      "短时间运行稳定性"
+    ],
+    [
+      "process_controllability",
+      "执行进程可控性"
+    ]
+  ]
+}

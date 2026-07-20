@@ -1,0 +1,121 @@
+{
+  "code": {
+    "bytes": 9321,
+    "extraction": {
+      "method": "complete_markdown_fence",
+      "model_text_chars": 8931,
+      "source_chars": 8917
+    },
+    "model_output_path": "responses/model_output.txt",
+    "model_output_sha256": "6370e81f6c5105861664ce477b1b5076dd8a856ce217c0f325a622177cbf8486",
+    "path": "generated/pong__deepseek.v3.2.py",
+    "sha256": "d0f0a8a92cb68e84c257a4d4a597b738c0b6bb18ce1a8c378bad4b4107aae391",
+    "syntax": {
+      "error": null,
+      "valid": true
+    }
+  },
+  "configuration": {
+    "d3_config": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\D1_D3_demo\\d3_v2\\config.json",
+    "d3_include_judges": true,
+    "d3_schema_version": 2,
+    "max_tokens": 8000,
+    "python": "3.11.4",
+    "runtime_sec": 5,
+    "temperature": 0.2
+  },
+  "error": null,
+  "format_version": 2,
+  "game": {
+    "difficulty": "easy",
+    "id": "pong",
+    "name": "Pong"
+  },
+  "generated_at_utc": "2026-07-20T14:15:25.084485+00:00",
+  "generation": {
+    "credentials": {
+      "access_key_present": true,
+      "secret_key_present": true,
+      "session_token_present": false,
+      "source": "environment"
+    },
+    "http_status_code": 200,
+    "latency_seconds": 27.575144,
+    "model": "deepseek.v3.2",
+    "model_call_attempted": true,
+    "model_call_succeeded": true,
+    "origin": "llm_api",
+    "provider": "bedrock",
+    "region": "us-east-1",
+    "request_id": "0604e8a5-28a6-4f4f-8728-2b606362c422",
+    "requested_origin": "llm_api"
+  },
+  "prompt": {
+    "chars": 1038,
+    "main_sha256": "b00f6a6f2169ab66d9f10af8ba9c9986307280eda571188dc89e92d509ecfbdf",
+    "main_snapshot": "inputs/main.md",
+    "rendered_path": "prompts/pong.txt",
+    "rendered_sha256": "e2048dc87f87a724a0358f58ff6fa6f6c22ebb802da4f25d220f3733749e8253",
+    "spec_sha256": "f8a0463194c7961f53deb2f1bed074d507a14da3ec88b1c9c5d15f39290d7490",
+    "spec_snapshot": "inputs/pong.md"
+  },
+  "run_dir": "C:\\Users\\19902\\Desktop\\GameLLM-Benchmark\\D1_D3_demo\\runs\\20260720_official_pong_deepseek_03",
+  "run_id": "20260720_official_pong_deepseek_03",
+  "scores": {
+    "d1": {
+      "actual_game_process_started": true,
+      "diagnosis": "crash",
+      "gate_pass": false,
+      "indicators": {
+        "dependency_initialization_complete": 1,
+        "event_handling_mechanism": 1,
+        "process_controllability": 0,
+        "python_syntax_correct": 1,
+        "short_runtime_stable": 0,
+        "window_creation": 1
+      },
+      "pipeline_steps_passed": 4,
+      "raw_pass_count": 4,
+      "reason": "5. 短时间运行不稳定，程序崩溃或在检测窗口内提前退出。 | 6. 进程可控性不足，注入 QUIT 后未能在超时内干净退出。",
+      "score": 0.6666666666666666
+    },
+    "d1_gated_final": {
+      "d1_gate_pass": false,
+      "d3_diagnostic_score": 77.989,
+      "max_score": 100,
+      "reason": "D3 was measured for diagnosis, but the D1-gated final score is zero.",
+      "score": 0.0,
+      "status": "zeroed_by_d1_gate"
+    },
+    "d3": {
+      "config_sha256": "3fd8a59f743efd91270dc45bce6d0d97725b787b9d0904acd4d3c89c951e1857",
+      "high_disagreement": false,
+      "indicator_scores": {
+        "conformance": 0.0,
+        "efficiency": 10.0,
+        "llm_review": 10.667,
+        "maintainability": 26.322,
+        "reliability": 20.0,
+        "security": 11.0
+      },
+      "judge_score_range": 2.0,
+      "judge_score_std": 1.155,
+      "judge_status": "completed",
+      "raw_score_before_cap": 77.989,
+      "reason": "D3-v2 tools and anonymous three-model panel evaluation completed.",
+      "schema_version": 2,
+      "score": 77.989,
+      "score_normalized": 0.77989,
+      "security_cap_applied": false,
+      "status": "completed",
+      "tool_status": "completed",
+      "tool_versions": {
+        "bandit": "1.9.4",
+        "radon": "6.0.1",
+        "ruff": "0.15.22"
+      },
+      "valid_judge_count": 3
+    }
+  },
+  "status": "completed"
+}

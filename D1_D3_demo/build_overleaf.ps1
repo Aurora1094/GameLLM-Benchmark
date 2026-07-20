@@ -68,31 +68,17 @@ Copy-Item -LiteralPath $PdfPath -Destination (Join-Path $BundleRoot "compiled_re
 
 $config = Get-Content -Raw -Encoding utf8 $ReportConfigPath | ConvertFrom-Json
 $runIndex = 0
-foreach ($runId in $config.run_ids) {
-    $runIndex += 1
-    $sourceRun = Join-Path $RunsRoot $runId
-    $targetRun = Join-Path $BundleRoot ("data\runs\R" + $runIndex)
-    New-Item -ItemType Directory -Force $targetRun | Out-Null
-    foreach ($relativePath in @(
-        "summary.json",
-        "manifest.json",
-        "prompts\pong.txt",
-        "scores\d1.json",
-        "scores\d3.json"
-    )) {
-        $sourcePath = Join-Path $sourceRun $relativePath
-        if (-not (Test-Path -LiteralPath $sourcePath)) {
-            throw "Missing live-run artifact for Overleaf package: $sourcePath"
+foreach ($candidate in $config.candidates) {
+    foreach ($runId in $candidate.run_ids) {
+        $runIndex += 1
+        $sourceRun = Join-Path $RunsRoot $runId
+        $targetRun = Join-Path $BundleRoot ("data\runs\R" + $runIndex)
+        if (-not (Test-Path -LiteralPath $sourceRun)) {
+            throw "Missing live run for Overleaf package: $sourceRun"
         }
-        $targetSubdir = Split-Path -Parent (Join-Path $targetRun $relativePath)
-        New-Item -ItemType Directory -Force $targetSubdir | Out-Null
-        Copy-Item -LiteralPath $sourcePath -Destination (Join-Path $targetRun $relativePath) -Force
+        New-Item -ItemType Directory -Force $targetRun | Out-Null
+        Copy-Item -Path (Join-Path $sourceRun "*") -Destination $targetRun -Recurse -Force
     }
-    $generatedCode = Get-ChildItem -LiteralPath (Join-Path $sourceRun "generated") -Filter "*.py" -File | Select-Object -First 1
-    if (-not $generatedCode) {
-        throw "Missing generated code for Overleaf package: $runId"
-    }
-    Copy-Item -LiteralPath $generatedCode.FullName -Destination (Join-Path $targetRun "generated_pong.py") -Force
 }
 
 $readme = @"
